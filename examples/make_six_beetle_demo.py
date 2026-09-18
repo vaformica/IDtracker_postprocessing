@@ -20,7 +20,7 @@ def make_fixture(root):
     arr[3100:3200,2]=arr[3100:3200,0]+[25,0]
     arr[3140:3150,0]=np.nan
     rois=[[[0,0],[1000,0],[1000,800],[0,800]]]
-    for x,y in [(220,220),(600,240),(420,530)]:
+    for x,y in [(220,220),(420,530),(600,240)]:
         rois.append([[x,y],[x+130,y],[x+130,y+100],[x,y+100]])
     (root/'session.json').write_text(json.dumps({'roi_list':rois},indent=2))
     np.save(root/'trajectories.npy',{'trajectories':arr})

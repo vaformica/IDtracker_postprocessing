@@ -18,7 +18,41 @@ import tempfile
 import numpy as np
 import processor as legacy
 
-SCRIPT_VERSION = '0.1.0-six-beetle'
+SCRIPT_VERSION = '0.2.0-six-beetle'
+
+FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_CONTACT')
+FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
+
+
+def frame_states(xy, start, pair_masks, events):
+    """Three display states plus separate observation and inference evidence.
+
+    Presumed contact takes display priority over observed/missing. It includes
+    observed proximity and both members of a bounded disappearance candidate.
+    This never changes coordinates or the existing movement/missing summaries.
+    """
+    valid = np.isfinite(xy).all(axis=2)
+    partner_count = np.zeros(valid.shape, dtype=np.int16)
+    disappearance = np.zeros(valid.shape, dtype=bool)
+    ambiguous = np.zeros(valid.shape, dtype=bool)
+    for (a, b), mask in pair_masks.items():
+        partner_count[:, a] += mask
+        partner_count[:, b] += mask
+    for event in events:
+        if event['kind'] != 'DISAPPEARANCE_CANDIDATE' or event.get('window', 'full') != 'full':
+            continue
+        lo = event['start_global_frame'] - start
+        stop = event['end_global_frame_inclusive'] - start + 1
+        for animal in (event['animal_a'], event['animal_b']):
+            disappearance[lo:stop, animal] = True
+            if event['candidate_partner_count'] > 1:
+                ambiguous[lo:stop, animal] = True
+    states = np.where(valid, 0, 1).astype(np.uint8)
+    states[(partner_count > 0) | disappearance] = 2
+    return dict(states=states, coordinate_present=valid,
+                proximity_partner_count=partner_count,
+                disappearance_candidate=disappearance,
+                ambiguous_disappearance=ambiguous)
 
 
 def regions(xy, rois, wall_buffer, fungus_buffer):
@@ -181,15 +215,19 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     pairs = [dict(window='full', **row) for row in pairs] + pair_windows
     for event in events:
         event.setdefault('window', 'full')
+    timeline = frame_states(xy, start, masks, events)
     metadata = dict(script_version=SCRIPT_VERSION, base_processor_version=legacy.SCRIPT_VERSION,
         trajectory_file=str(trajectory.resolve()), session_folder=str(session.resolve()),
         trajectory_source_kind=source_kind, settings=settings, roi_order=['arena','fungus_1','fungus_2','fungus_3'],
+        fungus_numbering_convention='Left to right; fungus 1 is the leftmost or bottommost bracket, as specified by Vince. Input order is preserved, not automatically sorted.',
+        frame_state_definition='Presumed social contact takes precedence: observed proximity or participation in a bounded disappearance candidate. Otherwise coordinate present = observed/ID assigned; no coordinate = missing. Ambiguous disappearance remains flagged separately. Observed refers to the selected trajectory source, which may already contain IDtracker gap filling.',
         rois=[p.tolist() for p in rois], fixed_anchor_rule='ALL_SIX_WAKE_LATEST_CROSSING',
         qc_status='UNREVIEWED', coordinate_substitution=False,
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
     return dict(animals=animals, windows=windows, regions=region_rows, pairs=pairs, events=events,
-                metadata=metadata, xy=xy, turtling_masks=turtling_masks, masks=masks)
+                metadata=metadata, xy=xy, turtling_masks=turtling_masks, masks=masks,
+                frame_timeline=timeline)
 
 
 def write_pdf(result, destination, video, cell):
@@ -250,6 +288,38 @@ def write_pdf(result, destination, video, cell):
         ax.set_xlim(settings['start'],settings['start']+settings['window']+1)
         ax.set_title('Observed proximity for all 15 pairs',fontsize=17); ax.grid(axis='x',alpha=.2)
         fig.tight_layout(rect=[.03,.10,.98,.96]); footer(fig,5); pdf.savefig(fig); plt.close(fig)
+        # Preserve the pairwise plot above; this additional page shows one row
+        # per tracked identity and uses nearest-neighbor cells (no smoothing).
+        from matplotlib.colors import ListedColormap, BoundaryNorm
+        from matplotlib.patches import Patch
+        timeline = result['frame_timeline']
+        fig, ax = plt.subplots(figsize=(11.7, 8.3))
+        begin = settings['start']
+        end = begin + settings['window']
+        ax.imshow(timeline['states'].T, aspect='auto', interpolation='nearest',
+                  cmap=ListedColormap(FRAME_STATE_COLORS),
+                  norm=BoundaryNorm([-.5, .5, 1.5, 2.5], 3),
+                  extent=(begin-.5, end+.5, 5.5, -.5))
+        for animal in range(6):
+            for event in legacy._events_from_mask(timeline['ambiguous_disappearance'][:, animal]):
+                ax.broken_barh([(begin+event['start_offset']-.5, event['frames'])],
+                              (animal-.5, 1), facecolors='none',
+                              edgecolors='#333333', linewidth=0, hatch='////')
+        ax.set_yticks(range(6), [f'Beetle {i}' for i in range(6)])
+        ax.set_xlabel('Global frame (inclusive observations)')
+        fig.suptitle('Per-frame identity and presumed social contact', fontsize=17, y=.95)
+        for boundary in np.arange(.5, 5.5):
+            ax.axhline(boundary, color='white', linewidth=.7, alpha=.7)
+        handles = [Patch(facecolor=color, label=label) for color, label in zip(
+            FRAME_STATE_COLORS, ['Observed / ID assigned', 'Missing', 'Presumed social contact'])]
+        handles.append(Patch(facecolor='white', edgecolor='#333333', hatch='////',
+                             label='Ambiguous disappearance'))
+        fig.legend(handles=handles, loc='upper center', bbox_to_anchor=(.5,.89),
+                   ncol=2, frameon=False, fontsize=10)
+        fig.text(.08,.18,fill('Gold takes priority: proximity to any partner, or either member of a qualifying disappearance candidate. Hatching marks uncertain partner attribution. This is not proof of attack; missing coordinates are never filled.',125),fontsize=10)
+        fig.text(.08,.10,fill('Observed means a coordinate assigned to this ID in the selected trajectory file; IDtracker may already have filled gaps. Very brief states may be hard to see at page scale; frame_states.csv preserves every frame and its evidence.',125),fontsize=9)
+        fig.subplots_adjust(left=.10,right=.96,bottom=.28,top=.78)
+        footer(fig,6); pdf.savefig(fig); plt.close(fig)
 
 
 def sha256(path):
@@ -273,6 +343,20 @@ def write_bundle(result, output, video, cell):
             if not fields: fields=['window','kind','animal_a','animal_b','missing_animal','start_global_frame','end_global_frame_inclusive','frames','candidate_partner_count','attribution']
             with (staging/f'{name}.csv').open('w',newline='') as stream:
                 writer=csv.DictWriter(stream,fieldnames=fields); writer.writeheader();writer.writerows(rows)
+        timeline = result['frame_timeline']
+        fields = ['global_frame', 'animal_id', 'state', 'coordinate_present',
+                  'proximity_partner_count', 'disappearance_candidate',
+                  'ambiguous_disappearance']
+        with (staging/'frame_states.csv').open('w', newline='') as stream:
+            writer = csv.DictWriter(stream, fieldnames=fields)
+            writer.writeheader()
+            for offset in range(len(result['xy'])):
+                for animal in range(6):
+                    row = dict(global_frame=meta['settings']['start']+offset,
+                               animal_id=animal,
+                               state=FRAME_STATE_NAMES[timeline['states'][offset, animal]])
+                    row.update({key: int(timeline[key][offset, animal]) for key in fields[3:]})
+                    writer.writerow(row)
         write_pdf(result,staging/'report.pdf',video,cell)
         meta['output_sha256']={p.name:sha256(p) for p in staging.iterdir()}
         (staging/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n')

@@ -39,7 +39,7 @@ venv-mac/bin/python six_beetle_processor.py \
 Input must contain exactly six trajectories in the existing loader's supported
 NPY, H5, or CSV layouts. `session.json` must contain exactly four polygons in
 `roi_list`: arena, fungus 1, fungus 2, fungus 3. Coordinates must use the same
-coordinate system. ROI numbering reflects input order, not inferred biology.
+coordinate system. Fungus ROIs are numbered left to right; Vince describes fungus ROI 1 as the leftmost or bottommost fungus bracket. The arena is ROI 0. The script preserves this supplied order and does not automatically sort polygons.
 Use the reviewed validated/without-gaps source when available; the manifest
 records the explicitly selected source. The program does not discover or
 approve IDtracker runs.
@@ -68,7 +68,10 @@ Each complete new output directory contains:
   candidates; overlapping pair events remain separate. Multi-partner
   disappearance is explicitly marked ambiguous.
 - `report.pdf`: missing-data summary, all-six map, individual maps, and
-  a timeline showing all 15 pairwise proximity sequences.
+  a timeline showing all 15 pairwise proximity sequences, and an additional three-color per-frame identity/contact timeline.
+- `frame_states.csv`: every global frame and animal, with the display state,
+  coordinate presence, nearby-partner count, disappearance-candidate status,
+  and ambiguous-attribution flag.
 - `manifest.json`: settings, actual ROI vertices, input and code SHA-256,
   output SHA-256, source paths, versions, video/cell, and `UNREVIEWED` status.
 
@@ -110,3 +113,17 @@ The demonstration is synthetic and clearly labeled. It includes all six
 trajectories, three fungi, simultaneous proximity, ambiguous disappearance,
 missing coordinates, and a rejected jump. Output directories are never
 reused or overwritten. Generated research/demo files remain Git-ignored.
+
+## Per-frame timeline (v0.2.0-six-beetle)
+
+The existing pair-proximity plot is retained. A sixth PDF page shows all six
+identities over the inclusive global-frame window: blue = observed/ID assigned,
+orange = missing, gold = presumed social contact. Gold takes precedence when
+there is observed proximity or participation (missing animal or visible
+partner) in a qualifying bounded disappearance candidate. Ambiguous
+multi-partner candidates are hatched; they are not silently assigned to one
+partner. Coordinate presence remains a separate field, so gold never changes
+missing-data counts or fills trajectories. Observed means present in the
+selected trajectory source; pre-existing IDtracker gap filling is not evidence
+that the animal was visible in the original video. Every frame is exported
+even when a short event is narrower than a pixel in the full-window plot.

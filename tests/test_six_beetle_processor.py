@@ -104,4 +104,38 @@ class SixBeetleTests(unittest.TestCase):
     def test_refuses_existing_output(self):
         with self.assertRaises(FileExistsError): six.write_bundle({},self.root,'test','test')
 
+    def test_frame_states_preserve_observation_and_missing_evidence(self):
+        xy=np.tile(np.array([[0,0],[200,0],[400,0],[600,0],[800,0],[1000,0]],float),(8,1,1))
+        xy[1:5,1]=[10,0]
+        xy[2:4,0]=np.nan  # Bounded social disappearance: both participants gold.
+        xy[6:8,5]=np.nan  # Ordinary trailing missingness stays orange.
+        _,events,masks=six.social_network(xy,100,60)
+        states=six.frame_states(xy,100,masks,events)
+        np.testing.assert_array_equal(states['states'][:,0],[0,2,2,2,2,0,0,0])
+        self.assertTrue((states['states'][2:4,1]==2).all())
+        self.assertTrue((states['states'][6:8,5]==1).all())
+        self.assertFalse(states['coordinate_present'][2:4,0].any())
+        self.assertTrue(states['coordinate_present'][2:4,1].all())
+        self.assertFalse(states['ambiguous_disappearance'].any())
+        self.assertTrue(np.isnan(xy[2:4,0]).all())
+
+    def test_frame_states_flag_all_ambiguous_participants_without_double_counting(self):
+        xy=np.tile(np.array([[0,0],[10,0],[20,0],[600,0],[800,0],[1000,0]],float),(6,1,1))
+        xy[2:4,0]=np.nan
+        _,events,masks=six.social_network(xy,20,60)
+        states=six.frame_states(xy,20,masks,events)
+        self.assertTrue(states['ambiguous_disappearance'][2:4,:3].all())
+        self.assertEqual(states['proximity_partner_count'][0,0],2)
+        self.assertEqual(int((states['states'][0]==2).sum()),3)
+        self.assertEqual(states['states'].shape,(6,6))
+
+    def test_frame_states_ignore_fixed_window_duplicate_events(self):
+        xy=np.zeros((3,6,2)); masks={}
+        event=dict(kind='DISAPPEARANCE_CANDIDATE',window='post_wake_3600',
+                   start_global_frame=10,end_global_frame_inclusive=11,
+                   animal_a=0,animal_b=1,candidate_partner_count=2)
+        states=six.frame_states(xy,10,masks,[event])
+        self.assertFalse(states['disappearance_candidate'].any())
+        self.assertTrue((states['states']==0).all())
+
 if __name__=='__main__': unittest.main()
