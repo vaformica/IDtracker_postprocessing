@@ -18,10 +18,30 @@ import tempfile
 import numpy as np
 import processor as legacy
 
-SCRIPT_VERSION = '0.2.0-six-beetle'
+SCRIPT_VERSION = '0.2.1-six-beetle'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_CONTACT')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
+
+
+def pair_contact_masks(pair_masks, events, start):
+    """Keep disappearance inference attached to its exact candidate pair.
+
+    Individual contact masks cannot establish a pair: two beetles may each
+    interact with different partners. Only pair-specific events are used.
+    """
+    inferred = {pair: np.zeros_like(mask, dtype=bool) for pair, mask in pair_masks.items()}
+    ambiguous = {pair: np.zeros_like(mask, dtype=bool) for pair, mask in pair_masks.items()}
+    for event in events:
+        if event['kind'] != 'DISAPPEARANCE_CANDIDATE' or event.get('window', 'full') != 'full':
+            continue
+        pair = (event['animal_a'], event['animal_b'])
+        lo = event['start_global_frame'] - start
+        stop = event['end_global_frame_inclusive'] - start + 1
+        inferred[pair][lo:stop] = True
+        if event['candidate_partner_count'] > 1:
+            ambiguous[pair][lo:stop] = True
+    return inferred, ambiguous
 
 
 def frame_states(xy, start, pair_masks, events):
@@ -282,12 +302,24 @@ def write_pdf(result, destination, video, cell):
                 ax.autoscale_view(); ax.legend(loc='upper right',fontsize=8)
             fig.tight_layout(rect=[.03,.10,.97,.94]); footer(fig,page); pdf.savefig(fig); plt.close(fig)
         fig,ax=plt.subplots(figsize=(11.7,8.3))
+        from matplotlib.patches import Patch
+        inferred, ambiguous = pair_contact_masks(result['masks'], result['events'], settings['start'])
         for row,(pair,mask) in enumerate(result['masks'].items()):
-            ax.broken_barh([(settings['start']+e['start_offset'],e['frames']) for e in legacy._events_from_mask(mask)],(row-.32,.64),facecolors='#277d8e')
+            for state_mask, color in [(mask, '#277d8e'), (inferred[pair], FRAME_STATE_COLORS[2])]:
+                ax.broken_barh([(settings['start']+e['start_offset']-.5,e['frames']) for e in legacy._events_from_mask(state_mask)],(row-.32,.64),facecolors=color)
+            ax.broken_barh([(settings['start']+e['start_offset']-.5,e['frames']) for e in legacy._events_from_mask(ambiguous[pair])],
+                          (row-.32,.64),facecolors='none',edgecolors='#333333',linewidth=0,hatch='////')
         ax.set_yticks(range(15),[f'{a} – {b}' for a,b in result['masks']]); ax.set_xlabel('Global frame'); ax.set_ylabel('Beetle pair')
-        ax.set_xlim(settings['start'],settings['start']+settings['window']+1)
-        ax.set_title('Observed proximity for all 15 pairs',fontsize=17); ax.grid(axis='x',alpha=.2)
-        fig.tight_layout(rect=[.03,.10,.98,.96]); footer(fig,5); pdf.savefig(fig); plt.close(fig)
+        ax.set_xlim(settings['start']-.5,settings['start']+settings['window']+.5)
+        fig.suptitle('Proximity and presumed social contact for all 15 pairs',fontsize=17,y=.96)
+        ax.grid(axis='x',alpha=.2)
+        fig.legend(handles=[Patch(facecolor='#277d8e',label='Observed proximity'),
+                            Patch(facecolor=FRAME_STATE_COLORS[2],label='Presumed contact during disappearance'),
+                            Patch(facecolor='white',edgecolor='#333333',hatch='////',label='Ambiguous partner attribution')],
+                   loc='upper center',bbox_to_anchor=(.5,.92),ncol=1,frameon=False,fontsize=10)
+        fig.text(.08,.11,fill('Gold extends a candidate pair through a qualifying disappearance; hatching marks multiple possible partners. Blank means no proximity or disappearance evidence, not confirmed absence of contact. Events remain available at exact global frames in events.csv.',125),fontsize=9)
+        fig.subplots_adjust(left=.10,right=.97,bottom=.21,top=.78)
+        footer(fig,5); pdf.savefig(fig); plt.close(fig)
         # Preserve the pairwise plot above; this additional page shows one row
         # per tracked identity and uses nearest-neighbor cells (no smoothing).
         from matplotlib.colors import ListedColormap, BoundaryNorm

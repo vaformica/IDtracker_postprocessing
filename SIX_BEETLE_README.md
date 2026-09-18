@@ -127,3 +127,12 @@ missing-data counts or fills trajectories. Observed means present in the
 selected trajectory source; pre-existing IDtracker gap filling is not evidence
 that the animal was visible in the original video. Every frame is exported
 even when a short event is narrower than a pixel in the full-window plot.
+
+### Pair-specific presumed contact (v0.2.1-six-beetle)
+
+The 15-pair chart now overlays qualifying disappearance intervals in gold,
+while observed proximity remains teal. Hatching marks ambiguous candidate
+partners. Inference comes from each exact pair's full-window disappearance
+events in events.csv, never from intersecting two individual contact states.
+A blank interval means no observed proximity or qualifying disappearance
+evidence; it does not establish that the animals were not in contact.

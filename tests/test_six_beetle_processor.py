@@ -138,4 +138,29 @@ class SixBeetleTests(unittest.TestCase):
         self.assertFalse(states['disappearance_candidate'].any())
         self.assertTrue((states['states']==0).all())
 
+    def test_pair_contact_is_pair_specific_with_ambiguous_partners(self):
+        xy=np.tile(np.array([[0,0],[10,0],[20,0],[600,0],[800,0],[1000,0]],float),(6,1,1))
+        xy[2:4,0]=np.nan
+        _,events,masks=six.social_network(xy,100,60)
+        inferred,ambiguous=six.pair_contact_masks(masks,events,100)
+        for pair in [(0,1),(0,2)]:
+            np.testing.assert_array_equal(inferred[pair],[False,False,True,True,False,False])
+            np.testing.assert_array_equal(ambiguous[pair],inferred[pair])
+            self.assertFalse((masks[pair] & inferred[pair]).any())
+        # Both visible partners can have inferred individual contact with 0;
+        # that must not create a disappearance inference between 1 and 2.
+        self.assertFalse(inferred[1,2].any())
+        self.assertFalse(inferred[3,4].any())
+
+    def test_pair_contact_single_partner_and_fixed_window_filter(self):
+        masks={(0,1):np.zeros(5,dtype=bool)}
+        event=dict(kind='DISAPPEARANCE_CANDIDATE',window='full',animal_a=0,animal_b=1,
+                   start_global_frame=51,end_global_frame_inclusive=52,candidate_partner_count=1)
+        inferred,ambiguous=six.pair_contact_masks(masks,[event],50)
+        np.testing.assert_array_equal(inferred[0,1],[False,True,True,False,False])
+        self.assertFalse(ambiguous[0,1].any())
+        event['window']='post_wake_3600'
+        inferred,_=six.pair_contact_masks(masks,[event],50)
+        self.assertFalse(inferred[0,1].any())
+
 if __name__=='__main__': unittest.main()
