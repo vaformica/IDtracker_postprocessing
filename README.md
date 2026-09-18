@@ -723,3 +723,11 @@ filenames, then copies approved PDFs from the cached completed-run `pdfs/`
 folder into `approved_pdfs/`. If an approved PDF is not present in the local
 cache, the export writes `approved_pdf_copy_warnings.txt` instead of silently
 pretending the PDF was copied.
+
+## Six-beetle development entry point
+
+A separate six-beetle / three-fungus-ROI CLI is available as
+`six_beetle_processor.py`. See [SIX_BEETLE_README.md](SIX_BEETLE_README.md)
+and [SIX_BEETLE_METHODS.html](SIX_BEETLE_METHODS.html). Its group tables are a
+new schema; the existing GUI, two-animal processor, and QC exports retain their
+existing behavior.
