@@ -180,3 +180,36 @@ class ReportAdditionsTests(unittest.TestCase):
         self.assertEqual(rows[5]['fungus_3_distance_px'],12.5)
         result['metadata']['frames_per_second']=None
         self.assertEqual(six.fungus_summary(result)[0]['fungus_1_seconds'],'')
+
+class PresumedGroupTests(unittest.TestCase):
+    def test_pair_grows_to_triple_when_anchor_disappears(self):
+        raw=np.array([[[0,0],[5,0],[100,0]],[[np.nan,np.nan],[10,0],[15,0]],
+                      [[np.nan,np.nan],[np.nan,np.nan],[20,0]],
+                      [[1,1],[np.nan,np.nan],[25,0]]],float)
+        result=six.presumed_groups(raw,10)
+        np.testing.assert_array_equal(result['anchors'][2],[2,2,2])
+        np.testing.assert_allclose(result['xy'][2],[[20,0],[20,0],[20,0]])
+        np.testing.assert_array_equal(result['anchors'][3],[0,2,2])
+        self.assertTrue(np.isnan(raw[2,0]).all())
+        self.assertTrue(result['masks'][0,1][2])
+
+    def test_incoming_beetle_disappears_into_existing_group(self):
+        raw=np.array([[[0,0],[5,0],[100,0]],[[np.nan,np.nan],[10,0],[15,0]],
+                      [[np.nan,np.nan],[20,0],[np.nan,np.nan]]],float)
+        r=six.presumed_groups(raw,10)
+        np.testing.assert_array_equal(r['anchors'][2],[1,1,1])
+
+    def test_multiple_candidates_or_no_anchor_remain_unresolved(self):
+        raw=np.array([[[0,0],[5,0],[8,0]],[[np.nan,np.nan],[6,0],[9,0]],
+                      [[np.nan,np.nan],[np.nan,np.nan],[np.nan,np.nan]]],float)
+        r=six.presumed_groups(raw,10)
+        self.assertTrue(r['ambiguous'][1,0])
+        self.assertTrue(np.isnan(r['xy'][1,0]).all())
+        self.assertTrue(np.isnan(r['xy'][2]).all())
+
+    def test_no_future_return_required_and_no_proximity_no_assignment(self):
+        raw=np.array([[[0,0],[5,0],[100,0]],[[np.nan,np.nan],[7,0],[np.nan,np.nan]],
+                      [[np.nan,np.nan],[9,0],[np.nan,np.nan]]],float)
+        r=six.presumed_groups(raw,10)
+        np.testing.assert_allclose(r['xy'][-1,0],[9,0])
+        self.assertEqual(r['anchors'][-1,2],-1)

@@ -151,3 +151,29 @@ trajectory files. There are 12 PDF pages.
 
 PDF names default to `<video stem>_<cell label>.pdf`; `--pdf-name <TOML stem>.pdf`
 sets an exact TOML-derived name. Existing output folders are never overwritten.
+
+### Version 0.4.0: presumed social disappearance
+
+This supersedes the v0.3.0 no-substitution display. If a beetle disappears after
+being within the proximity threshold of a unique remaining visible beetle in
+the preceding frame, its estimated location follows that visible anchor. An
+existing group can absorb another disappearance or transfer to a new anchor;
+all group members then share the remaining visible beetle's location. IDs that
+reappear resume their own measured coordinates. No visible anchor, or multiple
+possible anchors, leaves the missing position unresolved. No future return is
+required. Inference starts before the analysis window to carry established
+groups into it.
+
+`presumed_positions.csv` retains raw x/y, estimated x/y, inference flags, visible
+anchor IDs (-1 unresolved), and ambiguity for every beetle/frame. Original
+windows/regions/fungus tables retain raw-coordinate metrics; `estimated_*` tables
+include presumed positions, with identical window boundaries and wake anchors.
+Original missing-coordinate percentages remain raw. Original bounded pair
+candidates are retained in `legacy_events.csv` for provenance, not used for the
+new display. Gold in the individual timeline now means presumed social
+disappearance, including the group's visible anchor; proximity alone remains
+observed. Pair timelines retain teal observed proximity and gold group membership.
+
+The 13-page PDF uses solid raw traces and dashed presumed positions in both 2D
+and 3D, and includes separate observed and estimated fungus tables. Distances
+and times attributed to presumed positions are model-based estimates.
