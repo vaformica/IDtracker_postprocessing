@@ -67,7 +67,7 @@ Each complete new output directory contains:
 - `events.csv`: global inclusive intervals for proximity and disappearance
   candidates; overlapping pair events remain separate. Multi-partner
   disappearance is explicitly marked ambiguous.
-- `report.pdf`: missing-data summary, all-six map, individual maps, and
+- `<TOML stem>.pdf`: missing-data summary, all-six map, full-page individual maps, 3D trajectories, fungus table, and
   a timeline showing all 15 pairwise proximity sequences, and an additional three-color per-frame identity/contact timeline.
 - `frame_states.csv`: every global frame and animal, with the display state,
   coordinate presence, nearby-partner count, disappearance-candidate status,
@@ -136,3 +136,18 @@ partners. Inference comes from each exact pair's full-window disappearance
 events in events.csv, never from intersecting two individual contact states.
 A blank interval means no observed proximity or qualifying disappearance
 evidence; it does not establish that the animals were not in contact.
+
+### Version 0.3.0 reports
+
+The PDF now includes one full-page trace per beetle, orange X markers at the last
+assigned coordinate before each missing run, an X/Y/time 3D trajectory page, and
+a six-row fungus occupancy/distance table. The original pairwise and individual
+state timelines are retained. `fungus_summary.csv` preserves exact frame counts,
+seconds (when a verified `--fps` is supplied), and distances in pixels. Time is
+assigned-coordinate occupancy frames divided by FPS; distance uses the existing
+accepted-step midpoint rule. Missing periods are not imputed. Without `--fps`,
+time is explicitly shown in frames. Use `--fps 30` for these verified trial01
+trajectory files. There are 12 PDF pages.
+
+PDF names default to `<video stem>_<cell label>.pdf`; `--pdf-name <TOML stem>.pdf`
+sets an exact TOML-derived name. Existing output folders are never overwritten.

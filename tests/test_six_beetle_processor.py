@@ -164,3 +164,19 @@ class SixBeetleTests(unittest.TestCase):
         self.assertFalse(inferred[0,1].any())
 
 if __name__=='__main__': unittest.main()
+
+class ReportAdditionsTests(unittest.TestCase):
+    def test_disappearance_marks_last_valid_before_gap_only(self):
+        track=np.array([[np.nan,np.nan],[1,2],[3,4],[np.nan,np.nan],[8,9],[np.nan,np.nan]])
+        np.testing.assert_array_equal(six.disappearance_offsets(track),[2,4])
+
+    def test_fungus_time_preserves_frames_and_pixel_distance(self):
+        result={'metadata':{'frames_per_second':30},'regions':[
+            dict(animal_id=a,window='full',region=f'fungus_{f}',coordinate_frames=60,
+                 distance_px=12.5) for a in range(6) for f in range(1,4)]}
+        rows=six.fungus_summary(result)
+        self.assertEqual(len(rows),6)
+        self.assertEqual(rows[5]['fungus_3_seconds'],2)
+        self.assertEqual(rows[5]['fungus_3_distance_px'],12.5)
+        result['metadata']['frames_per_second']=None
+        self.assertEqual(six.fungus_summary(result)[0]['fungus_1_seconds'],'')

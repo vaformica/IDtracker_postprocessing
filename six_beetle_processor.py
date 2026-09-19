@@ -18,7 +18,7 @@ import tempfile
 import numpy as np
 import processor as legacy
 
-SCRIPT_VERSION = '0.2.1-six-beetle'
+SCRIPT_VERSION = '0.3.0-six-beetle'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_CONTACT')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -250,6 +250,28 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
                 frame_timeline=timeline)
 
 
+def disappearance_offsets(track):
+    """Last observed coordinates immediately before a missing run; no imputation."""
+    valid = np.isfinite(track).all(axis=1)
+    return np.flatnonzero(valid[:-1] & ~valid[1:])
+
+
+def fungus_summary(result):
+    fps = result['metadata'].get('frames_per_second')
+    rows = []
+    for animal in range(6):
+        row = {'animal_id': animal}
+        for fungus in range(1, 4):
+            region = next(r for r in result['regions'] if r['animal_id'] == animal
+                          and r['window'] == 'full' and r['region'] == f'fungus_{fungus}')
+            count = region['coordinate_frames']
+            row.update({f'fungus_{fungus}_frames': count,
+                        f'fungus_{fungus}_seconds': count / fps if fps else '',
+                        f'fungus_{fungus}_distance_px': region['distance_px']})
+        rows.append(row)
+    return rows
+
+
 def write_pdf(result, destination, video, cell):
     import matplotlib
     matplotlib.use('Agg')
@@ -283,22 +305,26 @@ def write_pdf(result, destination, video, cell):
         fig.text(.06,.29,fill('Review required: proximity and disappearance are candidate social contact, not proof of attack. Missing coordinates remain missing; no partner-centroid substitution is performed.',120),fontsize=11)
         fig.text(.06,.20,fill(f"Source: {meta['trajectory_source_kind']}. Social radius: {settings['social_distance_threshold_px']:g} px. Jump cutoff: {settings['jump_threshold_px']:g} px. Fixed comparison: 3600 intervals after the latest reliable wake of all six animals.",120),fontsize=10)
         footer(fig,1); pdf.savefig(fig); plt.close(fig)
-        for page, ids in enumerate([range(6),range(3),range(3,6)],2):
+        for page, ids in enumerate([range(6)]+[[i] for i in range(6)],2):
             overview=page==2
-            fig, axes=plt.subplots(1,1 if overview else 3,figsize=(11.7,8.3),squeeze=False)
-            fig.suptitle('All six trajectories' if overview else 'Individual trajectories and candidate turtling',fontsize=17)
+            fig, axes=plt.subplots(1,1,figsize=(11.7,8.3),squeeze=False)
+            fig.suptitle('All six trajectories' if overview else f'Beetle {ids[0]}: trajectory and disappearances',fontsize=17)
             for idx,animal in enumerate(ids):
                 ax=axes[0,0] if overview else axes[0,idx]
                 if not overview or idx==0: geometry(ax)
                 track=xy[:,animal]
                 segments=legacy.continuous_path_segments(track,settings['jump_threshold_px'])
-                ax.add_collection(LineCollection([s[1] for s in segments],colors=[colors[animal]],linewidths=.7,alpha=.75))
+                ax.add_collection(LineCollection([s[1] for s in segments],colors=[colors[animal]],linewidths=1.1 if not overview else .7,alpha=.85))
                 good=np.isfinite(track).all(axis=1)
                 if good.any():
                     ax.scatter(track[good,0][0],track[good,1][0],color=colors[animal],marker='o',s=25,label=f'Beetle {animal}')
                 if not overview:
                     mask=result['turtling_masks'][animal]
-                    ax.scatter(track[mask,0],track[mask,1],s=5,color='darkred')
+                    ax.scatter(track[mask,0],track[mask,1],s=8,color='darkred',label='Candidate turtling')
+                    gone=disappearance_offsets(track)
+                    ax.scatter(track[gone,0],track[gone,1],s=65,marker='x',color='#D55E00',linewidths=1.7,
+                               label='Last coordinate before disappearance',zorder=5)
+                    fig.text(.08,.085,'X marks the last assigned position before a missing run, not a known position during the gap.',fontsize=10)
                 ax.autoscale_view(); ax.legend(loc='upper right',fontsize=8)
             fig.tight_layout(rect=[.03,.10,.97,.94]); footer(fig,page); pdf.savefig(fig); plt.close(fig)
         fig,ax=plt.subplots(figsize=(11.7,8.3))
@@ -319,7 +345,7 @@ def write_pdf(result, destination, video, cell):
                    loc='upper center',bbox_to_anchor=(.5,.92),ncol=1,frameon=False,fontsize=10)
         fig.text(.08,.11,fill('Gold extends a candidate pair through a qualifying disappearance; hatching marks multiple possible partners. Blank means no proximity or disappearance evidence, not confirmed absence of contact. Events remain available at exact global frames in events.csv.',125),fontsize=9)
         fig.subplots_adjust(left=.10,right=.97,bottom=.21,top=.78)
-        footer(fig,5); pdf.savefig(fig); plt.close(fig)
+        footer(fig,9); pdf.savefig(fig); plt.close(fig)
         # Preserve the pairwise plot above; this additional page shows one row
         # per tracked identity and uses nearest-neighbor cells (no smoothing).
         from matplotlib.colors import ListedColormap, BoundaryNorm
@@ -351,7 +377,47 @@ def write_pdf(result, destination, video, cell):
         fig.text(.08,.18,fill('Gold takes priority: proximity to any partner, or either member of a qualifying disappearance candidate. Hatching marks uncertain partner attribution. This is not proof of attack; missing coordinates are never filled.',125),fontsize=10)
         fig.text(.08,.10,fill('Observed means a coordinate assigned to this ID in the selected trajectory file; IDtracker may already have filled gaps. Very brief states may be hard to see at page scale; frame_states.csv preserves every frame and its evidence.',125),fontsize=9)
         fig.subplots_adjust(left=.10,right=.96,bottom=.28,top=.78)
-        footer(fig,6); pdf.savefig(fig); plt.close(fig)
+        footer(fig,10); pdf.savefig(fig); plt.close(fig)
+        fps=meta.get('frames_per_second')
+        fig=plt.figure(figsize=(11.7,8.3)); ax=fig.add_subplot(111,projection='3d')
+        for animal in range(6):
+            for k,(offsets,segment) in enumerate(legacy.continuous_path_segments(xy[:,animal],settings['jump_threshold_px'])):
+                z=offsets/fps if fps else offsets+settings['start']
+                ax.plot(segment[:,0],segment[:,1],z,color=colors[animal],lw=.85,
+                        label=f'Beetle {animal}' if k==0 else None)
+            gone=disappearance_offsets(xy[:,animal])
+            ax.scatter(xy[gone,animal,0],xy[gone,animal,1],gone/fps if fps else gone+settings['start'],
+                       marker='x',color='#D55E00',s=20)
+        for i,poly in enumerate(rois):
+            poly=np.vstack([poly,poly[0]])
+            ax.plot(poly[:,0],poly[:,1],np.full(len(poly),0 if fps else settings['start']),
+                    color='#333333' if i==0 else '#54956b',alpha=.65)
+        ax.invert_yaxis(); ax.set_xlabel('x (pixels)');ax.set_ylabel('y (pixels)')
+        ax.set_zlabel('Seconds from analysis start' if fps else 'Global frame')
+        ax.view_init(elev=26,azim=-60);ax.legend(loc='upper left',fontsize=9)
+        fig.suptitle('3D trajectories: arena position through time',fontsize=17)
+        fig.text(.08,.085,'Orange X: last coordinate before disappearance. Missing and rejected steps are not connected.',fontsize=10)
+        fig.subplots_adjust(bottom=.14,top=.92);footer(fig,11);pdf.savefig(fig);plt.close(fig)
+        fig=plt.figure(figsize=(11.7,8.3));fig.suptitle('Time and distance on each fungus',fontsize=20,y=.94)
+        ax=fig.add_axes([.05,.33,.90,.44]);ax.axis('off')
+        rows=[]
+        for row in fungus_summary(result):
+            values=[row['animal_id']]
+            for i in range(1,4):
+                time=row[f'fungus_{i}_seconds'] if fps else row[f'fungus_{i}_frames']
+                distance=row[f'fungus_{i}_distance_px']
+                values += [f'{time:.2f}',f'{distance:.1f}' if distance!='' else 'NA']
+            rows.append(values)
+        cols=['Beetle ID']
+        for i in range(1,4):cols += [f'F{i} time ('+('s)' if fps else 'frames)'),f'F{i} distance (px)']
+        table=ax.table(cellText=rows,colLabels=cols,loc='center',cellLoc='center')
+        table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.2)
+        note='Full analysis window. Occupancy counts assigned-coordinate frames inside each fungus polygon'
+        note += f', divided by {fps:g} frames/s.' if fps else '; frame rate unavailable, so time is reported in frames.'
+        note += ' Distance sums accepted adjacent steps whose midpoint lies inside the polygon. Missing coordinates add neither time nor distance. Fungus numbering follows input order, left to right.'
+        fig.text(.07,.20,fill(note,125),fontsize=11)
+        footer(fig,12);pdf.savefig(fig);plt.close(fig)
+
 
 
 def sha256(path):
@@ -361,7 +427,7 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def write_bundle(result, output, video, cell):
+def write_bundle(result, output, video, cell, pdf_name=None):
     """Publish a complete new directory, never overwrite previous research output."""
     output=Path(output)
     if output.exists(): raise FileExistsError(f'Refusing existing output: {output}')
@@ -369,7 +435,8 @@ def write_bundle(result, output, video, cell):
     staging=Path(tempfile.mkdtemp(prefix='.six-beetle-',dir=output.parent))
     try:
         meta=result['metadata']; meta.update(video=video,cell_label=cell)
-        for name in ['animals','windows','regions','pairs','events']:
+        result['fungus_summary'] = fungus_summary(result)
+        for name in ['fungus_summary','animals','windows','regions','pairs','events']:
             rows=result[name]
             fields=list(dict.fromkeys(key for row in rows for key in row))
             if not fields: fields=['window','kind','animal_a','animal_b','missing_animal','start_global_frame','end_global_frame_inclusive','frames','candidate_partner_count','attribution']
@@ -389,7 +456,10 @@ def write_bundle(result, output, video, cell):
                                state=FRAME_STATE_NAMES[timeline['states'][offset, animal]])
                     row.update({key: int(timeline[key][offset, animal]) for key in fields[3:]})
                     writer.writerow(row)
-        write_pdf(result,staging/'report.pdf',video,cell)
+        pdf_name = pdf_name or f'{Path(video).stem}_{cell}.pdf'
+        if Path(pdf_name).name != pdf_name or not pdf_name.endswith('.pdf'): raise ValueError('PDF name must be a plain .pdf filename')
+        meta['pdf_filename'] = pdf_name
+        write_pdf(result,staging/pdf_name,video,cell)
         meta['output_sha256']={p.name:sha256(p) for p in staging.iterdir()}
         (staging/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
         if output.exists(): raise FileExistsError(output)
@@ -402,10 +472,14 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ['trajectory','session','output','video','cell-label']: parser.add_argument('--'+name,required=True)
     parser.add_argument('--start',type=int,required=True)
+    parser.add_argument('--pdf-name',help='TOML stem plus .pdf')
+    parser.add_argument('--fps',type=float,help='Verified recording frame rate for seconds')
     parser.add_argument('--window',type=int,default=7200)
     for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',200.)]:
         parser.add_argument('--'+name,type=float,default=value)
     args=vars(parser.parse_args())
+    fps=args.pop('fps'); pdf_name=args.pop('pdf_name')
+    if fps is not None and (not np.isfinite(fps) or fps<=0): parser.error('fps must be finite and positive')
     output=args.pop('output'); video=args.pop('video'); cell=args.pop('cell_label')
     if not video.strip() or not cell.strip(): parser.error('Video and cell labels must be nonblank')
     # Hash before and after calculation to detect changing input files.
@@ -418,9 +492,10 @@ def main():
     before={str(p.resolve()):sha256(p) for p in [source,session_json]}
     result=analyze_six(**args)
     if any(sha256(p)!=value for p,value in before.items()): raise RuntimeError('Input changed during analysis')
+    result['metadata']['frames_per_second']=fps
     result['metadata']['input_sha256']=before
     result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__)]}
-    write_bundle(result,output,video,cell)
+    write_bundle(result,output,video,cell,pdf_name)
     print(f'Wrote UNREVIEWED six-beetle output: {output}')
 
 
