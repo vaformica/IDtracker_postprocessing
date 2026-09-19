@@ -177,3 +177,9 @@ observed. Pair timelines retain teal observed proximity and gold group membershi
 The 13-page PDF uses solid raw traces and dashed presumed positions in both 2D
 and 3D, and includes separate observed and estimated fungus tables. Distances
 and times attributed to presumed positions are model-based estimates.
+
+### Version 0.4.2: frames only
+
+All occupancy times are integer coordinate-frame counts, and the 3D time axis
+uses global frames. Seconds are not calculated or exported. This supersedes
+the earlier FPS-conversion instructions; optional FPS is source metadata only.

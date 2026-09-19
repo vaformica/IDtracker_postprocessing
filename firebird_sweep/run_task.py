@@ -44,10 +44,10 @@ def main():
             trajectory_sha256=hashlib.sha256(trajectory.read_bytes()).hexdigest(),session=str(session))
         (folder/'metrics.json').write_text(json.dumps(metrics,indent=2)+'\n')
         state(folder,'POSTPROCESSING',task=task,session=str(session))
-        report=session/'six_beetle_postprocessing_v041'
+        report=session/'six_beetle_postprocessing_v042'
         with (folder/'postprocessing.log').open('x') as log:
             subprocess.run([POST,str(ROOT/'six_beetle_processor.py'),'--trajectory',str(trajectory),'--session',str(session),
-                '--output',str(report),'--start','422','--window','7200','--fps','30','--video','groupagetrial01_062024.mp4',
+                '--output',str(report),'--start','422','--window','7200','--video','groupagetrial01_062024.mp4',
                 '--cell-label',task['label'],'--pdf-name',task['name']+'.pdf'],stdout=log,stderr=subprocess.STDOUT,check=True)
         manifest=json.loads((report/'manifest.json').read_text())
         for name,digest in manifest['output_sha256'].items():assert hashlib.sha256((report/name).read_bytes()).hexdigest()==digest

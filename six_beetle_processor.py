@@ -18,7 +18,7 @@ import tempfile
 import numpy as np
 import processor as legacy
 
-SCRIPT_VERSION = '0.4.1-six-beetle'
+SCRIPT_VERSION = '0.4.2-six-beetle'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -339,7 +339,6 @@ def disappearance_offsets(track):
 
 
 def fungus_summary(result):
-    fps = result['metadata'].get('frames_per_second')
     rows = []
     for animal in range(6):
         row = {'animal_id': animal}
@@ -348,7 +347,6 @@ def fungus_summary(result):
                           and r['window'] == 'full' and r['region'] == f'fungus_{fungus}')
             count = region['coordinate_frames']
             row.update({f'fungus_{fungus}_frames': count,
-                        f'fungus_{fungus}_seconds': count / fps if fps else '',
                         f'fungus_{fungus}_distance_px': region['distance_px']})
         rows.append(row)
     return rows
@@ -467,13 +465,12 @@ def write_pdf(result, destination, video, cell):
         fig.text(.08,.10,fill('Observed means a coordinate assigned to this ID in the selected trajectory file; IDtracker may already have filled gaps. Very brief states may be hard to see at page scale; frame_states.csv preserves every frame and its evidence.',125),fontsize=9)
         fig.subplots_adjust(left=.10,right=.96,bottom=.28,top=.78)
         footer(fig,10); pdf.savefig(fig); plt.close(fig)
-        fps=meta.get('frames_per_second')
         fig=plt.figure(figsize=(11.7,8.3)); ax=fig.add_subplot(111,projection='3d')
         from mpl_toolkits.mplot3d.art3d import Line3DCollection
         for animal in range(6):
             est=result['group']['xy'][:,animal]
             inferred=result['group']['inferred'][:,animal]
-            z=np.arange(len(est))/fps if fps else np.arange(len(est))+settings['start']
+            z=np.arange(len(est))+settings['start']
             positions=np.column_stack([est,z]);edges=np.stack([positions[:-1],positions[1:]],axis=1)
             accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=settings['jump_threshold_px'])
             presumed=inferred[:-1] | inferred[1:]
@@ -481,16 +478,16 @@ def write_pdf(result, destination, video, cell):
                 if mask.any(): ax.add_collection3d(Line3DCollection(edges[mask],colors=[colors[animal]],linewidths=1,linestyles=style))
             ax.plot([],[],[],color=colors[animal],label=f'Beetle {animal}')
             gone=disappearance_offsets(xy[:,animal])
-            ax.scatter(xy[gone,animal,0],xy[gone,animal,1],gone/fps if fps else gone+settings['start'],marker='x',color='#D55E00',s=20)
+            ax.scatter(xy[gone,animal,0],xy[gone,animal,1],gone+settings['start'],marker='x',color='#D55E00',s=20)
         finite=result['group']['xy'][np.isfinite(result['group']['xy']).all(axis=2)]
         ax.set_xlim(finite[:,0].min(),finite[:,0].max());ax.set_ylim(finite[:,1].min(),finite[:,1].max())
-        ax.set_zlim(0 if fps else settings['start'],settings['window']/fps if fps else settings['start']+settings['window'])
+        ax.set_zlim(settings['start'],settings['start']+settings['window'])
         for i,poly in enumerate(rois):
             poly=np.vstack([poly,poly[0]])
-            ax.plot(poly[:,0],poly[:,1],np.full(len(poly),0 if fps else settings['start']),
+            ax.plot(poly[:,0],poly[:,1],np.full(len(poly),settings['start']),
                     color='#333333' if i==0 else '#54956b',alpha=.65)
         ax.invert_yaxis(); ax.set_xlabel('x (pixels)');ax.set_ylabel('y (pixels)')
-        ax.set_zlabel('Seconds from analysis start' if fps else 'Global frame')
+        ax.set_zlabel('Global frame')
         ax.view_init(elev=26,azim=-60);ax.legend(loc='upper left',fontsize=9)
         fig.suptitle('3D trajectories including presumed social disappearance positions',fontsize=17)
         fig.text(.08,.085,'Solid: raw positions. Dashed: presumed social disappearance. Orange X: last raw position before disappearance. Unresolved gaps omitted.',fontsize=10)
@@ -501,16 +498,16 @@ def write_pdf(result, destination, video, cell):
         for row in fungus_summary(result):
             values=[row['animal_id']]
             for i in range(1,4):
-                time=row[f'fungus_{i}_seconds'] if fps else row[f'fungus_{i}_frames']
+                time=row[f'fungus_{i}_frames']
                 distance=row[f'fungus_{i}_distance_px']
-                values += [f'{time:.2f}',f'{distance:.1f}' if distance!='' else 'NA']
+                values += [str(time),f'{distance:.1f}' if distance!='' else 'NA']
             rows.append(values)
         cols=['Beetle ID']
-        for i in range(1,4):cols += [f'F{i} time ('+('s)' if fps else 'frames)'),f'F{i} distance (px)']
+        for i in range(1,4):cols += [f'F{i} time (frames)',f'F{i} distance (px)']
         table=ax.table(cellText=rows,colLabels=cols,loc='center',cellLoc='center')
         table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.2)
         note='Full analysis window. Occupancy counts assigned-coordinate frames inside each fungus polygon'
-        note += f', divided by {fps:g} frames/s.' if fps else '; frame rate unavailable, so time is reported in frames.'
+        note += '; occupancy time is reported as frame counts.'
         note += ' Distance sums accepted adjacent steps whose midpoint lies inside the polygon. Missing coordinates add neither time nor distance. Fungus numbering follows input order, left to right.'
         fig.text(.07,.20,fill(note,125),fontsize=11)
         footer(fig,12);pdf.savefig(fig);plt.close(fig)
@@ -520,9 +517,9 @@ def write_pdf(result, destination, video, cell):
         for row in fungus_summary(adjusted):
             values=[row['animal_id']]
             for i in range(1,4):
-                time=row[f'fungus_{i}_seconds'] if fps else row[f'fungus_{i}_frames']
+                time=row[f'fungus_{i}_frames']
                 distance=row[f'fungus_{i}_distance_px']
-                values += [f'{time:.2f}',f'{distance:.1f}' if distance!='' else 'NA']
+                values += [str(time),f'{distance:.1f}' if distance!='' else 'NA']
             rows.append(values)
         table=ax.table(cellText=rows,colLabels=cols,loc='center',cellLoc='center')
         table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.2)
@@ -595,7 +592,7 @@ def main():
     for name in ['trajectory','session','output','video','cell-label']: parser.add_argument('--'+name,required=True)
     parser.add_argument('--start',type=int,required=True)
     parser.add_argument('--pdf-name',help='TOML stem plus .pdf')
-    parser.add_argument('--fps',type=float,help='Verified recording frame rate for seconds')
+    parser.add_argument('--fps',type=float,help='Optional source frame-rate metadata; reports always use frames')
     parser.add_argument('--window',type=int,default=7200)
     for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',200.)]:
         parser.add_argument('--'+name,type=float,default=value)

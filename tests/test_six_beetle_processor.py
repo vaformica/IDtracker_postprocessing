@@ -176,10 +176,11 @@ class ReportAdditionsTests(unittest.TestCase):
                  distance_px=12.5) for a in range(6) for f in range(1,4)]}
         rows=six.fungus_summary(result)
         self.assertEqual(len(rows),6)
-        self.assertEqual(rows[5]['fungus_3_seconds'],2)
+        self.assertEqual(rows[5]['fungus_3_frames'],60)
+        self.assertNotIn('fungus_3_seconds',rows[5])
         self.assertEqual(rows[5]['fungus_3_distance_px'],12.5)
         result['metadata']['frames_per_second']=None
-        self.assertEqual(six.fungus_summary(result)[0]['fungus_1_seconds'],'')
+        self.assertEqual(six.fungus_summary(result)[0]['fungus_1_frames'],60)
 
 class PresumedGroupTests(unittest.TestCase):
     def test_pair_grows_to_triple_when_anchor_disappears(self):
