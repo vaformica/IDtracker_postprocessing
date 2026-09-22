@@ -9,7 +9,12 @@ import numpy as np
 
 from build_canonical_review import build
 from run_six_beetle_pipeline import arena_crop, find_trajectory
-from six_beetle_firebird_gui import pipeline_command, validated_parameters
+from six_beetle_firebird_gui import (
+    DEFAULT_SSH_HOST,
+    connection_error,
+    pipeline_command,
+    validated_parameters,
+)
 
 
 class PortableReviewTests(unittest.TestCase):
@@ -77,6 +82,14 @@ class PortableReviewTests(unittest.TestCase):
 
 
 class PipelineHelpersTests(unittest.TestCase):
+    def test_gui_uses_established_firebird_alias_and_explains_vpn_failure(self):
+        self.assertEqual(DEFAULT_SSH_HOST, "firebird")
+        message = connection_error(
+            "ssh: Could not resolve hostname firebird.swarthmore.edu", "firebird"
+        )
+        self.assertIn("~/.ssh/config", message)
+        self.assertIn("Swarthmore VPN", message)
+
     def test_trajectory_preference_and_even_arena_crop(self):
         with tempfile.TemporaryDirectory() as folder:
             session = Path(folder)

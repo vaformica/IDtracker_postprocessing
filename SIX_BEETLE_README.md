@@ -55,6 +55,12 @@ Launch the dedicated six-beetle GUI on the Mac:
 venv-mac/bin/python six_beetle_firebird_gui.py
 ```
 
+The GUI defaults to the established `firebird` SSH alias and
+`~/.ssh/id_ed25519_firebird`, matching the dyadic post-processing GUI and other
+Firebird tools. The alias supplies `HostName firebird.swarthmore.edu`, user
+`vformic1-swat`, and `IdentitiesOnly yes` from `~/.ssh/config`. Connect Cisco
+Secure Client to the Swarthmore VPN before using **Test SSH**.
+
 It searches one or more Firebird roots over read-only SSH for sessions with six
 animals and four ROIs, lets the researcher inspect or edit the selected session,
 trajectory, source video, inclusive frame range, proximity distance, jump

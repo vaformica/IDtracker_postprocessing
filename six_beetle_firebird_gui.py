@@ -16,6 +16,8 @@ from tkinter import filedialog, messagebox, ttk
 
 
 BASE = Path(__file__).resolve().parent
+DEFAULT_SSH_HOST = "firebird"
+DEFAULT_SSH_KEY = "~/.ssh/id_ed25519_firebird"
 DEPLOY_FILES = (
     "processor.py",
     "six_beetle_processor.py",
@@ -117,7 +119,7 @@ class SSH:
         self.key = str(Path(key).expanduser()) if key.strip() else ""
 
     def _options(self):
-        options = ["-o", "BatchMode=yes"]
+        options = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=20"]
         if self.key:
             options += ["-o", "IdentitiesOnly=yes", "-i", self.key]
         return options
@@ -126,20 +128,42 @@ class SSH:
         invocation = ["ssh", *self._options(), self.host, "bash", "-lc", shlex.quote(command)]
         result = subprocess.run(invocation, input=input_text, text=True, capture_output=True, timeout=timeout)
         if result.returncode:
-            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+            raise RuntimeError(connection_error(result.stderr.strip() or result.stdout.strip(), self.host))
         return result.stdout
 
     def upload(self, local: Path, remote: str, timeout: int = 900):
         invocation = ["scp", *self._options(), str(local), f"{self.host}:{remote}"]
         result = subprocess.run(invocation, text=True, capture_output=True, timeout=timeout)
         if result.returncode:
-            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+            raise RuntimeError(connection_error(result.stderr.strip() or result.stdout.strip(), self.host))
 
     def download(self, remote: str, local: Path, timeout: int = 3600):
         invocation = ["scp", *self._options(), f"{self.host}:{remote}", str(local)]
         result = subprocess.run(invocation, text=True, capture_output=True, timeout=timeout)
         if result.returncode:
-            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+            raise RuntimeError(connection_error(result.stderr.strip() or result.stdout.strip(), self.host))
+
+
+def connection_error(message: str, host: str) -> str:
+    """Add the actionable local prerequisite to Firebird network failures."""
+    lowered = message.lower()
+    network_failure = any(
+        phrase in lowered
+        for phrase in (
+            "could not resolve hostname",
+            "operation timed out",
+            "connection timed out",
+            "no route to host",
+        )
+    )
+    if network_failure and host.strip() == DEFAULT_SSH_HOST:
+        return (
+            f"{message}\n\n"
+            "The GUI is using the established SSH alias 'firebird' from "
+            "~/.ssh/config. Connect Cisco Secure Client to the Swarthmore VPN "
+            "and retry Test SSH."
+        )
+    return message
 
 
 def expand_remote(path: str, home: str) -> str:
@@ -236,8 +260,8 @@ class App(tk.Tk):
         style.map("Treeview", background=[("selected", "#2E6EA6")], foreground=[("selected", "#FFFFFF")])
         connection = ttk.LabelFrame(self, text="1. Firebird connection and search")
         connection.pack(fill="x", padx=10, pady=8)
-        self.host = tk.StringVar(value="vformic1-swat@firebird.swarthmore.edu")
-        self.key = tk.StringVar(value="~/.ssh/id_ed25519_firebird")
+        self.host = tk.StringVar(value=DEFAULT_SSH_HOST)
+        self.key = tk.StringVar(value=DEFAULT_SSH_KEY)
         self.roots = tk.StringVar(value="/data/labs/vformic1-swat-lab/2024_Videos;/data/labs/vformic1-swat-lab/idtracker_pipeline_runs")
         self.output_root = tk.StringVar(value="/data/labs/vformic1-swat-lab/six_beetle_postprocessing")
         self.post_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtracker_reprocess_v1/bin/python")
