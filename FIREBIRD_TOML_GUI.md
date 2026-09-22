@@ -19,6 +19,18 @@ The Mac is only a client. The GUI searches Firebird over SSH, reads TOMLs, and s
 7. Select one or more eligible TOMLs and use **Preview selected** before **Submit selected to IDtracker.ai**.
 8. Use **Load managed runs** and **Refresh selected** to revisit jobs after restarting the GUI.
 
+## Run the six-beetle processor
+
+Wait until the managed job reports `COMPLETE_UNREVIEWED`. Select it and click **Open post-processing GUI**. In the processor window:
+
+1. Click **Find six-beetle sessions**. The managed IDtracker run folder is already included in the default search roots.
+2. Select the completed session. Confirm the source video, global start and inclusive end frames, and the proximity, jump, and reconstruction settings.
+3. Click **Preview exact Firebird command** to review the complete command and destination.
+4. Click **Submit complete pipeline**. This runs the six-beetle processor and creates the CSV tables, PDF, interactive HTML review, and synchronized review video.
+5. Use **Check latest job** until it finishes, then **Download latest bundle**.
+
+The tracking job and post-processing job remain separate on purpose. A completed IDtracker job is still unreviewed, and changing post-processing thresholds does not require rerunning IDtracker.ai.
+
 ## Provenance and safety
 
 Source TOMLs are read-only. Each submission creates a new timestamped folder under `managed_idtracker_runs` containing:

@@ -8,6 +8,8 @@ import hashlib
 import json
 import queue
 import shlex
+import subprocess
+import sys
 import tempfile
 import threading
 from pathlib import Path
@@ -196,6 +198,7 @@ class App(tk.Tk):
         job_buttons.pack(side="right", fill="y", padx=5)
         ttk.Button(job_buttons, text="Refresh selected", command=self.refresh_jobs).pack(fill="x", pady=2)
         ttk.Button(job_buttons, text="Show run details", command=self.show_job).pack(fill="x", pady=2)
+        ttk.Button(job_buttons, text="Open post-processing GUI", command=self.open_postprocessor).pack(fill="x", pady=2)
 
         self.log_box = tk.Text(self, height=8, wrap="word", background="#FFFFFF", foreground="#15181B", insertbackground="#15181B")
         self.log_box.pack(fill="both", padx=10, pady=(0, 10))
@@ -554,6 +557,14 @@ class App(tk.Tk):
             return
         job = self.jobs[int(chosen[0])]
         messagebox.showinfo("Managed run", json.dumps(job, indent=2, sort_keys=True))
+
+    def open_postprocessor(self):
+        """Open the existing six-beetle processor after tracking completes."""
+        subprocess.Popen([sys.executable, str(BASE / "six_beetle_firebird_gui.py")], cwd=BASE)
+        self.log(
+            "Opened the six-beetle post-processing GUI. Click 'Find six-beetle sessions'; "
+            "the managed IDtracker run folder is included in its default search roots."
+        )
 
 
 def main():

@@ -18,6 +18,11 @@ from tkinter import filedialog, messagebox, ttk
 BASE = Path(__file__).resolve().parent
 DEFAULT_SSH_HOST = "firebird"
 DEFAULT_SSH_KEY = "~/.ssh/id_ed25519_firebird"
+DEFAULT_SESSION_ROOTS = ";".join((
+    "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs",
+    "/data/labs/vformic1-swat-lab/2024_Videos",
+    "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs",
+))
 DEPLOY_FILES = (
     "processor.py",
     "six_beetle_processor.py",
@@ -262,7 +267,7 @@ class App(tk.Tk):
         connection.pack(fill="x", padx=10, pady=8)
         self.host = tk.StringVar(value=DEFAULT_SSH_HOST)
         self.key = tk.StringVar(value=DEFAULT_SSH_KEY)
-        self.roots = tk.StringVar(value="/data/labs/vformic1-swat-lab/2024_Videos;/data/labs/vformic1-swat-lab/idtracker_pipeline_runs")
+        self.roots = tk.StringVar(value=DEFAULT_SESSION_ROOTS)
         self.output_root = tk.StringVar(value="/data/labs/vformic1-swat-lab/six_beetle_postprocessing")
         self.post_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtracker_reprocess_v1/bin/python")
         self.idtracker_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python")
