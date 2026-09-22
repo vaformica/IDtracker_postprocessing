@@ -44,4 +44,6 @@ Source TOMLs are read-only. Each submission creates a new timestamped folder und
 
 The submitter refuses TOMLs unless they parse successfully, specify six animals and four ROIs, and reference video paths that exist on Firebird. Completed tracking remains **UNREVIEWED** until the trajectory and downstream reports have been checked.
 
+The job table checks for a real six-animal trajectory before declaring an output ready. It distinguishes invalid TOML files, GPU ECC failures, and runs where IDtracker.ai returned an error code after writing usable trajectories (`OUTPUT_READY_WITH_EXIT_WARNING`). The latter still require normal trajectory review before post-processing.
+
 The defaults reproduce the successful six-beetle Firebird jobs: the `firebird` SSH alias, the `idtrackerai_6_0_14` environment, an L40S GPU, 16 CPUs, 64 GB RAM, and an eight-hour limit.

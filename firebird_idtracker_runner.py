@@ -11,6 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
+
 
 def atomic_json(path: Path, payload: dict) -> None:
     temporary = path.with_suffix(path.suffix + ".partial")
@@ -27,6 +29,25 @@ def status(root: Path, stage: str, **details) -> None:
     }
     atomic_json(root / "status.json", payload)
     print(json.dumps(payload, sort_keys=True), flush=True)
+
+
+def verified_sessions(output: Path) -> list[str]:
+    """Return sessions with an actual six-animal trajectory, not just session.json."""
+    sessions = []
+    for session_json in output.rglob("session.json"):
+        session = session_json.parent
+        source = session / "trajectories" / "trajectories.npy"
+        if not source.is_file():
+            continue
+        trajectory = np.load(source, allow_pickle=True)
+        if trajectory.shape == ():
+            trajectory = trajectory.item()
+        if isinstance(trajectory, dict):
+            trajectory = trajectory.get("trajectories")
+        points = np.asarray(trajectory)
+        if points.ndim == 3 and points.shape[1:] == (6, 2) and np.isfinite(points).all(axis=2).any():
+            sessions.append(str(session))
+    return sorted(sessions)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -66,11 +87,19 @@ def main(argv: list[str] | None = None) -> int:
         ]
         status(root, "TRACKING", command=command, toml=str(args.toml), output=str(args.output))
         with log_path.open("x") as stream:
-            subprocess.run(command, stdout=stream, stderr=subprocess.STDOUT, check=True, cwd=root)
-        sessions = sorted(str(path.parent) for path in args.output.rglob("session.json"))
+            result = subprocess.run(command, stdout=stream, stderr=subprocess.STDOUT, check=False, cwd=root)
+        sessions = verified_sessions(args.output)
         if not sessions:
-            raise RuntimeError("IDtracker.ai exited successfully but produced no session.json")
-        status(root, "COMPLETE_UNREVIEWED", sessions=sessions, log=str(log_path))
+            tail = "\n".join(log_path.read_text(errors="replace").splitlines()[-30:])
+            raise RuntimeError(f"No valid six-animal trajectory produced (IDtracker exit {result.returncode}). Log tail:\n{tail}")
+        if result.returncode:
+            if "Success" not in log_path.read_text(errors="replace"):
+                raise RuntimeError(f"IDtracker exited {result.returncode} without a success marker; inspect {log_path}")
+            status(root, "OUTPUT_READY_WITH_EXIT_WARNING", sessions=sessions,
+                   idtracker_exit_code=result.returncode, log=str(log_path))
+        else:
+            status(root, "COMPLETE_UNREVIEWED", sessions=sessions,
+                   idtracker_exit_code=0, log=str(log_path))
         return 0
     except BaseException as exc:
         status(root, "FAILED", error=repr(exc), log=str(log_path))

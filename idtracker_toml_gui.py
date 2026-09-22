@@ -40,14 +40,32 @@ from pathlib import Path
 root=Path(json.load(sys.stdin)["root"]).expanduser()
 records=[]
 if root.is_dir():
-    for receipt in root.glob("*/submission_receipt.json"):
-        try:data=json.loads(receipt.read_text())
+    for folder in root.iterdir():
+        if not folder.is_dir():continue
+        receipt=folder/"submission_receipt.json"
+        request=folder/"submission_request.json"
+        if not receipt.is_file() and not request.is_file():continue
+        try:data=json.loads((receipt if receipt.is_file() else request).read_text())
         except Exception:continue
-        status_path=receipt.parent/"status.json"
+        status_path=folder/"status.json"
         try:state=json.loads(status_path.read_text()) if status_path.is_file() else {}
         except Exception as exc:state={"stage":"STATUS_ERROR","error":repr(exc)}
-        records.append({**data,"run_dir":str(receipt.parent),"stage":state.get("stage","SUBMITTED"),
-                        "status_utc":state.get("utc",""),"error":state.get("error","")})
+        stage=state.get("stage","SUBMITTED")
+        log=folder/"idtracker.log"
+        log_text=log.read_text(errors="replace") if log.is_file() else ""
+        trajectories=list(folder.glob("idtracker_output/**/trajectories/trajectories.npy"))
+        if stage == "FAILED":
+            if trajectories and "Success" in log_text:
+                stage="OUTPUT_READY_WITH_EXIT_WARNING"
+            elif "uncorrectable ECC error" in log_text:
+                stage="FAILED_GPU_ECC"
+            elif "Not a homogeneous array" in log_text:
+                stage="FAILED_TOML"
+        elif stage == "COMPLETE_UNREVIEWED" and not trajectories:
+            stage="FAILED_GPU_ECC" if "uncorrectable ECC error" in log_text else "FAILED_NO_TRAJECTORY"
+        records.append({**data,"job_id":data.get("job_id") or state.get("slurm_job_id"),
+                        "run_dir":str(folder),"stage":stage,"status_utc":state.get("utc",""),
+                        "error":state.get("error", ""),"trajectory_found":bool(trajectories)})
 records.sort(key=lambda row:row.get("submitted_utc",""),reverse=True)
 json.dump(records,sys.stdout)
 '''
@@ -525,21 +543,22 @@ class App(tk.Tk):
             return
         indexes = [int(x) for x in choices]
         def task():
-            ssh = self.ssh(); result=[]
+            ssh = self.ssh()
+            home = ssh.run('printf "%s" "$HOME"').strip()
+            root = expand_remote(self.run_root.get(), home)
+            env = expand_remote(self.environment.get(), home)
+            command = f"{shlex.quote(env + '/bin/python')} -c {shlex.quote(REMOTE_RUN_DISCOVERY)}"
+            current = {row["run_dir"]:row for row in json.loads(ssh.run(command,json.dumps({"root":root})))}
+            queue_rows = ssh.run("squeue -h -u \"$USER\" -o '%i|%T|%M|%R'").splitlines()
+            queue_state = {parts[0]: " | ".join(parts[1:]) for line in queue_rows
+                           if len(parts := line.split("|", 3)) == 4}
+            result=[]
             for index in indexes:
-                job = self.jobs[index]; job_id=str(job.get("job_id", "")); run_dir=job["run_dir"]
-                queued = ssh.run(f"squeue -h -j {shlex.quote(job_id)} -o '%T %M %R' || true").strip() if job_id else ""
-                if queued:
-                    stage = queued
-                else:
-                    raw = ssh.run("cat -- " + shlex.quote(run_dir + "/status.json") + " 2>/dev/null || true").strip()
-                    if raw:
-                        state=json.loads(raw); stage=state.get("stage", "UNKNOWN")
-                        if state.get("error"):stage += ": " + state["error"]
-                    else:
-                        accounting = ssh.run(f"sacct -n -X -j {shlex.quote(job_id)} --format=State,Elapsed,ExitCode | head -1 || true").strip() if job_id else ""
-                        stage = accounting or "SUBMITTED; no status file yet"
-                result.append((index, stage))
+                job=self.jobs[index]
+                updated=current.get(job["run_dir"])
+                job_id=str((updated or job).get("job_id", ""))
+                stage=queue_state.get(job_id) or (updated["stage"] if updated else "RUN_NOT_FOUND")
+                result.append((index,stage))
             return result
         self.background("job_status", task)
 

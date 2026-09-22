@@ -87,6 +87,9 @@ def validate_six_beetle_toml(text: str) -> dict:
         raise ValueError(f"roi_list must contain the arena plus three fungus ROIs; found {count}")
     if not isinstance(videos, list) or not videos or not all(isinstance(x, str) and x.strip() for x in videos):
         raise ValueError("video_paths must contain at least one nonblank Firebird path")
+    area = data.get("area_ths")
+    if not isinstance(area, list) or len(area) != 2 or not all(type(x) is float for x in area):
+        raise ValueError("area_ths must contain two float values, for example [329.0, inf], for IDtracker.ai")
     return data
 
 
@@ -102,6 +105,11 @@ def _toml_number(value: str | float | int) -> str:
     if not math.isfinite(number):
         return "inf" if number > 0 else "-inf"
     return str(int(number)) if number.is_integer() else repr(number)
+
+
+def _toml_float(value: str | float | int) -> str:
+    result = _toml_number(value)
+    return result + ".0" if result.lstrip("-").isdigit() else result
 
 
 def _value_span(lines: list[str], key: str) -> tuple[int, int]:
@@ -125,7 +133,7 @@ def update_common_fields(text: str, values: dict) -> str:
         "name": json.dumps(values["name"]),
         "video_paths": "[" + ", ".join(json.dumps(x) for x in values["video_paths"]) + "]",
         "intensity_ths": f"[{_toml_number(values['intensity_min'])}, {_toml_number(values['intensity_max'])}]",
-        "area_ths": f"[{_toml_number(values['area_min'])}, {_toml_number(values['area_max'])}]",
+        "area_ths": f"[{_toml_float(values['area_min'])}, {_toml_float(values['area_max'])}]",
         "tracking_intervals": f"[[{int(values['start'])}, {int(values['end'])}]]",
         "number_of_animals": str(int(values["animals"])),
         "use_bkg": "true" if bool(values["use_bkg"]) else "false",
