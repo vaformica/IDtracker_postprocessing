@@ -220,6 +220,20 @@ class App(tk.Tk):
         self.after(100, self._poll)
 
     def _build(self):
+        # Explicit light colors avoid an all-black Tk window on macOS builds
+        # whose ttk theme does not follow the system appearance correctly.
+        self.configure(background="#F2F3F5")
+        style = ttk.Style(self)
+        if "clam" in style.theme_names():
+            style.theme_use("clam")
+        style.configure(".", background="#F2F3F5", foreground="#15181B")
+        style.configure("TLabel", background="#F2F3F5", foreground="#15181B")
+        style.configure("TLabelframe", background="#F2F3F5")
+        style.configure("TLabelframe.Label", background="#F2F3F5", foreground="#15181B")
+        style.configure("TEntry", fieldbackground="#FFFFFF", foreground="#15181B")
+        style.configure("Treeview", background="#FFFFFF", fieldbackground="#FFFFFF", foreground="#15181B")
+        style.configure("Treeview.Heading", background="#E4E7EB", foreground="#15181B")
+        style.map("Treeview", background=[("selected", "#2E6EA6")], foreground=[("selected", "#FFFFFF")])
         connection = ttk.LabelFrame(self, text="1. Firebird connection and search")
         connection.pack(fill="x", padx=10, pady=8)
         self.host = tk.StringVar(value="vformic1-swat@firebird.swarthmore.edu")
@@ -286,7 +300,14 @@ class App(tk.Tk):
         self.latest_run = tk.StringVar(value="")
         ttk.Entry(actions, textvariable=self.latest_run, width=44).pack(side="left", fill="x", expand=True, padx=4)
 
-        self.log_box = tk.Text(self, height=10, wrap="word")
+        self.log_box = tk.Text(
+            self,
+            height=10,
+            wrap="word",
+            background="#FFFFFF",
+            foreground="#15181B",
+            insertbackground="#15181B",
+        )
         self.log_box.pack(fill="both", padx=10, pady=(0, 10))
         self.log("The GUI searches read-only. Jobs write only under the remote output root. All results are marked UNREVIEWED.")
 
