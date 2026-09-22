@@ -17,8 +17,10 @@ import tempfile
 
 import numpy as np
 import processor as legacy
+from trajectory_reconstruction import reconstruct
+from persistent_groups import persistent_groups,MODEL_VERSION
 
-SCRIPT_VERSION = '0.4.2-six-beetle'
+SCRIPT_VERSION = '0.6.1-six-beetle'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -95,9 +97,8 @@ def pair_contact_masks(pair_masks, events, start):
 def frame_states(xy, start, pair_masks, events):
     """Three display states plus separate observation and inference evidence.
 
-    Presumed contact takes display priority over observed/missing. It includes
-    observed proximity and both members of a bounded disappearance candidate.
-    This never changes coordinates or the existing movement/missing summaries.
+    Pair masks contain visible proximity. Presumed contact is supplied by
+    pair-specific disappearance events and remains a distinct evidence class.
     """
     valid = np.isfinite(xy).all(axis=2)
     partner_count = np.zeros(valid.shape, dtype=np.int16)
@@ -227,8 +228,8 @@ def summarize_window(xy, animal, lo, hi, label, start, rois, settings, turtling,
 
 def analyze_six(trajectory, session, start, window=7200, threshold=30.,
                 wall_buffer_px=30., fungus_buffer_px=30., social_distance_threshold_px=60.,
-                jump_threshold_px=200.):
-    numeric = [threshold, social_distance_threshold_px, jump_threshold_px]
+                jump_threshold_px=200., reconstruction_speed_px=100., blob_evidence=None):
+    numeric = [threshold, social_distance_threshold_px, jump_threshold_px, reconstruction_speed_px]
     if start <= 0 or window <= 0 or not all(np.isfinite(v) and v > 0 for v in numeric):
         raise ValueError('Positive start, window, and finite positive thresholds are required')
     if not all(np.isfinite(v) and v >= 0 for v in [wall_buffer_px, fungus_buffer_px]):
@@ -284,35 +285,68 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     for event in events:
         event.setdefault('window', 'full')
     # Initialize group membership before the selected window, then slice it.
-    history = presumed_groups(data[:start+window+1], social_distance_threshold_px)
-    group = {key: value[start:] for key,value in history.items() if key != 'masks'}
+    blob_path=Path(blob_evidence) if blob_evidence else session/'blob_evidence.json'
+    if not blob_path.is_file():
+        raise FileNotFoundError('Persistent-group analysis requires blob_evidence.json. Run export_blob_evidence.py with the session IDtracker environment first.')
+    blob_data=json.loads(blob_path.read_text())
+    history = persistent_groups(data[:start+window+1],blob_data['frames'],social_distance_threshold_px,reconstruction_speed_px)
+    group = {key: value[start:] for key,value in history.items() if key not in ('masks','events')}
     group['masks'] = {pair: mask[start:] for pair,mask in history['masks'].items()}
+    visible_masks = {}
+    for a,b in masks:
+        assigned=(group['source'][:,a]=='ASSIGNED')&(group['source'][:,b]=='ASSIGNED')
+        visible_masks[a,b]=assigned&(np.linalg.norm(group['xy'][:,a]-group['xy'][:,b],axis=1)<=social_distance_threshold_px)
     # Legacy bounded disappearance candidates do not implement Vince's rule.
     legacy_events = events
-    events = [e for e in events if e['kind'] != 'DISAPPEARANCE_CANDIDATE']
+    events = [e for e in events if e['kind'] not in ('DISAPPEARANCE_CANDIDATE','PROXIMITY')]
+    for (a,b),mask in visible_masks.items():
+        for event in legacy._events_from_mask(mask):
+            events.append(dict(kind='PROXIMITY',window='full',animal_a=a,animal_b=b,missing_animal='',
+                start_global_frame=start+event['start_offset'],end_global_frame_inclusive=start+event['end_offset'],
+                frames=event['frames'],candidate_partner_count='',attribution='VISIBLE_ASSIGNED_PROXIMITY'))
     for (a,b),mask in group['masks'].items():
         for event in legacy._events_from_mask(mask):
             events.append(dict(kind='PRESUMED_GROUP_CONTACT',window='full',animal_a=a,animal_b=b,
                 start_global_frame=start+event['start_offset'],end_global_frame_inclusive=start+event['end_offset'],
-                frames=event['frames'],candidate_partner_count=1,attribution='UNIQUE_VISIBLE_ANCHOR'))
+                frames=event['frames'],candidate_partner_count=1,attribution='PERSISTENT_DETECTED_GROUP'))
     for row in pairs:
-        mask=group['masks'][row['animal_a'],row['animal_b']]
-        if row['window'] != 'full': mask=mask[shared:shared+3601]
+        pair=row['animal_a'],row['animal_b']
+        pscp_mask=group['masks'][pair]
+        proximity_mask=visible_masks[pair]
+        assigned=(group['source'][:,pair[0]]=='ASSIGNED')&(group['source'][:,pair[1]]=='ASSIGNED')
+        if row['window'] != 'full':
+            pscp_mask=pscp_mask[shared:shared+3601]
+            proximity_mask=proximity_mask[shared:shared+3601]
+            assigned=assigned[shared:shared+3601]
+        row['jointly_visible_frames']=int(assigned.sum())
+        row['proximity_frames']=int(proximity_mask.sum())
+        row['proximity_proportion_jointly_visible']=float(proximity_mask.sum()/assigned.sum()) if assigned.any() else ''
+        row['proximity_bouts']=len(legacy._events_from_mask(proximity_mask))
         row['legacy_disappearance_candidate_events']=row.pop('disappearance_candidate_events')
-        row['presumed_social_disappearance_events']=len(legacy._events_from_mask(mask))
-        row['presumed_group_frames']=int(mask.sum())
-    timeline = frame_states(xy, start, masks, events)
+        row['presumed_social_disappearance_events']=len(legacy._events_from_mask(pscp_mask))
+        row['presumed_group_frames']=int(pscp_mask.sum())
+    masks=visible_masks
+    timeline = frame_states(group['xy'], start, masks, events)
     timeline['ambiguous_disappearance'] |= group['ambiguous']
     timeline['states'] = np.where(np.isfinite(xy).all(axis=2),0,1).astype(np.uint8)
-    timeline['states'][timeline['disappearance_candidate']] = 2
+    timeline['states'][:]=1
+    timeline['states'][np.isfinite(group['xy']).all(axis=2)]=0
+    timeline['states'][group['inferred']]=2
     estimated_windows, estimated_regions = [], []
-    adjusted_masks={pair: mask | group['masks'][pair] for pair,mask in masks.items()}
+    # Preserve two evidence classes: visible assigned proximity is an
+    # interaction; co-location with at least one inferred identity is PSCP.
+    adjusted_masks={pair: masks[pair] | group['masks'][pair] for pair in masks}
+    timeline['coordinate_present']=np.isfinite(group['xy']).all(axis=2)
+    timeline['proximity_partner_count'][:]=0
+    for (a,b),mask in masks.items():
+        timeline['proximity_partner_count'][:,a]+=mask
+        timeline['proximity_partner_count'][:,b]+=mask
     for row in windows:
         if row['status'] != 'CALCULATED':
             estimated_windows.append(row.copy());continue
         animal=row['animal_id']
         wr,rr=summarize_window(group['xy'],animal,row['start_global_frame']-start,
-            row['end_global_frame_inclusive']-start,row['window'],start,rois,settings,
+            row['end_global_frame_inclusive']-start,row['window'],start,rois,dict(settings,jump_threshold_px=reconstruction_speed_px),
             turtling_masks[animal],adjusted_masks)
         estimated_windows.append(wr);estimated_regions.extend(rr)
 
@@ -323,13 +357,21 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         frame_state_definition='Presumed social disappearance takes precedence: membership in a causal visible-anchor group. Observed proximity alone does not change the individual display state. Otherwise coordinate present = observed/ID assigned; no coordinate = missing. Ambiguous disappearance remains flagged separately. Observed refers to the selected trajectory source, which may already contain IDtracker gap filling.',
         rois=[p.tolist() for p in rois], fixed_anchor_rule='ALL_SIX_WAKE_LATEST_CROSSING',
         qc_status='UNREVIEWED', coordinate_substitution=True, raw_coordinates_preserved=True,
-        presumed_group_rule='Unique nearby visible anchor in immediately prior frame; missing members follow anchor, groups merge when anchor disappears near another visible beetle; returning IDs detach; no visible anchor or multiple candidates leaves position unresolved.',
+        presumed_group_rule='Persistent detection-supported groups survive identity loss and true detection gaps. No detection means missing position. Three consistent separate assigned detections required to split. No frame-specific overrides.',
+        persistent_model_version=MODEL_VERSION,blob_evidence_sha256=sha256(blob_path),blob_evidence_file=str(blob_path.resolve()),
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
+    reconstruction = reconstruct(data[:start+window+1], reconstruction_speed_px)
+    reconstruction = {k:(v[start:] if isinstance(v,np.ndarray) else v) for k,v in reconstruction.items()}
+    metadata['reconstruction'] = dict(max_speed_px_per_frame=reconstruction_speed_px,
+        confirmation_frames=3, gap_policy='MISSING_WITH_PERSISTENT_MEMBERSHIP',
+        reacquisition='Elapsed-frame speed bound plus three consecutive bounded candidate frames; offline lookahead, not identity proof',
+        reconnection='Separate straight-line bridge estimate; never observed movement',
+        metrics='Raw tables remain explicit controls; estimated tables and canonical exports use persistent detection-supported positions. Legacy hold/bridge arrays are not used in scientific outputs.')
     return dict(animals=animals, windows=windows, regions=region_rows, pairs=pairs, events=events,
                 metadata=metadata, xy=xy, turtling_masks=turtling_masks, masks=masks,
                 frame_timeline=timeline, group=group, estimated_windows=estimated_windows,
-                estimated_regions=estimated_regions, legacy_events=legacy_events)
+                estimated_regions=estimated_regions, legacy_events=legacy_events, reconstruction=reconstruction)
 
 
 def disappearance_offsets(track):
@@ -382,7 +424,7 @@ def write_pdf(result, destination, video, cell):
         rows=[[r['animal_id'],r['missing_coordinate_frames'],f"{100*r['missing_coordinate_proportion']:.1f}%",r['rejected_jump_steps'],f"{r['distance_px']:.1f}" if r['distance_px']!='' else 'NA',result['animals'][r['animal_id']]['threshold_crossing_global_frame'] or 'NA'] for r in full]
         table=ax.table(cellText=rows,colLabels=['Beetle ID','Missing frames','Missing %','Rejected steps','Distance (px)','Wake frame'],loc='center',cellLoc='center')
         table.auto_set_font_size(False); table.set_fontsize(10); table.scale(1,1.8)
-        fig.text(.06,.29,fill('Review required: proximity and disappearance are candidate social contact, not proof of attack. Raw coordinates remain unchanged. Missing members of an unambiguous presumed group follow its visible anchor in separately labeled estimates.',120),fontsize=11)
+        fig.text(.06,.29,fill('Review required: proximity and disappearance are candidate social contact, not proof of attack. Raw coordinates remain unchanged. Estimated positions follow detected blobs. Identity membership can remain uncertain; review required. The table above uses original coordinates.',120),fontsize=11)
         fig.text(.06,.20,fill(f"Source: {meta['trajectory_source_kind']}. Social radius: {settings['social_distance_threshold_px']:g} px. Jump cutoff: {settings['jump_threshold_px']:g} px. Fixed comparison: 3600 intervals after the latest reliable wake of all six animals.",120),fontsize=10)
         footer(fig,1); pdf.savefig(fig); plt.close(fig)
         for page, ids in enumerate([range(6)]+[[i] for i in range(6)],2):
@@ -392,8 +434,8 @@ def write_pdf(result, destination, video, cell):
             for idx,animal in enumerate(ids):
                 ax=axes[0,0] if overview else axes[0,idx]
                 if not overview or idx==0: geometry(ax)
-                track=xy[:,animal]
-                segments=legacy.continuous_path_segments(track,settings['jump_threshold_px'])
+                track=np.where((result['group']['source'][:,animal]=='ASSIGNED')[:,None],result['group']['xy'][:,animal],np.nan)
+                segments=legacy.continuous_path_segments(track,meta['reconstruction']['max_speed_px_per_frame'])
                 ax.add_collection(LineCollection([s[1] for s in segments],colors=[colors[animal]],linewidths=1.1 if not overview else .7,alpha=.85))
                 good=np.isfinite(track).all(axis=1)
                 if good.any():
@@ -404,14 +446,14 @@ def write_pdf(result, destination, video, cell):
                     est=result['group']['xy'][:,animal]
                     is_inferred=result['group']['inferred'][:,animal]
                     edges=np.stack([est[:-1],est[1:]],axis=1)
-                    accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=settings['jump_threshold_px'])
+                    accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=meta['reconstruction']['max_speed_px_per_frame'])
                     inferred_edges=accepted & (is_inferred[:-1] | is_inferred[1:])
-                    ax.add_collection(LineCollection(edges[inferred_edges],colors=[colors[animal]],linewidths=1.5,linestyles='dashed',alpha=.8))
-                    ax.plot([],[],color=colors[animal],ls='--',label='Presumed social disappearance')
+                    ax.add_collection(LineCollection(edges[inferred_edges],colors=[colors[animal]],linewidths=1.5,linestyles='solid',alpha=.8))
+                    ax.plot([],[],color=colors[animal],ls='-',label='Detection-supported estimate')
                     gone=disappearance_offsets(track)
                     ax.scatter(track[gone,0],track[gone,1],s=65,marker='x',color='#D55E00',linewidths=1.7,
                                label='Last raw coordinate before disappearance',zorder=5)
-                    fig.text(.08,.085,'Solid: raw assigned coordinates. Dashed: presumed anchor-following position. X: last raw coordinate before a gap.',fontsize=10)
+                    fig.text(.08,.085,'Paths use detection-supported positions; thicker segments are PSCP estimates. No interpolation across missing detections.',fontsize=10)
                 ax.autoscale_view(); ax.legend(loc='upper right',fontsize=8)
             fig.tight_layout(rect=[.03,.10,.97,.94]); footer(fig,page); pdf.savefig(fig); plt.close(fig)
         fig,ax=plt.subplots(figsize=(11.7,8.3))
@@ -456,12 +498,12 @@ def write_pdf(result, destination, video, cell):
         for boundary in np.arange(.5, 5.5):
             ax.axhline(boundary, color='white', linewidth=.7, alpha=.7)
         handles = [Patch(facecolor=color, label=label) for color, label in zip(
-            FRAME_STATE_COLORS, ['Observed / ID assigned', 'Missing / unresolved', 'Presumed social disappearance'])]
+            FRAME_STATE_COLORS, ['Observed / ID assigned', 'Missing / unresolved', 'PSCP / blob continuity estimate'])]
         handles.append(Patch(facecolor='white', edgecolor='#333333', hatch='////',
                              label='Ambiguous disappearance'))
         fig.legend(handles=handles, loc='upper center', bbox_to_anchor=(.5,.89),
                    ncol=2, frameon=False, fontsize=10)
-        fig.text(.08,.155,fill('Gold marks presumed social disappearance: group members sharing one visible anchor. Proximity alone does not turn this panel gold. Hatching marks uncertain partner attribution. This is not proof of attack; inferred coordinates are stored separately from the original missing values.',125),fontsize=10)
+        fig.text(.08,.155,fill('Gold marks presumed social disappearance: group members sharing one detected blob. Proximity alone does not turn this panel gold. Hatching marks uncertain partner attribution. This is not proof of attack; inferred coordinates are stored separately from the original missing values.',125),fontsize=10)
         fig.text(.08,.10,fill('Observed means a coordinate assigned to this ID in the selected trajectory file; IDtracker may already have filled gaps. Very brief states may be hard to see at page scale; frame_states.csv preserves every frame and its evidence.',125),fontsize=9)
         fig.subplots_adjust(left=.10,right=.96,bottom=.28,top=.78)
         footer(fig,10); pdf.savefig(fig); plt.close(fig)
@@ -472,9 +514,9 @@ def write_pdf(result, destination, video, cell):
             inferred=result['group']['inferred'][:,animal]
             z=np.arange(len(est))+settings['start']
             positions=np.column_stack([est,z]);edges=np.stack([positions[:-1],positions[1:]],axis=1)
-            accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=settings['jump_threshold_px'])
+            accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=meta['reconstruction']['max_speed_px_per_frame'])
             presumed=inferred[:-1] | inferred[1:]
-            for mask,style in [(accepted & ~presumed,'solid'),(accepted & presumed,'dashed')]:
+            for mask,style in [(accepted & ~presumed,'solid'),(accepted & presumed,'solid')]:
                 if mask.any(): ax.add_collection3d(Line3DCollection(edges[mask],colors=[colors[animal]],linewidths=1,linestyles=style))
             ax.plot([],[],[],color=colors[animal],label=f'Beetle {animal}')
             gone=disappearance_offsets(xy[:,animal])
@@ -490,7 +532,7 @@ def write_pdf(result, destination, video, cell):
         ax.set_zlabel('Global frame')
         ax.view_init(elev=26,azim=-60);ax.legend(loc='upper left',fontsize=9)
         fig.suptitle('3D trajectories including presumed social disappearance positions',fontsize=17)
-        fig.text(.08,.085,'Solid: raw positions. Dashed: presumed social disappearance. Orange X: last raw position before disappearance. Unresolved gaps omitted.',fontsize=10)
+        fig.text(.08,.085,'Solid paths: supported positions, including PSCP estimates. Orange X: last raw position before disappearance. Gaps omitted.',fontsize=10)
         fig.subplots_adjust(bottom=.14,top=.92);footer(fig,11);pdf.savefig(fig);plt.close(fig)
         fig=plt.figure(figsize=(11.7,8.3));fig.suptitle('Observed time and distance on each fungus',fontsize=20,y=.94)
         ax=fig.add_axes([.05,.33,.90,.44]);ax.axis('off')
@@ -523,7 +565,7 @@ def write_pdf(result, destination, video, cell):
             rows.append(values)
         table=ax.table(cellText=rows,colLabels=cols,loc='center',cellLoc='center')
         table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.2)
-        fig.text(.07,.20,fill('Estimated totals: raw positions plus missing beetles assigned to a unique visible group anchor. All members follow that anchor until they reappear or its location becomes unresolved. A group can grow beyond two beetles. Distances and occupancy during inferred periods are assumptions, not observations. Original-coordinate totals are on the preceding page.',125),fontsize=11)
+        fig.text(.07,.20,fill('Estimated totals use the canonical detected-blob positions, including inferred group membership. No detection means a missing location; separate assignments require confirmation before a split. A group can grow beyond two beetles. Distances and occupancy during inferred periods are assumptions, not observations. Original-coordinate totals are on the preceding page.',125),fontsize=11)
         footer(fig,13);pdf.savefig(fig);plt.close(fig)
 
 
@@ -569,8 +611,13 @@ def write_bundle(result, output, video, cell, pdf_name=None):
         pdf_name = pdf_name or f'{Path(video).stem}_{cell}.pdf'
         if Path(pdf_name).name != pdf_name or not pdf_name.endswith('.pdf'): raise ValueError('PDF name must be a plain .pdf filename')
         meta['pdf_filename'] = pdf_name
+        np.savez_compressed(staging/'canonical_states.npz',raw=result['xy'],xy=result['group']['xy'],inferred=result['group']['inferred'],group_ids=result['group']['group_ids'],source=result['group']['source'],ambiguous=result['group']['ambiguous'])
+        with (staging/'canonical_positions.csv').open('w',newline='') as stream:
+            writer=csv.writer(stream);writer.writerow(['global_frame','animal_id','x','y','state','group_id'])
+            for t in range(len(result['xy'])):
+                for a in range(6):writer.writerow([meta['settings']['start']+t,a,*result['group']['xy'][t,a],result['group']['source'][t,a],result['group']['group_ids'][t,a]])
         with (staging/'presumed_positions.csv').open('w',newline='') as stream:
-            fields=['global_frame','animal_id','raw_x','raw_y','estimated_x','estimated_y','inferred','visible_anchor_id','ambiguous']
+            fields=['global_frame','animal_id','raw_x','raw_y','estimated_x','estimated_y','inferred','group_representative_id','ambiguous']
             writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader()
             for t in range(len(result['xy'])):
                 for a in range(6):
@@ -578,6 +625,14 @@ def write_bundle(result, output, video, cell, pdf_name=None):
                     values=[meta['settings']['start']+t,a,*raw,*est,int(result['group']['inferred'][t,a]),
                             int(result['group']['anchors'][t,a]),int(result['group']['ambiguous'][t,a])]
                     writer.writerow(dict(zip(fields,[v if not isinstance(v,(float,np.floating)) or np.isfinite(v) else '' for v in values])))
+        with (staging/'reconstructed_positions.csv').open('w',newline='') as stream:
+            writer=csv.writer(stream)
+            writer.writerow(['global_frame','animal_id','state','candidate_rejected','screened_x','screened_y','held_x','held_y','bridge_x','bridge_y'])
+            r=result['reconstruction']
+            for t in range(len(result['xy'])):
+                for a in range(6):
+                    values=[meta['settings']['start']+t,a,r['states'][t,a],int(r['rejected'][t,a]),*r['screened'][t,a],*r['held'][t,a],*r['bridge'][t,a]]
+                    writer.writerow([v if not isinstance(v,(float,np.floating)) or np.isfinite(v) else '' for v in values])
         write_pdf(result,staging/pdf_name,video,cell)
         meta['output_sha256']={p.name:sha256(p) for p in staging.iterdir()}
         (staging/'manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
@@ -591,9 +646,11 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ['trajectory','session','output','video','cell-label']: parser.add_argument('--'+name,required=True)
     parser.add_argument('--start',type=int,required=True)
+    parser.add_argument('--blob-evidence',help='Detection export; defaults to session/blob_evidence.json; required for persistent groups')
     parser.add_argument('--pdf-name',help='TOML stem plus .pdf')
     parser.add_argument('--fps',type=float,help='Optional source frame-rate metadata; reports always use frames')
     parser.add_argument('--window',type=int,default=7200)
+    parser.add_argument('--reconstruction-speed-px',type=float,default=100.,help='Separate position-screening limit in original pixels per frame')
     for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',200.)]:
         parser.add_argument('--'+name,type=float,default=value)
     args=vars(parser.parse_args())
@@ -613,7 +670,7 @@ def main():
     if any(sha256(p)!=value for p,value in before.items()): raise RuntimeError('Input changed during analysis')
     result['metadata']['frames_per_second']=fps
     result['metadata']['input_sha256']=before
-    result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__)]}
+    result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__),Path(__file__).with_name('persistent_groups.py')]}
     write_bundle(result,output,video,cell,pdf_name)
     print(f'Wrote UNREVIEWED six-beetle output: {output}')
 

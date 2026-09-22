@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><title>2024 six-beetle battles — OLD review</title>
+<style>body{margin:20px;background:#111820;color:#edf2f5;font:16px system-ui}h1{font-size:23px}button,input,select{font:inherit}button{padding:8px;margin:4px}#timeline{width:100%;height:290px;background:#17232e}#layout{display:grid;grid-template-columns: minmax(0,3fr) minmax(310px,1fr);gap:18px}#arena{position:relative}video{width:100%;display:block}#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#slider{width:55%}.card{padding:10px;border-bottom:1px solid #42515b}.note{color:#b7c6d2;font-size:14px}.gold{color:#ffcc32}#error{color:#ffb48c}</style>
+<h1>2024 six-beetle battles · OLD · synchronized interaction review</h1>
+<p class="note">Teal: proximity of speed-screened assignments (≤60 px). Gold: automatic PSCP. Pink: provisional user-reviewed contact. Cursor and slider use global frames. Proximity/PSCP do not establish fighting.</p>
+<canvas id="timeline" width="1500" height="290"></canvas>
+<div><button id="play">Play / pause</button><button id="prev">−1 frame</button><button id="next">+1 frame</button><input id="slider" type="range" min="250" max="16997" value="250" step="1"><output id="frame"></output></div>
+<p><label><input id="showTrails" type="checkbox" checked>300-frame trails</label> <label><input id="showRaw" type="checkbox">Raw rejected assignments (red crosses)</label> <label><input id="showPSCP" type="checkbox" checked>PSCP anchor rings</label> <select id="rate"><option value="0.25">¼ speed</option><option value="0.5">½ speed</option><option value="1" selected>Normal speed</option></select></p>
+<div id="layout"><div id="arena"><video id="video" src="OLD_source_crop.mp4" preload="auto" playsinline></video><canvas id="overlay" width="1280" height="920"></canvas></div><aside id="status"></aside></div>
+<p id="error"></p><p class="note">Solid dots: assignments passing a 100 px/frame screen. Hollow dots: missing beetles co-located with a detected PSCP partner or pile. No detection means MISSING. Fading trails show up to 300 frame intervals of supported positions, breaking at gaps or steps over 100 px. No linear interpolation or last-position holding is displayed. Fungus state for PSCP coordinates is explicitly estimated. Reacquisition uses elapsed frames and three consistent candidate frames; it cannot prove identity.</p>
+<style>body{margin:12px}h1{font-size:20px;margin:8px 0}#timeline{height:210px}#layout{grid-template-columns:minmax(0,min(calc((100vh - 360px)*1.3913),calc(100vw - 340px))) minmax(290px,1fr)}.card{padding:6px;font-size:13px}#status{max-height:calc(100vh - 350px);overflow:auto}</style>
+<script>
+const D=__DATA__;
+const v=document.getElementById('video'),c=document.getElementById('overlay'),ctx=c.getContext('2d'),graph=document.getElementById('timeline'),gx=graph.getContext('2d'),slider=document.getElementById('slider');
+const colors=['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b'];
+function point(p){return p&&p[0]!=null?[(p[0]-1600)*1280/1366,(p[1]-192)*920/982]:null}
+const base=document.createElement('canvas');base.width=graph.width;base.height=graph.height;const bg=base.getContext('2d');
+bg.fillStyle='#17232e';bg.fillRect(0,0,1500,290);bg.font='12px system-ui';
+D.pairs.forEach((pair,row)=>{const y=18+row*17;bg.fillStyle='#e0e8ee';bg.fillText(pair.join('–'),8,y+10);const states=D.pairStates[row];let begin=0;for(let t=1;t<=states.length;t++){if(t===states.length||states[t]!==states[begin]){if(states[begin]){bg.fillStyle=states[begin]===3?'#f18ad4':states[begin]===2?'#ffcc32':'#22bcb8';bg.fillRect(55+begin/states.length*1440,y,Math.max(1,(t-begin)/states.length*1440),12)}begin=t}}});
+function draw(global){const t=Math.max(0,Math.min(D.end-D.start,global-D.start));global=t+D.start;slider.value=global;document.getElementById('frame').textContent='Frame '+global;ctx.clearRect(0,0,1280,920);gx.drawImage(base,0,0);gx.strokeStyle='white';gx.beginPath();const xx=55+t/(D.end-D.start)*1440;gx.moveTo(xx,0);gx.lineTo(xx,278);gx.stroke();gx.fillStyle='white';gx.fillText(String(global),Math.min(xx+5,1440),288);
+ctx.lineWidth=1;ctx.strokeStyle='#ffffff88';D.rois.slice(1).forEach((poly,i)=>{ctx.beginPath();poly.forEach((p,j)=>{const q=point(p);j?ctx.lineTo(...q):ctx.moveTo(...q)});ctx.closePath();ctx.stroke();const q=point(poly[0]);ctx.fillStyle='white';ctx.font='16px system-ui';ctx.fillText('F'+(i+1),...q)});
+// Draw only adjacent supported positions; never bridge missing frames or jumps.
+if(document.getElementById('showTrails').checked){
+ const first=Math.max(1,t-299);
+ for(let a=0;a<6;a++){
+  ctx.strokeStyle=colors[a];ctx.lineWidth=2;
+  for(let k=first;k<=t;k++){
+   const u=D.held[k-1][a],w=D.held[k][a];
+   if(u[0]==null||w[0]==null||Math.hypot(w[0]-u[0],w[1]-u[1])>100)continue;
+   const p=point(u),q=point(w);ctx.globalAlpha=.08+.72*(k-first+1)/(t-first+1);
+   ctx.beginPath();ctx.moveTo(...p);ctx.lineTo(...q);ctx.stroke();
+  }
+ }
+ ctx.globalAlpha=1;
+}
+let cards='';for(let a=0;a<6;a++){const q=point(D.held[t][a]),ok=D.accepted[t][a]&&!D.reviewed[t][a],near=[],social=[];D.pairs.forEach((p,k)=>{if(p.includes(a)){if(D.pairStates[k][t]===1)near.push(p[0]===a?p[1]:p[0]);if(D.pairStates[k][t]>=2)social.push(p[0]===a?p[1]:p[0]);}});
+if(q){ctx.strokeStyle=colors[a];ctx.fillStyle=colors[a];ctx.lineWidth=3;ctx.beginPath();ctx.arc(...q,9,0,2*Math.PI);ok?ctx.fill():ctx.stroke();ctx.font='bold 23px system-ui';ctx.fillText(a+(D.reviewed[t][a]?' reviewed PSCP':ok?'':' PSCP'),q[0]+12,q[1]-12+(ok?0:22*(a%3)));}
+if(document.getElementById('showPSCP').checked&&D.inferred[t][a]&&!D.reviewed[t][a]){const b=point(D.raw[t][D.anchors[t][a]]);if(b){ctx.strokeStyle='#ffcc32';ctx.beginPath();ctx.arc(...b,18+a*2,0,2*Math.PI);ctx.stroke();ctx.fillStyle='#ffcc32';ctx.fillText('PSCP '+a,b[0]+22,b[1]+22+a*8)}}
+if(document.getElementById('showRaw').checked&&(D.rejected[t][a]||D.reviewed[t][a])){const p=point(D.raw[t][a]);if(p){ctx.strokeStyle='#ff5555';ctx.beginPath();ctx.moveTo(p[0]-10,p[1]-10);ctx.lineTo(p[0]+10,p[1]+10);ctx.moveTo(p[0]-10,p[1]+10);ctx.lineTo(p[0]+10,p[1]-10);ctx.stroke()}}
+const state=!q?'MISSING':D.pileStatus[t][a]?D.pileStatus[t][a].replaceAll('_',' '):D.reviewed[t][a]?'USER-REVIEWED PSCP (provisional)':ok?'SCREENED ASSIGNED':'PSCP — estimated';const f=D.fungus[t][a];cards+=`<div class="card"><b style="color:${colors[a]}">Beetle ${a}</b> · ${state}<br>Fungus: ${q?(f?'ON F'+f:'OFF'):'UNKNOWN'}${!ok&&q?(D.reviewed[t][a]?' (reviewed estimate)':' (PSCP estimate)'):''}<br>Proximity: ${ok?(near.join(', ')||'none'):'unknown'}<br><span class="gold">PSCP with: ${social.join(', ')||'none'}</span>${D.reviewed[t][a]?'<br>Raw ID overridden by user review':D.rejected[t][a]?'<br>Raw candidate rejected':''}</div>`;}document.getElementById('status').innerHTML=cards;}
+function seek(f){v.pause();v.currentTime=(Math.max(D.start,Math.min(D.end,f))-D.start)/D.fps;draw(Math.round(f))}
+slider.oninput=()=>seek(+slider.value);document.getElementById('prev').onclick=()=>seek(+slider.value-1);document.getElementById('next').onclick=()=>seek(+slider.value+1);document.getElementById('play').onclick=()=>v.paused?v.play():v.pause();document.getElementById('rate').onchange=e=>v.playbackRate=+e.target.value;
+graph.onclick=e=>seek(Math.round(D.start+(e.offsetX/graph.clientWidth*1500-55)/1440*(D.end-D.start)));
+['showRaw','showPSCP','showTrails'].forEach(id=>document.getElementById(id).onchange=()=>draw(+slider.value));
+v.addEventListener('error',()=>document.getElementById('error').textContent='Video unavailable: keep OLD_source_crop.mp4 beside this HTML file.');
+v.addEventListener('seeked',()=>draw(D.start+Math.round(v.currentTime*D.fps)));
+if(v.requestVideoFrameCallback){const update=(_,m)=>{draw(D.start+Math.round(m.mediaTime*D.fps));v.requestVideoFrameCallback(update)};v.requestVideoFrameCallback(update)}else{v.ontimeupdate=()=>draw(D.start+Math.round(v.currentTime*D.fps))}draw(D.start);
+</script>

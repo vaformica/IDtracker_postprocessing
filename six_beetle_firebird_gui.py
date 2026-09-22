@@ -1,0 +1,471 @@
+#!/usr/bin/env python3
+"""Local GUI for finding Firebird sessions and running six-beetle post-processing."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import queue
+import shlex
+import subprocess
+import threading
+from datetime import datetime
+from pathlib import Path, PurePosixPath
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+
+
+BASE = Path(__file__).resolve().parent
+DEPLOY_FILES = (
+    "processor.py",
+    "six_beetle_processor.py",
+    "persistent_groups.py",
+    "trajectory_reconstruction.py",
+    "export_blob_evidence.py",
+    "build_canonical_review.py",
+    "interaction_review_template.html",
+    "run_six_beetle_pipeline.py",
+)
+
+REMOTE_DISCOVERY = r"""
+import json,math,sys
+from pathlib import Path
+
+names=("validated.npy","without_gaps.npy","trajectories_wo_gaps.npy","trajectories_without_gaps.npy","trajectories.npy","trajectories.h5","trajectories.csv")
+interval_keys={"tracking_intervals","tracking_interval","intervals_to_track","analysis_interval","analysis_intervals"}
+
+def extract_pairs(value, trail):
+    output=[]
+    if isinstance(value,list):
+        if len(value)>=2 and all(isinstance(x,(int,float)) and not isinstance(x,bool) and math.isfinite(x) for x in value[:2]):
+            output.append([int(value[0]),int(value[1]),trail])
+        else:
+            for index,child in enumerate(value):output.extend(extract_pairs(child,f"{trail}[{index}]") )
+    return output
+
+def intervals(value, trail=""):
+    output=[]
+    if isinstance(value,dict):
+        for key,child in value.items():
+            name=str(key).lower()
+            if name in interval_keys:
+                output.extend(extract_pairs(child,trail+"."+str(key)))
+            elif isinstance(child,(dict,list)):
+                output.extend(intervals(child,trail+"."+str(key)))
+    elif isinstance(value,list):
+        for index,child in enumerate(value):
+            if isinstance(child,(dict,list)):output.extend(intervals(child,f"{trail}[{index}]") )
+    return output
+
+roots=json.load(sys.stdin)
+records=[]
+seen=set()
+for root_text in roots:
+    root=Path(root_text).expanduser()
+    if not root.is_dir():continue
+    for session_json in root.rglob("session.json"):
+        session=session_json.parent
+        if str(session) in seen:continue
+        seen.add(str(session))
+        try:data=json.loads(session_json.read_text())
+        except Exception:continue
+        animal_count=data.get("number_of_animals")
+        rois=data.get("roi_list")
+        if animal_count != 6 or not isinstance(rois,list) or len(rois)!=4:continue
+        trajectory=""
+        for name in names:
+            candidates=[]
+            for path in (session/name,session/"trajectories"/name):
+                if path.is_file():candidates.append(path)
+            if not candidates:candidates=list(session.rglob(name))
+            candidates=sorted(set(candidates))
+            if len(candidates)==1:
+                trajectory=str(candidates[0]);break
+        videos=data.get("video_paths") or data.get("videos") or []
+        if isinstance(videos,str):videos=[videos]
+        video=str(videos[0]) if videos else ""
+        pairs=intervals(data)
+        start,end=(pairs[0][:2] if pairs else (0,0))
+        records.append(dict(session=str(session),trajectory=trajectory,video=video,start=start,end=end,
+            label=session.name,blob_evidence=(session/"blob_evidence.json").is_file(),
+            blob_source=(session/"preprocessing/list_of_blobs.pickle").is_file()))
+records.sort(key=lambda row:row["session"],reverse=True)
+json.dump(records[:1000],sys.stdout)
+"""
+
+REMOTE_ARCHIVE = r"""
+import sys,zipfile
+from pathlib import Path
+root=Path(sys.argv[1]);destination=Path(sys.argv[2])
+if not root.is_dir():raise RuntimeError(f"Missing run folder: {root}")
+if destination.exists():raise FileExistsError(destination)
+partial=destination.with_name(destination.name+".partial")
+try:
+    with zipfile.ZipFile(partial,"w",compression=zipfile.ZIP_STORED,allowZip64=True) as archive:
+        for path in sorted(root.rglob("*")):
+            if path.is_file():archive.write(path,path.relative_to(root.parent))
+    partial.replace(destination)
+except Exception:
+    partial.unlink(missing_ok=True);raise
+print(destination)
+"""
+
+
+class SSH:
+    def __init__(self, host: str, key: str):
+        self.host = host.strip()
+        self.key = str(Path(key).expanduser()) if key.strip() else ""
+
+    def _options(self):
+        options = ["-o", "BatchMode=yes"]
+        if self.key:
+            options += ["-o", "IdentitiesOnly=yes", "-i", self.key]
+        return options
+
+    def run(self, command: str, input_text: str | None = None, timeout: int = 900) -> str:
+        invocation = ["ssh", *self._options(), self.host, "bash", "-lc", shlex.quote(command)]
+        result = subprocess.run(invocation, input=input_text, text=True, capture_output=True, timeout=timeout)
+        if result.returncode:
+            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+        return result.stdout
+
+    def upload(self, local: Path, remote: str, timeout: int = 900):
+        invocation = ["scp", *self._options(), str(local), f"{self.host}:{remote}"]
+        result = subprocess.run(invocation, text=True, capture_output=True, timeout=timeout)
+        if result.returncode:
+            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+
+    def download(self, remote: str, local: Path, timeout: int = 3600):
+        invocation = ["scp", *self._options(), f"{self.host}:{remote}", str(local)]
+        result = subprocess.run(invocation, text=True, capture_output=True, timeout=timeout)
+        if result.returncode:
+            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+
+
+def expand_remote(path: str, home: str) -> str:
+    value = path.strip()
+    if value == "~":
+        return home
+    if value.startswith("~/"):
+        return home.rstrip("/") + "/" + value[2:]
+    return value
+
+
+def code_digest() -> str:
+    digest = hashlib.sha256()
+    for name in DEPLOY_FILES:
+        path = BASE / name
+        digest.update(name.encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def validated_parameters(values: dict) -> dict:
+    parsed = dict(values)
+    for key in ("start", "end"):
+        parsed[key] = int(values[key])
+    for key in ("fps", "movement", "wall", "fungus", "proximity", "jump", "reconstruction"):
+        parsed[key] = float(values[key])
+    if parsed["start"] < 0 or parsed["end"] < parsed["start"]:
+        raise ValueError("Frame range must have a nonnegative start and end at or after start")
+    if parsed["fps"] <= 0 or parsed["movement"] <= 0 or parsed["proximity"] <= 0 or parsed["jump"] <= 0 or parsed["reconstruction"] <= 0:
+        raise ValueError("FPS and movement, proximity, jump, and reconstruction thresholds must be positive")
+    if parsed["wall"] < 0 or parsed["fungus"] < 0:
+        raise ValueError("ROI buffers cannot be negative")
+    for key in ("session", "video", "label"):
+        if not str(parsed[key]).strip():
+            raise ValueError(f"{key} cannot be blank")
+    return parsed
+
+
+def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_python: str, ffmpeg: str, ffprobe: str, parameters: dict) -> list[str]:
+    pdf_name = parameters["label"].replace("/", "_") + ".pdf"
+    command = [
+        post_python,
+        f"{code_dir}/run_six_beetle_pipeline.py",
+        "--session", parameters["session"],
+        "--source-video", parameters["video"],
+        "--analysis-output", f"{run_dir}/analysis",
+        "--review-output", f"{run_dir}/review",
+        "--start", str(parameters["start"]),
+        "--end", str(parameters["end"]),
+        "--fps", str(parameters["fps"]),
+        "--label", parameters["label"],
+        "--pdf-name", pdf_name,
+        "--movement-threshold-px", str(parameters["movement"]),
+        "--wall-buffer-px", str(parameters["wall"]),
+        "--fungus-buffer-px", str(parameters["fungus"]),
+        "--proximity-px", str(parameters["proximity"]),
+        "--jump-threshold-px", str(parameters["jump"]),
+        "--reconstruction-speed-px", str(parameters["reconstruction"]),
+        "--idtracker-python", idtracker_python,
+        "--ffmpeg", ffmpeg,
+        "--ffprobe", ffprobe,
+    ]
+    if parameters.get("trajectory"):
+        command += ["--trajectory", parameters["trajectory"]]
+    return command
+
+
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Six-beetle Firebird analysis")
+        self.geometry("1180x820")
+        self.minsize(960, 700)
+        self.events = queue.Queue()
+        self.records = []
+        self.jobs = []
+        self._build()
+        self.after(100, self._poll)
+
+    def _build(self):
+        connection = ttk.LabelFrame(self, text="1. Firebird connection and search")
+        connection.pack(fill="x", padx=10, pady=8)
+        self.host = tk.StringVar(value="vformic1-swat@firebird.swarthmore.edu")
+        self.key = tk.StringVar(value="~/.ssh/id_ed25519_firebird")
+        self.roots = tk.StringVar(value="/data/labs/vformic1-swat-lab/2024_Videos;/data/labs/vformic1-swat-lab/idtracker_pipeline_runs")
+        self.output_root = tk.StringVar(value="/data/labs/vformic1-swat-lab/six_beetle_postprocessing")
+        self.post_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtracker_reprocess_v1/bin/python")
+        self.idtracker_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python")
+        self.ffmpeg = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffmpeg")
+        self.ffprobe = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffprobe")
+        fields = [
+            ("SSH host", self.host), ("SSH key", self.key), ("Search roots (; separated)", self.roots),
+            ("Remote output root", self.output_root), ("Post-processing Python", self.post_python),
+            ("IDtracker Python", self.idtracker_python), ("ffmpeg", self.ffmpeg), ("ffprobe", self.ffprobe),
+        ]
+        for row, (label, variable) in enumerate(fields):
+            ttk.Label(connection, text=label).grid(row=row, column=0, sticky="w", padx=6, pady=2)
+            ttk.Entry(connection, textvariable=variable).grid(row=row, column=1, sticky="ew", padx=6, pady=2)
+        connection.columnconfigure(1, weight=1)
+        ttk.Button(connection, text="Test SSH", command=self.test_ssh).grid(row=0, column=2, padx=6)
+        ttk.Button(connection, text="Find six-beetle sessions", command=self.search).grid(row=2, column=2, padx=6)
+
+        sessions = ttk.LabelFrame(self, text="2. Select a six-beetle IDtracker session")
+        sessions.pack(fill="both", expand=True, padx=10, pady=4)
+        columns = ("label", "start", "end", "trajectory", "video", "blobs")
+        self.tree = ttk.Treeview(sessions, columns=columns, show="tree headings", height=9)
+        self.tree.heading("#0", text="Session")
+        for name, width in [("label", 130), ("start", 65), ("end", 75), ("trajectory", 220), ("video", 250), ("blobs", 80)]:
+            self.tree.heading(name, text=name.title())
+            self.tree.column(name, width=width, stretch=name in {"trajectory", "video"})
+        self.tree.column("#0", width=360)
+        self.tree.pack(side="left", fill="both", expand=True)
+        scrollbar = ttk.Scrollbar(sessions, orient="vertical", command=self.tree.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.tree.configure(yscrollcommand=scrollbar.set)
+        self.tree.bind("<<TreeviewSelect>>", self.select_record)
+
+        settings = ttk.LabelFrame(self, text="3. Review paths and analysis settings")
+        settings.pack(fill="x", padx=10, pady=4)
+        defaults = dict(session="", trajectory="", video="", label="", start="422", end="7622", fps="30",
+                        movement="30", wall="30", fungus="30", proximity="60", jump="200", reconstruction="100")
+        self.variables = {key: tk.StringVar(value=value) for key, value in defaults.items()}
+        labels = [
+            ("session", "Remote session"), ("trajectory", "Remote trajectory (optional)"), ("video", "Remote source video"),
+            ("label", "Output label"), ("start", "Start frame"), ("end", "End frame inclusive"), ("fps", "FPS"),
+            ("movement", "Wake movement px"), ("wall", "Wall buffer px"), ("fungus", "Fungus buffer px"),
+            ("proximity", "Proximity px"), ("jump", "Analysis jump px"), ("reconstruction", "One-frame identity speed px"),
+        ]
+        for index, (key, label) in enumerate(labels):
+            row, pair = divmod(index, 2)
+            column = pair * 2
+            ttk.Label(settings, text=label).grid(row=row, column=column, sticky="w", padx=6, pady=2)
+            ttk.Entry(settings, textvariable=self.variables[key]).grid(row=row, column=column + 1, sticky="ew", padx=6, pady=2)
+        settings.columnconfigure(1, weight=1)
+        settings.columnconfigure(3, weight=1)
+
+        actions = ttk.Frame(self)
+        actions.pack(fill="x", padx=10, pady=6)
+        ttk.Button(actions, text="Preview exact Firebird command", command=self.preview).pack(side="left", padx=4)
+        ttk.Button(actions, text="Submit complete pipeline", command=self.submit).pack(side="left", padx=4)
+        ttk.Button(actions, text="Check latest job", command=self.check_job).pack(side="left", padx=4)
+        ttk.Button(actions, text="Download latest bundle", command=self.download).pack(side="left", padx=4)
+        ttk.Label(actions, text="Remote run folder").pack(side="left", padx=(18, 4))
+        self.latest_run = tk.StringVar(value="")
+        ttk.Entry(actions, textvariable=self.latest_run, width=44).pack(side="left", fill="x", expand=True, padx=4)
+
+        self.log_box = tk.Text(self, height=10, wrap="word")
+        self.log_box.pack(fill="both", padx=10, pady=(0, 10))
+        self.log("The GUI searches read-only. Jobs write only under the remote output root. All results are marked UNREVIEWED.")
+
+    def ssh(self):
+        return SSH(self.host.get(), self.key.get())
+
+    def log(self, message):
+        self.log_box.insert("end", str(message).rstrip() + "\n")
+        self.log_box.see("end")
+
+    def background(self, name, function):
+        def worker():
+            try:self.events.put((name, function(), None))
+            except Exception as exc:self.events.put((name, None, exc))
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _poll(self):
+        try:
+            while True:
+                name, value, error = self.events.get_nowait()
+                if error:
+                    self.log(f"ERROR: {error}")
+                    messagebox.showerror("Six-beetle Firebird GUI", str(error))
+                elif name == "ssh":self.log(f"Connected to {value}")
+                elif name == "search":self._show_records(value)
+                elif name == "submit":
+                    self.jobs.append(value);self.latest_run.set(value["run_dir"]);self.log(f"Submitted Slurm job {value['job_id']}\nRun folder: {value['run_dir']}")
+                elif name == "status":self.log(value)
+                elif name == "download":
+                    self.log(f"Downloaded and verified: {value}")
+                    messagebox.showinfo("Download complete", str(value))
+        except queue.Empty:pass
+        self.after(100, self._poll)
+
+    def test_ssh(self):
+        self.log("Testing SSH…")
+        self.background("ssh", lambda: self.ssh().run("hostname").strip())
+
+    def search(self):
+        roots = [item.strip() for item in self.roots.get().split(";") if item.strip()]
+        if not roots:
+            messagebox.showerror("Search", "Enter at least one Firebird search root")
+            return
+        self.log("Searching Firebird for sessions with six animals and four ROIs…")
+        def task():
+            ssh = self.ssh()
+            command = f"{shlex.quote(self.post_python.get())} -c {shlex.quote(REMOTE_DISCOVERY)}"
+            return json.loads(ssh.run(command, json.dumps(roots), timeout=900))
+        self.background("search", task)
+
+    def _show_records(self, records):
+        self.records = records
+        self.tree.delete(*self.tree.get_children())
+        for index, row in enumerate(records):
+            self.tree.insert("", "end", iid=str(index), text=row["session"], values=(row["label"], row["start"], row["end"], row["trajectory"], row["video"], "yes" if row["blob_source"] else "NO"))
+        self.log(f"Found {len(records)} six-beetle sessions with four ROIs.")
+
+    def select_record(self, _event=None):
+        chosen = self.tree.selection()
+        if not chosen:return
+        row = self.records[int(chosen[0])]
+        for key in ("session", "trajectory", "video", "label"):
+            if row.get(key) not in (None, "", 0):self.variables[key].set(str(row[key]))
+        self.log(
+            f"Selected {row['session']}\n"
+            f"Recorded tracking interval: {row.get('start')}–{row.get('end')}. "
+            f"Analysis range remains {self.variables['start'].get()}–{self.variables['end'].get()} until you change it."
+        )
+
+    def parameters(self):
+        return validated_parameters({key: variable.get() for key, variable in self.variables.items()})
+
+    def remote_context(self, deploy=False):
+        parameters = self.parameters()
+        ssh = self.ssh()
+        home = ssh.run('printf "%s" "$HOME"').strip()
+        output_root = expand_remote(self.output_root.get(), home).rstrip("/")
+        post_python = expand_remote(self.post_python.get(), home)
+        idtracker_python = expand_remote(self.idtracker_python.get(), home)
+        ffmpeg = expand_remote(self.ffmpeg.get(), home)
+        ffprobe = expand_remote(self.ffprobe.get(), home)
+        digest = code_digest()
+        code_dir = f"{output_root}/_code/{digest[:16]}"
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        safe_label = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in parameters["label"])
+        run_dir = f"{output_root}/runs/{stamp}_{safe_label}"
+        if deploy:
+            preflight = " && ".join(
+                [
+                    f"test -x {shlex.quote(post_python)}",
+                    f"test -x {shlex.quote(idtracker_python)}",
+                    f"test -x {shlex.quote(ffmpeg)}",
+                    f"test -x {shlex.quote(ffprobe)}",
+                    f"test -d {shlex.quote(parameters['session'])}",
+                    f"test -f {shlex.quote(parameters['video'])}",
+                ]
+            )
+            ssh.run(preflight)
+            ssh.run("mkdir -p " + shlex.quote(code_dir))
+            for name in DEPLOY_FILES:
+                remote = f"{code_dir}/{name}"
+                if ssh.run(f"test -f {shlex.quote(remote)} && printf yes || true").strip() != "yes":
+                    ssh.upload(BASE / name, remote)
+            remote_hashes = ssh.run(
+                "cd " + shlex.quote(code_dir) + " && sha256sum " + " ".join(shlex.quote(name) for name in DEPLOY_FILES)
+            )
+            observed = {line.split()[1]: line.split()[0] for line in remote_hashes.splitlines() if len(line.split()) >= 2}
+            expected = {name: hashlib.sha256((BASE / name).read_bytes()).hexdigest() for name in DEPLOY_FILES}
+            if observed != expected:
+                raise RuntimeError("Firebird code snapshot hashes do not match the local files")
+            self.events.put(("status", "Deployed immutable code snapshot:\n" + remote_hashes, None))
+        command = pipeline_command(code_dir, run_dir, post_python, idtracker_python, ffmpeg, ffprobe, parameters)
+        return ssh, run_dir, command
+
+    def preview(self):
+        try:
+            _, run_dir, command = self.remote_context(deploy=False)
+            self.log("Preview only; nothing submitted:\n" + shlex.join(command) + f"\nRun folder: {run_dir}")
+        except Exception as exc:
+            messagebox.showerror("Invalid settings", str(exc))
+
+    def submit(self):
+        try:self.parameters()
+        except Exception as exc:
+            messagebox.showerror("Invalid settings", str(exc));return
+        self.log("Deploying the exact local code snapshot and submitting the complete pipeline…")
+        def task():
+            ssh, run_dir, command = self.remote_context(deploy=True)
+            ssh.run("mkdir -p " + shlex.quote(run_dir))
+            wrapped = shlex.join(command)
+            submit = ["sbatch", "--parsable", "--job-name=six_beetle_post", "--partition=compute", "--cpus-per-task=4", "--mem=24G", "--time=04:00:00", f"--output={run_dir}/slurm-%j.log", "--wrap", wrapped]
+            job_id = ssh.run(shlex.join(submit), timeout=120).strip().split(";", 1)[0]
+            return dict(job_id=job_id, run_dir=run_dir, command=command)
+        self.background("submit", task)
+
+    def check_job(self):
+        if not self.jobs:
+            messagebox.showinfo("Job status", "No job has been submitted in this GUI session")
+            return
+        job = self.jobs[-1]
+        def task():
+            ssh = self.ssh();job_id=job["job_id"]
+            queued = ssh.run(f"squeue -h -j {shlex.quote(job_id)} -o '%T %M %R' || true").strip()
+            if queued:return f"Job {job_id}: {queued}"
+            accounting = ssh.run(f"sacct -n -X -j {shlex.quote(job_id)} --format=State,Elapsed,ExitCode | head -1 || true").strip()
+            return f"Job {job_id}: {accounting or 'not found in queue/accounting yet'}\nRun folder: {job['run_dir']}"
+        self.background("status", task)
+
+    def download(self):
+        run_dir = self.latest_run.get().strip()
+        if not run_dir:
+            messagebox.showinfo("Download", "Enter a remote run folder or submit a job in this GUI session")
+            return
+        destination = filedialog.askdirectory(title="Choose a new local parent folder")
+        if not destination:return
+        local = Path(destination) / (PurePosixPath(run_dir).name + ".zip")
+        if local.exists():
+            messagebox.showerror("Download", f"Refusing existing file: {local}");return
+        self.log("Packaging and downloading the latest complete result bundle…")
+        def task():
+            ssh=self.ssh();archive=run_dir+".zip"
+            home=ssh.run('printf "%s" "$HOME"').strip()
+            post_python=expand_remote(self.post_python.get(),home)
+            command=f"{shlex.quote(post_python)} -c {shlex.quote(REMOTE_ARCHIVE)} {shlex.quote(run_dir)} {shlex.quote(archive)}"
+            ssh.run(command,timeout=3600)
+            remote_hash=ssh.run(f"sha256sum {shlex.quote(archive)}").split()[0]
+            partial=local.with_suffix(local.suffix+".partial")
+            ssh.download(archive,partial,timeout=7200)
+            local_hash=hashlib.sha256(partial.read_bytes()).hexdigest()
+            if local_hash != remote_hash:
+                partial.unlink(missing_ok=True);raise RuntimeError("Downloaded archive SHA-256 does not match Firebird")
+            partial.replace(local)
+            return local
+        self.background("download",task)
+
+
+def main():
+    App().mainloop()
+
+
+if __name__ == "__main__":
+    main()

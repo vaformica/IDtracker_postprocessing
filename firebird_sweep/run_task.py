@@ -5,6 +5,9 @@ import numpy as np
 ROOT=Path(__file__).resolve().parent
 TRACK='/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/idtrackerai'
 POST='/home/vformic1-swat/miniconda3/envs/idtracker_reprocess_v1/bin/python'
+IDTRACKER_PYTHON='/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python'
+FFMPEG='/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffmpeg'
+FFPROBE='/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffprobe'
 
 def state(folder,stage,**kwargs):
     d=dict(stage=stage,utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),job=os.environ.get('SLURM_JOB_ID'),**kwargs)
@@ -44,14 +47,18 @@ def main():
             trajectory_sha256=hashlib.sha256(trajectory.read_bytes()).hexdigest(),session=str(session))
         (folder/'metrics.json').write_text(json.dumps(metrics,indent=2)+'\n')
         state(folder,'POSTPROCESSING',task=task,session=str(session))
-        report=session/'six_beetle_postprocessing_v042'
+        report=folder/'analysis';review=folder/'review'
         with (folder/'postprocessing.log').open('x') as log:
-            subprocess.run([POST,str(ROOT/'six_beetle_processor.py'),'--trajectory',str(trajectory),'--session',str(session),
-                '--output',str(report),'--start','422','--window','7200','--video','groupagetrial01_062024.mp4',
-                '--cell-label',task['label'],'--pdf-name',task['name']+'.pdf'],stdout=log,stderr=subprocess.STDOUT,check=True)
+            subprocess.run([POST,str(ROOT/'run_six_beetle_pipeline.py'),'--trajectory',str(trajectory),'--session',str(session),
+                '--source-video',task['source_video'],'--analysis-output',str(report),'--review-output',str(review),
+                '--start',str(task['analysis_start']),'--end',str(task['analysis_end']),'--fps',str(task['fps']),
+                '--label',task['label'],'--pdf-name',task['name']+'.pdf','--idtracker-python',IDTRACKER_PYTHON,
+                '--ffmpeg',FFMPEG,'--ffprobe',FFPROBE],stdout=log,stderr=subprocess.STDOUT,check=True)
         manifest=json.loads((report/'manifest.json').read_text())
         for name,digest in manifest['output_sha256'].items():assert hashlib.sha256((report/name).read_bytes()).hexdigest()==digest
-        state(folder,'COMPLETE_UNREVIEWED',task=task,session=str(session),output=str(report),metrics=str(folder/'metrics.json'))
+        review_manifest=json.loads((review/'source_manifest.json').read_text())
+        assert hashlib.sha256((review/review_manifest['video']).read_bytes()).hexdigest()==review_manifest['copied_video_sha256']
+        state(folder,'COMPLETE_UNREVIEWED',task=task,session=str(session),output=str(report),review=str(review),metrics=str(folder/'metrics.json'))
     except BaseException as exc:
         state(folder,'FAILED',task=task,error=repr(exc));traceback.print_exc();raise
 if __name__=='__main__':main()

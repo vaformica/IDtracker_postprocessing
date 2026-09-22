@@ -1,0 +1,110 @@
+"""Versioned, detection-supported contact groups; no frame-specific annotations.
+
+Coordinates are original-image pixels. Detection identity labels are 1-based.
+Positions are never held or interpolated through missing detections. Membership
+survives those gaps; reacquisition has a fixed search radius. Inferred identity
+is a hypothesis and raw coordinates must be retained separately.
+"""
+import itertools
+import numpy as np
+
+MODEL_VERSION='1.0.1'
+
+
+def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3):
+    raw=np.asarray(raw,float);nframes,nanimals,_=raw.shape
+    if social_radius<=0 or max_step<=0 or confirmation<1:raise ValueError('Invalid model parameters')
+    xy=np.full_like(raw,np.nan);group_ids=np.full((nframes,nanimals),-1,int)
+    inferred=np.zeros((nframes,nanimals),bool);ambiguous=np.zeros_like(inferred)
+    anchors=np.full((nframes,nanimals),-1,int)
+    source=np.full((nframes,nanimals),'MISSING',dtype='<U24')
+    # A live entity owns one or more identities independently of its current location.
+    entities=[];initialized=set();next_id=0;events=[]
+    def detections(t):return blobs.get(str(t),blobs.get(t,[]))
+    def raw_blob(t,a,bs):
+        p=raw[t,a]
+        if not np.isfinite(p).all():return None
+        matches=[i for i,b in enumerate(bs) if np.linalg.norm(np.asarray(b['centroid'])-p)<=social_radius]
+        # Nearest unique blob, with ties treated as ambiguous.
+        if not matches:return None
+        matches.sort(key=lambda i:np.linalg.norm(np.asarray(bs[i]['centroid'])-p))
+        if len(matches)>1 and abs(np.linalg.norm(np.asarray(bs[matches[0]]['centroid'])-p)-np.linalg.norm(np.asarray(bs[matches[1]]['centroid'])-p))<5:return None
+        return matches[0]
+    for t in range(nframes):
+        bs=detections(t)
+        # Initialize only IDs assigned a finite coordinate near a real detection.
+        for a in range(nanimals):
+            if a in initialized:continue
+            j=raw_blob(t,a,bs)
+            if j is not None:
+                entities.append(dict(id=next_id,members={a},last=np.array(bs[j]['centroid'],float),last_frame=t,split_key=None,split_count=0))
+                next_id+=1;initialized.add(a)
+        proposals=[]
+        for e in entities:
+            radius=max_step if t-e['last_frame']<=1 or e['split_count']>0 else social_radius
+            search_points=[e['last']]+e.get('pending_positions',[])
+            candidates=[j for j,b in enumerate(bs) if any(np.linalg.norm(np.asarray(b['centroid'])-p)<=radius for p in search_points)]
+            # Identity-guided choice is allowed only inside the spatial gate.
+            votes={raw_blob(t,a,bs) for a in e['members']};votes.discard(None)
+            votes&=set(candidates)
+            partitions={}
+            for a in e['members']:
+                j=raw_blob(t,a,bs)
+                if j in candidates:partitions.setdefault(j,set()).add(a)
+            # A returning subset can separate without requiring every hidden member.
+            assigned=set().union(*partitions.values()) if partitions else set()
+            if len(partitions)>1 and assigned != e['members']:
+                nearest=min(partitions,key=lambda j:np.linalg.norm(np.asarray(bs[j]['centroid'])-e['last']))
+                partitions[nearest] |= e['members']-assigned
+            split=len(partitions)>1
+            key=tuple(sorted(tuple(sorted(v)) for v in partitions.values())) if split else None
+            if key and key==e['split_key']:e['split_count']+=1
+            else:e['split_key']=key;e['split_count']=1 if key else 0
+            if split and e['split_count']>=confirmation:
+                events.append(dict(frame=t,kind='SPLIT_CONFIRMED',members=sorted(e['members'])))
+                for j,members in partitions.items():
+                    child=dict(id=next_id,members=members,last=e['last'].copy(),last_frame=e['last_frame'],split_key=None,split_count=0)
+                    next_id+=1;proposals.append((child,j))
+                continue
+            # Unresolved splits: never assign an entire group to one of multiple blobs.
+            if split:
+                e['pending_positions']=[np.asarray(bs[j]['centroid'],float) for j in partitions]
+                proposals.append((e,None));continue
+            e.pop('pending_positions',None)
+            if len(votes)==1:j=next(iter(votes))
+            elif len(candidates)==1:j=candidates[0]
+            elif candidates:
+                ranked=sorted(candidates,key=lambda j:np.linalg.norm(np.asarray(bs[j]['centroid'])-e['last']))
+                distances=[np.linalg.norm(np.asarray(bs[j]['centroid'])-e['last']) for j in ranked[:2]]
+                j=ranked[0] if len(distances)==1 or distances[1]-distances[0]>social_radius/2 else None
+            else:j=None
+            proposals.append((e,j))
+        # Many old entities converging on the same actual blob form a pile.
+        by_blob={};unseen=[]
+        for e,j in proposals:
+            if j is None:unseen.append(e)
+            else:by_blob.setdefault(j,[]).append(e)
+        active=[]
+        for j,es in by_blob.items():
+            if len(es)>1:
+                members=set().union(*(e['members'] for e in es))
+                e=dict(id=next_id,members=members,last=np.asarray(bs[j]['centroid'],float),last_frame=t,split_key=None,split_count=0)
+                next_id+=1;events.append(dict(frame=t,kind='MERGE',members=sorted(members)))
+            else:e=es[0]
+            p=np.asarray(bs[j]['centroid'],float);e['last']=p;e['last_frame']=t;active.append(e)
+            members=sorted(e['members']);is_pile=len(members)>1
+            for a in members:
+                matched=raw_blob(t,a,bs)==j
+                xy[t,a]=p if is_pile else (raw[t,a] if matched and np.isfinite(raw[t,a]).all() else p)
+                group_ids[t,a]=e['id'];inferred[t,a]=not matched
+                anchors[t,a]=members[0]
+                source[t,a]='ASSIGNED' if matched else 'PSCP_BLOB' if is_pile else 'BLOB_CONTINUITY'
+        for e in unseen:
+            active.append(e)
+            for a in e['members']:
+                group_ids[t,a]=e['id'];ambiguous[t,a]=len(bs)>0
+                # No position: preserve identity membership only.
+        entities=active
+    masks={(a,b):(group_ids[:,a]>=0)&(group_ids[:,a]==group_ids[:,b])&np.isfinite(xy[:,a]).all(axis=1)&np.isfinite(xy[:,b]).all(axis=1)&(inferred[:,a]|inferred[:,b])
+           for a,b in itertools.combinations(range(nanimals),2)}
+    return dict(xy=xy,group_ids=group_ids,inferred=inferred,ambiguous=ambiguous,anchors=anchors,masks=masks,source=source,events=events)

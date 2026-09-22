@@ -1,5 +1,5 @@
 """Prepare an immutable 60-run sweep from the three recorded source sessions."""
-import hashlib,itertools,json
+import hashlib,itertools,json,shutil
 from pathlib import Path
 
 LABELS=['Box01_OLD','Box01_OLD_TEst','Box02_MIX']
@@ -15,6 +15,12 @@ def toml_value(v):
 def main():
     root=Path('results/firebird_grid_v1');root.mkdir(exist_ok=False)
     configs=root/'configs';configs.mkdir();tasks=[]
+    repository=Path(__file__).resolve().parent.parent
+    for name in ['processor.py','six_beetle_processor.py','persistent_groups.py','trajectory_reconstruction.py',
+                 'export_blob_evidence.py','build_canonical_review.py','interaction_review_template.html',
+                 'run_six_beetle_pipeline.py']:
+        shutil.copy2(repository/name,root/name)
+    shutil.copy2(Path(__file__).with_name('run_task.py'),root/'run_task.py')
     for label in LABELS:
         source=Path('results/firebird_inputs')/label/'session.json'
         d=json.loads(source.read_text())
@@ -25,9 +31,11 @@ def main():
                   for bg in [False,True] for t in ([30,50,70] if bg else [123,143,163]) for area in [250,400,550]]
         for kind,bg,threshold,area in cases:
             index=len(tasks);name=f'{index:03d}_{label}_{kind}_bg{int(bg)}_i{threshold[0]}-{threshold[1]}_a{area:g}'
-            config=dict(params,name=name,use_bkg=bg,intensity_ths=threshold,area_ths=[area,float('inf')])
+            config=dict(params,name=name,use_bkg=bg,intensity_ths=threshold,area_ths=[float(area),float('inf')])
             path=configs/(name+'.toml');path.write_text(''.join(k+' = '+toml_value(v)+'\n' for k,v in config.items()))
-            tasks.append(dict(index=index,name=name,label=label,kind=kind,use_bkg=bg,intensity_low=threshold[0],intensity_high=threshold[1],min_area=area,config='configs/'+path.name,config_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),source_session_sha256=hashlib.sha256(source.read_bytes()).hexdigest()))
+            tasks.append(dict(index=index,name=name,label=label,kind=kind,use_bkg=bg,intensity_low=threshold[0],intensity_high=threshold[1],min_area=area,
+                              source_video=BASE+'/groupagetrial01_062024.mp4',analysis_start=422,analysis_end=7622,fps=30,
+                              config='configs/'+path.name,config_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),source_session_sha256=hashlib.sha256(source.read_bytes()).hexdigest()))
     assert len(tasks)==60
     (root/'tasks.json').write_text(json.dumps(tasks,indent=2)+'\n')
     (root/'design.json').write_text(json.dumps(dict(tracking_interval=[422,16998],analysis_inclusive=[422,7622],fps=30,area_minima=[250,400,550],background_on_lower=[30,50,70],background_off_upper=[123,143,163],notes='54 shared-grid runs plus 6 paired controls. Controls preserve source intensity and area while toggling background. All runs standardize tracking start to422 for comparable training coverage. OLD and OLD_TEst are two parameterizations of the same group, not independent biological replicates. No automatic QC approval or claim of optimality from missingness alone.'),indent=2)+'\n')

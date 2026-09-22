@@ -1,3 +1,27 @@
+## Persistent detection-supported analysis (v0.6.1)
+
+All six-beetle CLI runs now use the same persistent group model by default. The
+recommended pipeline command exports real detection evidence with the session's
+IDtracker environment, runs the v0.6.1 analysis, and creates a portable
+synchronized HTML/video review from the same canonical state bundle:
+
+```sh
+venv-mac/bin/python run_six_beetle_pipeline.py \
+  --session /path/to/session \
+  --source-video /path/to/original.mp4 \
+  --analysis-output /new/run/analysis \
+  --review-output /new/run/review \
+  --start 422 --end 7622 --fps 30 --label Box01
+```
+
+The source session remains read-only: when no matching `blob_evidence.json`
+already exists, the export is written beside the new analysis directory. Do not
+delete `preprocessing/list_of_blobs.pickle`; it is the detection evidence needed
+for persistent piles. New sweep packages automatically include and invoke this
+complete pipeline.
+
+Canonical positions in `canonical_states.npz` and `canonical_positions.csv` drive estimated report metrics and `build_canonical_review.py`. Original-coordinate control tables remain separate. Assigned beetles within 60 pixels remain proximity interactions; PSCP requires at least one inferred identity in a shared detected blob. Persistent membership does not imply a known position: no supporting detection means missing. Model outputs remain UNREVIEWED; tested recovery of the 4–5 pile does not validate every identity. See [validation and limitations](reports/PERSISTENT_GROUPS_2026-09-21.md).
+
 # Six-beetle post-processing: first research-review version
 
 `codex/six-beetles-three-fungus-rois` branches from commit `8fcff29` (July 25,
@@ -23,7 +47,30 @@ interpolation, and turtled-like overlays. Its recent retrieval date does not
 make that implementation newer than v0.8.1. The baseline above is chosen using
 your explicit source decision and current code, not report modification dates.
 
-## Run
+## Local Firebird GUI
+
+Launch the dedicated six-beetle GUI on the Mac:
+
+```sh
+venv-mac/bin/python six_beetle_firebird_gui.py
+```
+
+It searches one or more Firebird roots over read-only SSH for sessions with six
+animals and four ROIs, lets the researcher inspect or edit the selected session,
+trajectory, source video, inclusive frame range, proximity distance, jump
+thresholds, movement threshold, and ROI buffers, previews the exact command,
+uploads an immutable code snapshot, and submits a Slurm post-processing job.
+The download action packages the PDF, CSVs, manifest, interactive HTML, and MP4
+and verifies the archive SHA-256 after transfer. Jobs write only under the
+configured output root. They never approve results automatically.
+
+This is an explicit **six-beetle persistent-piles** profile. The existing
+`firebird_gui.py` and processor v0.8.1 remain the supported dyadic path. Animal
+counts above six are not yet supported by the six-beetle report layer, even
+though the lower-level persistent-group model is written for an arbitrary
+number of identities.
+
+## Analysis-only command
 
 Use the existing environment from the repository root:
 
@@ -90,17 +137,14 @@ missingness does not establish which animal is interacting. Pairwise events
 can overlap, so adding their durations is not a measure of elapsed group time.
 Individual any-partner duration uses a union, counting each frame once.
 
-The previous optional partner-centroid substitution is deliberately not
-exposed in this first group version. Missing coordinates remain missing even
-with a single candidate partner. The two-animal LEFT/RIGHT convention is also
-not imposed on six animals; exact-start x/y coordinates are retained instead.
-
-This first version does not integrate the existing GUI, remote SLURM batch
-submission, or approval/export schemas. Do not feed its CSVs into the old
-165-column combiner. No real six-beetle session was supplied or validated in
-this task. Verify ROI geometry, identities, threshold suitability, and reports
-on a real reviewed session before statistical use. Polygon self-intersection
-and containment are not automatically validated; view the report geometry.
+The two-animal LEFT/RIGHT convention is not imposed on six animals; exact-start
+x/y coordinates are retained instead. Do not feed the six-beetle CSVs into the
+old 165-column dyadic combiner. The three real trial01 sessions have been run,
+and targeted intervals motivated the current pile rules, but the automatic
+outputs remain `UNREVIEWED`. Verify ROI geometry, identities, threshold
+suitability, and report/video agreement before statistical use. Polygon
+self-intersection and containment are not automatically validated; view the
+report geometry.
 
 ## Reproducible synthetic validation
 
@@ -142,12 +186,10 @@ evidence; it does not establish that the animals were not in contact.
 The PDF now includes one full-page trace per beetle, orange X markers at the last
 assigned coordinate before each missing run, an X/Y/time 3D trajectory page, and
 a six-row fungus occupancy/distance table. The original pairwise and individual
-state timelines are retained. `fungus_summary.csv` preserves exact frame counts,
-seconds (when a verified `--fps` is supplied), and distances in pixels. Time is
-assigned-coordinate occupancy frames divided by FPS; distance uses the existing
-accepted-step midpoint rule. Missing periods are not imputed. Without `--fps`,
-time is explicitly shown in frames. Use `--fps 30` for these verified trial01
-trajectory files. There are 12 PDF pages.
+state timelines are retained. `fungus_summary.csv` preserves exact frame counts
+and distances in pixels. Distance uses the existing accepted-step midpoint rule.
+There are 12 PDF pages in this historical version; current v0.6.1 reports
+contain 13 pages.
 
 PDF names default to `<video stem>_<cell label>.pdf`; `--pdf-name <TOML stem>.pdf`
 sets an exact TOML-derived name. Existing output folders are never overwritten.

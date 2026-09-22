@@ -21,7 +21,11 @@ class SixBeetleTests(unittest.TestCase):
         np.save(self.source,{'trajectories':self.xy})
 
     def tearDown(self): self.tmp.cleanup()
-    def analyze(self,**kw): return six.analyze_six(self.source,self.root,1,3700,**kw)
+    def analyze(self,**kw):
+        xy=np.load(self.source,allow_pickle=True).item()['trajectories']
+        frames={str(t):[dict(centroid=p.tolist(),identities=[a+1]) for a,p in enumerate(row) if np.isfinite(p).all()] for t,row in enumerate(xy)}
+        (self.root/'blob_evidence.json').write_text(json.dumps(dict(frames=frames)))
+        return six.analyze_six(self.source,self.root,1,3700,**kw)
 
     def test_six_animals_fifteen_pairs_and_shared_window(self):
         r=self.analyze()
