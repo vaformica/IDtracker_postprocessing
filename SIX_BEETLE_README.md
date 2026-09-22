@@ -131,6 +131,13 @@ Each complete new output directory contains:
 Read [SIX_BEETLE_METHODS.html](SIX_BEETLE_METHODS.html) for calculations and
 output-field definitions. Empty numeric values are not zero.
 
+The methods page describes the current scientific behavior rather than serving
+as a version-history appendix. Changes to pile membership, proximity,
+missingness, movement, spatial allocation, output fields, or report
+interpretation must update that page in the same commit. A regression test
+checks the documented processor, base, and persistent-model versions against
+the code.
+
 ## Deliberate group adaptations and remaining review
 
 The fixed comparison begins at the **latest reliable wake among all six**.

@@ -4,9 +4,24 @@ import unittest
 from pathlib import Path
 import numpy as np
 import six_beetle_processor as six
+import persistent_groups
+import processor
 
 
 class SixBeetleTests(unittest.TestCase):
+    def test_methods_page_tracks_versions_and_current_rules(self):
+        methods = Path(six.__file__).with_name('SIX_BEETLE_METHODS.html').read_text()
+        self.assertIn(f'data-processor-version="{six.SCRIPT_VERSION}"', methods)
+        self.assertIn(f'data-model-version="{persistent_groups.MODEL_VERSION}"', methods)
+        self.assertIn(f'data-base-version="{processor.SCRIPT_VERSION}"', methods)
+        for phrase in ('Visible assigned proximity',
+                       'Presumed social contact position',
+                       'BLOB_CONTINUITY',
+                       'Missing detection remains missing position',
+                       'midpoint',
+                       'Any subsequent change'):
+            self.assertIn(phrase, methods)
+
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.root=Path(self.tmp.name)
