@@ -731,3 +731,12 @@ A separate six-beetle / three-fungus-ROI CLI is available as
 and [SIX_BEETLE_METHODS.html](SIX_BEETLE_METHODS.html). Its group tables are a
 new schema; the existing GUI, two-animal processor, and QC exports retain their
 existing behavior.
+# Firebird TOML submission GUI
+
+For Charlotte's six-beetle GroupTrial TOMLs, run:
+
+```bash
+./venv-mac/bin/python idtracker_toml_gui.py
+```
+
+See [FIREBIRD_TOML_GUI.md](FIREBIRD_TOML_GUI.md) for the read-only search, editable TOML, Slurm submission, and persistent job-tracking workflow.
