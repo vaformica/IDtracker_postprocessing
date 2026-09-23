@@ -1,0 +1,502 @@
+[
+  {
+    "area_ths": [
+      329.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__human_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__human_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__human_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      0,
+      143
+    ],
+    "job_id": "898259",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__human_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "01551fca302ae0b9093bc1387d218bef925da3e90688e8dd9ed7023f5514f314",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial01_062024_Box02_MIX.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "d9d01092e14ec9c7523fb67468f75d934070d9dad429ad207f7121138bd390f0",
+    "submitted_utc": "2026-09-23T00:50:00.446879+00:00",
+    "tracking_intervals": [
+      [
+        422,
+        16998
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "human_bkg_on"
+  },
+  {
+    "area_ths": [
+      400.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__shared_50_400_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__shared_50_400_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__shared_50_400_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      50,
+      255
+    ],
+    "job_id": "898260",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial01_062024_Box02_MIX__shared_50_400_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "01551fca302ae0b9093bc1387d218bef925da3e90688e8dd9ed7023f5514f314",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial01_062024_Box02_MIX.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "8cece656f782338e7185488ad1799a190a49d9ba83d1b65db36d0c8f481ac7e1",
+    "submitted_utc": "2026-09-23T00:50:00.463050+00:00",
+    "tracking_intervals": [
+      [
+        422,
+        16998
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "shared_50_400_bkg_on"
+  },
+  {
+    "area_ths": [
+      228.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__human_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__human_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__human_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      43,
+      255
+    ],
+    "job_id": "898261",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__human_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "fcce6916fadbbbde3e25b0b76d947a3ac49897fcced2b5872e622ed7b4fce426",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial02_062024_Box01_YOUNG.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "fcce6916fadbbbde3e25b0b76d947a3ac49897fcced2b5872e622ed7b4fce426",
+    "submitted_utc": "2026-09-23T00:50:00.479001+00:00",
+    "tracking_intervals": [
+      [
+        242,
+        17048
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "human_bkg_on"
+  },
+  {
+    "area_ths": [
+      400.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__shared_50_400_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__shared_50_400_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__shared_50_400_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      50,
+      255
+    ],
+    "job_id": "898262",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box01_YOUNG__shared_50_400_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "fcce6916fadbbbde3e25b0b76d947a3ac49897fcced2b5872e622ed7b4fce426",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial02_062024_Box01_YOUNG.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "477e7a71852b53379372342a915663bf733a3175334284182df03622b1063605",
+    "submitted_utc": "2026-09-23T00:50:00.497476+00:00",
+    "tracking_intervals": [
+      [
+        242,
+        17048
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "shared_50_400_bkg_on"
+  },
+  {
+    "area_ths": [
+      286.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__human_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__human_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__human_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      31,
+      255
+    ],
+    "job_id": "898263",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__human_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "ce90c7155af60336fba46c479bd163842e20e9dc1de3a9f526cf16eb7f480b3f",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial02_062024_Box03_OLD.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "ce90c7155af60336fba46c479bd163842e20e9dc1de3a9f526cf16eb7f480b3f",
+    "submitted_utc": "2026-09-23T00:50:00.516807+00:00",
+    "tracking_intervals": [
+      [
+        484,
+        17048
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "human_bkg_on"
+  },
+  {
+    "area_ths": [
+      400.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__shared_50_400_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__shared_50_400_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__shared_50_400_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      50,
+      255
+    ],
+    "job_id": "898264",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial02_062024_Box03_OLD__shared_50_400_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "ce90c7155af60336fba46c479bd163842e20e9dc1de3a9f526cf16eb7f480b3f",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial02_062024_Box03_OLD.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "df90affa4aeb4c6cf0a3a4c7a66140dcee7d3e6add26a8afaaedfbf0f5f5bffb",
+    "submitted_utc": "2026-09-23T00:50:00.536946+00:00",
+    "tracking_intervals": [
+      [
+        484,
+        17048
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "shared_50_400_bkg_on"
+  },
+  {
+    "area_ths": [
+      171.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__human_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__human_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__human_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      32,
+      255
+    ],
+    "job_id": "898265",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__human_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "2e308353805d219e1a3783b2bab1a95790290ec6e012db2968f0e7bdf74bab0c",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial03_062124_Box03_OLD.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "2e308353805d219e1a3783b2bab1a95790290ec6e012db2968f0e7bdf74bab0c",
+    "submitted_utc": "2026-09-23T00:50:00.557034+00:00",
+    "tracking_intervals": [
+      [
+        420,
+        16410
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "human_bkg_on"
+  },
+  {
+    "area_ths": [
+      400.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__shared_50_400_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__shared_50_400_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__shared_50_400_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      50,
+      255
+    ],
+    "job_id": "898266",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial03_062124_Box03_OLD__shared_50_400_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "2e308353805d219e1a3783b2bab1a95790290ec6e012db2968f0e7bdf74bab0c",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial03_062124_Box03_OLD.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "a787d05aa1bad375e86efd2cf48d7aaf906ec08d0e517766028a2f5e72d9a929",
+    "submitted_utc": "2026-09-23T00:50:00.577114+00:00",
+    "tracking_intervals": [
+      [
+        420,
+        16410
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "shared_50_400_bkg_on"
+  },
+  {
+    "area_ths": [
+      56.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__human_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__human_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__human_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      55,
+      255
+    ],
+    "job_id": "898267",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__human_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "a44bad3346a154f489378b22e809f658d7df7add5ed35339a7fa6ac10f0357d6",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial04_062124_Box01_MIX.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "a44bad3346a154f489378b22e809f658d7df7add5ed35339a7fa6ac10f0357d6",
+    "submitted_utc": "2026-09-23T00:50:00.597047+00:00",
+    "tracking_intervals": [
+      [
+        175,
+        16426
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "human_bkg_on"
+  },
+  {
+    "area_ths": [
+      400.0,
+      "inf"
+    ],
+    "batch_root": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc",
+    "command": [
+      "/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__shared_50_400_bkg_on/firebird_idtracker_runner.py",
+      "--toml",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__shared_50_400_bkg_on/input/submitted.toml",
+      "--output",
+      "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__shared_50_400_bkg_on/idtracker_output",
+      "--workers",
+      "10",
+      "--device",
+      "cuda",
+      "--data-policy",
+      "all"
+    ],
+    "intensity_ths": [
+      50,
+      255
+    ],
+    "job_id": "898268",
+    "roi_count": 4,
+    "run_dir": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs/paired_20260922_004953_utc/groupagetrial04_062124_Box01_MIX__shared_50_400_bkg_on",
+    "schema_version": 1,
+    "slurm": {
+      "cpus": 10,
+      "gres": "gpu:quadro_8000:1",
+      "memory": "48G",
+      "nodelist": "gpu02",
+      "partition": "gpu",
+      "time": "08:00:00"
+    },
+    "source_sha256": "a44bad3346a154f489378b22e809f658d7df7add5ed35339a7fa6ac10f0357d6",
+    "source_toml": "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/groupagetrial04_062124_Box01_MIX.toml",
+    "stage": "SUBMITTED",
+    "submitted_toml_sha256": "d04c961b6e4744ba30fa8e463ac6996028b259d7626347be9b35a23ab88de428",
+    "submitted_utc": "2026-09-23T00:50:00.615828+00:00",
+    "tracking_intervals": [
+      [
+        175,
+        16426
+      ]
+    ],
+    "use_bkg": true,
+    "variant": "shared_50_400_bkg_on"
+  }
+]
