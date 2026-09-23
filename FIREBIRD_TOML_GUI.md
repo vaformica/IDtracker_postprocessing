@@ -17,7 +17,9 @@ The Mac is only a client. The GUI searches Firebird over SSH, reads TOMLs, and s
 5. Select a TOML to see its common inputs. The **Raw TOML** tab exposes every input, including the full ROI polygons.
 6. Change the common fields and click **Apply common inputs to raw TOML**, or edit the raw TOML directly and click **Validate and stage**.
 7. Select one or more eligible TOMLs and use **Preview selected** before **Submit selected to IDtracker.ai**.
-8. Use **Load managed runs** and **Refresh selected** to revisit jobs after restarting the GUI.
+8. Open the full-size **Runs** tab and use **Load managed runs** and **Refresh selected** to revisit jobs after restarting the GUI. The table scrolls in both directions, and **Show run details** opens a resizable window.
+
+The full-size **Diagnostics** tab shows connection checks, submissions, status updates, and errors. **Test SSH** opens this tab automatically; a failed background action also switches there. The TOML inventory and editor remain together in the **TOMLs** tab. The main window starts at a laptop-friendly size and all three tabs expand when resized.
 
 The background-subtraction checkbox now follows each selected TOML. Merely typing in the raw editor creates a draft; the GUI blocks submission until **Validate and stage** is clicked. **Preview selected** lists any staged thresholds, background mode, and start frame. Submission receipts record whether the submitted copy came from the unchanged source, the common-input form, or a validated raw edit.
 

@@ -75,8 +75,8 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Firebird IDtracker.ai TOML manager")
-        self.geometry("1440x920")
-        self.minsize(1100, 760)
+        self.geometry("1200x800")
+        self.minsize(960, 620)
         self.events: queue.Queue = queue.Queue()
         self.records: list[dict] = []
         self.visible_records: list[dict] = []
@@ -125,10 +125,20 @@ class App(tk.Tk):
         connection.columnconfigure(1, weight=1)
         ttk.Button(connection, text="Test SSH", command=self.test_ssh).grid(row=0, column=2, padx=6)
         ttk.Button(connection, text="Search TOMLs", command=self.search).grid(row=2, column=2, padx=6)
-        ttk.Button(connection, text="Load managed runs", command=self.load_runs).grid(row=3, column=2, padx=6)
 
-        filter_row = ttk.Frame(self)
-        filter_row.pack(fill="x", padx=10, pady=(0, 4))
+        self.main_tabs = ttk.Notebook(self)
+        self.main_tabs.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+        tomls_tab = ttk.Frame(self.main_tabs)
+        runs_tab = ttk.Frame(self.main_tabs)
+        diagnostics_tab = ttk.Frame(self.main_tabs)
+        self.main_tabs.add(tomls_tab, text="TOMLs")
+        self.main_tabs.add(runs_tab, text="Runs")
+        self.main_tabs.add(diagnostics_tab, text="Diagnostics")
+        self.runs_tab = runs_tab
+        self.diagnostics_tab = diagnostics_tab
+
+        filter_row = ttk.Frame(tomls_tab)
+        filter_row.pack(fill="x", padx=6, pady=(8, 4))
         ttk.Label(filter_row, text="Show").pack(side="left")
         self.filter_mode = tk.StringVar(value="Eligible originals")
         filter_box = ttk.Combobox(
@@ -140,8 +150,8 @@ class App(tk.Tk):
         self.summary = tk.StringVar(value="Search Firebird to inventory TOMLs.")
         ttk.Label(filter_row, textvariable=self.summary).pack(side="left", padx=12)
 
-        pane = ttk.Panedwindow(self, orient="horizontal")
-        pane.pack(fill="both", expand=True, padx=10, pady=4)
+        pane = ttk.Panedwindow(tomls_tab, orient="horizontal")
+        pane.pack(fill="both", expand=True, padx=6, pady=(0, 6))
         left = ttk.LabelFrame(pane, text="TOMLs (Command-click for multiple submissions)")
         right = ttk.LabelFrame(pane, text="Selected TOML")
         pane.add(left, weight=3)
@@ -155,10 +165,13 @@ class App(tk.Tk):
             self.tree.heading(name, text=name.title())
             self.tree.column(name, width=widths[name], stretch=False)
         self.tree.column("#0", width=390, stretch=True)
-        self.tree.pack(side="left", fill="both", expand=True)
+        self.tree.grid(row=0, column=0, sticky="nsew")
         scroll = ttk.Scrollbar(left, orient="vertical", command=self.tree.yview)
-        scroll.pack(side="right", fill="y")
-        self.tree.configure(yscrollcommand=scroll.set)
+        scroll.grid(row=0, column=1, sticky="ns")
+        across = ttk.Scrollbar(left, orient="horizontal", command=self.tree.xview)
+        across.grid(row=1, column=0, sticky="ew")
+        left.columnconfigure(0, weight=1); left.rowconfigure(0, weight=1)
+        self.tree.configure(yscrollcommand=scroll.set, xscrollcommand=across.set)
         self.tree.bind("<<TreeviewSelect>>", self.select_toml)
 
         details = ttk.Notebook(right)
@@ -201,27 +214,46 @@ class App(tk.Tk):
 
         editor_actions = ttk.Frame(right)
         editor_actions.pack(fill="x", pady=5)
-        ttk.Button(editor_actions, text="Validate and stage", command=self.validate_stage).pack(side="left", padx=3)
-        ttk.Button(editor_actions, text="Revert from Firebird", command=self.revert_current).pack(side="left", padx=3)
-        ttk.Button(editor_actions, text="Preview selected", command=self.preview_selected).pack(side="left", padx=3)
-        ttk.Button(editor_actions, text="Submit selected to IDtracker.ai", command=self.submit_selected).pack(side="left", padx=3)
+        editor_actions.columnconfigure(0, weight=1)
+        editor_actions.columnconfigure(1, weight=1)
+        for row, column, label, action in (
+            (0, 0, "Validate and stage", self.validate_stage),
+            (0, 1, "Revert from Firebird", self.revert_current),
+            (1, 0, "Preview selected", self.preview_selected),
+            (1, 1, "Submit selected to IDtracker.ai", self.submit_selected),
+        ):
+            ttk.Button(editor_actions, text=label, command=action).grid(row=row, column=column, sticky="ew", padx=3, pady=2)
 
-        jobs_frame = ttk.LabelFrame(self, text="Managed IDtracker.ai jobs")
-        jobs_frame.pack(fill="x", padx=10, pady=5)
+        run_actions = ttk.Frame(runs_tab)
+        run_actions.pack(fill="x", padx=8, pady=(8, 5))
+        ttk.Button(run_actions, text="Load managed runs", command=self.load_runs).pack(side="left", padx=3)
+        ttk.Button(run_actions, text="Refresh selected", command=self.refresh_jobs).pack(side="left", padx=3)
+        ttk.Button(run_actions, text="Show run details", command=self.show_job).pack(side="left", padx=3)
+        ttk.Button(run_actions, text="Open post-processing GUI", command=self.open_postprocessor).pack(side="left", padx=3)
+        jobs_frame = ttk.LabelFrame(runs_tab, text="Managed IDtracker.ai jobs")
+        jobs_frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
         job_columns = ("job_id", "status", "submitted", "source", "run_dir")
-        self.job_tree = ttk.Treeview(jobs_frame, columns=job_columns, show="headings", height=5, selectmode="extended")
+        self.job_tree = ttk.Treeview(jobs_frame, columns=job_columns, show="headings", selectmode="extended")
         for name, width in [("job_id",90),("status",160),("submitted",170),("source",260),("run_dir",560)]:
             self.job_tree.heading(name, text=name.replace("_", " ").title())
             self.job_tree.column(name, width=width, stretch=name=="run_dir")
-        self.job_tree.pack(side="left", fill="x", expand=True)
-        job_buttons = ttk.Frame(jobs_frame)
-        job_buttons.pack(side="right", fill="y", padx=5)
-        ttk.Button(job_buttons, text="Refresh selected", command=self.refresh_jobs).pack(fill="x", pady=2)
-        ttk.Button(job_buttons, text="Show run details", command=self.show_job).pack(fill="x", pady=2)
-        ttk.Button(job_buttons, text="Open post-processing GUI", command=self.open_postprocessor).pack(fill="x", pady=2)
+        self.job_tree.grid(row=0, column=0, sticky="nsew")
+        job_y = ttk.Scrollbar(jobs_frame, orient="vertical", command=self.job_tree.yview)
+        job_y.grid(row=0, column=1, sticky="ns")
+        job_x = ttk.Scrollbar(jobs_frame, orient="horizontal", command=self.job_tree.xview)
+        job_x.grid(row=1, column=0, sticky="ew")
+        jobs_frame.columnconfigure(0, weight=1); jobs_frame.rowconfigure(0, weight=1)
+        self.job_tree.configure(yscrollcommand=job_y.set, xscrollcommand=job_x.set)
 
-        self.log_box = tk.Text(self, height=8, wrap="word", background="#FFFFFF", foreground="#15181B", insertbackground="#15181B")
-        self.log_box.pack(fill="both", padx=10, pady=(0, 10))
+        ttk.Label(diagnostics_tab, text="Connection checks, submissions, status updates, and errors").pack(anchor="w", padx=8, pady=(8, 4))
+        diagnostics_body = ttk.Frame(diagnostics_tab)
+        diagnostics_body.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+        self.log_box = tk.Text(diagnostics_body, wrap="word", background="#FFFFFF", foreground="#15181B", insertbackground="#15181B")
+        self.log_box.grid(row=0, column=0, sticky="nsew")
+        log_scroll = ttk.Scrollbar(diagnostics_body, orient="vertical", command=self.log_box.yview)
+        log_scroll.grid(row=0, column=1, sticky="ns")
+        diagnostics_body.columnconfigure(0, weight=1); diagnostics_body.rowconfigure(0, weight=1)
+        self.log_box.configure(yscrollcommand=log_scroll.set)
         self.log("Searches and TOML reads are read-only. Submission never overwrites a source TOML: each job gets an immutable copy, hashes, receipt, status file, Slurm log, and separate output folder.")
 
     def ssh(self) -> SSH:
@@ -245,6 +277,7 @@ class App(tk.Tk):
                 name, value, error = self.events.get_nowait()
                 if error:
                     self.log(f"ERROR: {error}")
+                    self.main_tabs.select(self.diagnostics_tab)
                     messagebox.showerror("Firebird TOML manager", str(error))
                 elif name == "ssh":
                     self.log(f"Connected to {value}")
@@ -254,9 +287,11 @@ class App(tk.Tk):
                     self._show_toml(*value)
                 elif name == "runs":
                     self._show_runs(value)
+                    self.main_tabs.select(self.runs_tab)
                 elif name == "submitted":
                     self._show_runs(value, prepend=True)
                     self.log("Submitted jobs:\n" + "\n".join(f"  {x['job_id']}  {x['run_dir']}" for x in value))
+                    self.main_tabs.select(self.runs_tab)
                 elif name == "job_status":
                     self._update_job_status(value)
         except queue.Empty:
@@ -265,6 +300,7 @@ class App(tk.Tk):
 
     def test_ssh(self):
         self.log("Testing SSH…")
+        self.main_tabs.select(self.diagnostics_tab)
         self.background("ssh", lambda: self.ssh().run("hostname").strip())
 
     def search(self):
@@ -597,7 +633,22 @@ class App(tk.Tk):
         if not chosen:
             return
         job = self.jobs[int(chosen[0])]
-        messagebox.showinfo("Managed run", json.dumps(job, indent=2, sort_keys=True))
+        dialog = tk.Toplevel(self)
+        dialog.title(f"Managed run {job.get('job_id', '')}")
+        dialog.geometry("850x520")
+        dialog.minsize(600, 350)
+        body = ttk.Frame(dialog)
+        body.pack(fill="both", expand=True, padx=8, pady=8)
+        details = tk.Text(body, wrap="none", background="#FFFFFF", foreground="#15181B")
+        details.grid(row=0, column=0, sticky="nsew")
+        details.insert("1.0", json.dumps(job, indent=2, sort_keys=True))
+        details.configure(state="disabled")
+        vertical = ttk.Scrollbar(body, orient="vertical", command=details.yview)
+        vertical.grid(row=0, column=1, sticky="ns")
+        horizontal = ttk.Scrollbar(body, orient="horizontal", command=details.xview)
+        horizontal.grid(row=1, column=0, sticky="ew")
+        details.configure(yscrollcommand=vertical.set, xscrollcommand=horizontal.set)
+        body.columnconfigure(0, weight=1); body.rowconfigure(0, weight=1)
 
     def open_postprocessor(self):
         """Open the existing six-beetle processor after tracking completes."""
