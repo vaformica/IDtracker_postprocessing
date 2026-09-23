@@ -32,6 +32,28 @@ class FrameDataTests(unittest.TestCase):
             self.assertEqual(len(pairs), 1)
             self.assertEqual(beetles[0]['fungus_1_frames'], 1)
             self.assertEqual(pairs[0]['observed_proximity_frames'], 1)
+            self.assertEqual(pairs[0]['unresolved_contact_frames'], 0)
+
+    def test_locationless_pile_is_preserved_as_unresolved_not_pscp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)/'frame_data.csv'
+            xy=np.array([[[5.,5.],[5.,5.]],[[np.nan,np.nan],[np.nan,np.nan]],[[20.,5.],[20.,5.]]])
+            raw=xy.copy()
+            result=dict(xy=raw,group=dict(xy=xy,source=np.array([
+                ['ASSIGNED','PSCP_BLOB'],['MISSING','MISSING'],['ASSIGNED','PSCP_BLOB']]),
+                inferred=np.array([[0,1],[0,0],[0,1]],bool),group_ids=np.zeros((3,2),int),
+                ambiguous=np.zeros((3,2),bool),masks={(0,1):np.array([1,0,1],bool)},
+                unresolved_masks={(0,1):np.array([0,1,0],bool)}),
+                masks={(0,1):np.zeros(3,bool)},metadata=dict(settings=dict(start=20),
+                reconstruction=dict(max_speed_px_per_frame=100),rois=[
+                    [[0,0],[100,0],[100,100],[0,100]],[[0,0],[30,0],[30,30],[0,30]]]))
+            write_frame_data(result,output)
+            with output.open(newline='') as stream:rows=list(csv.DictReader(stream))
+            missing=[r for r in rows if r['global_frame']=='21']
+            self.assertEqual([r['unresolved_contact_partners'] for r in missing],['1','0'])
+            self.assertTrue(all(r['x']=='' and r['pscp_partners']=='' for r in missing))
+            _,pairs=aggregate(output,20,22)
+            self.assertEqual((pairs[0]['unresolved_contact_frames'],pairs[0]['pscp_frames']),(1,2))
 
     def test_rewindow_preserves_pile_credit_and_excludes_incoming_step(self):
         with tempfile.TemporaryDirectory() as directory:

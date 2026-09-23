@@ -16,9 +16,9 @@ import processor as legacy
 
 BASE_FIELDS = [
     'global_frame', 'animal_id', 'raw_x', 'raw_y', 'x', 'y',
-    'location_source', 'inferred', 'group_id', 'ambiguous', 'location_known',
+    'location_source', 'inferred', 'group_id', 'ambiguous', 'human_intervention', 'location_known',
     'in_arena', 'any_fungus',
-    'observed_proximity_partners', 'pscp_partners',
+    'observed_proximity_partners', 'pscp_partners', 'unresolved_contact_partners',
     'step_from_previous_accepted', 'step_distance_px',
 ]
 
@@ -43,6 +43,9 @@ def write_frame_data(result, destination):
     group = result['group']
     xy = group['xy']
     nframes, animals, _ = xy.shape
+    human = group.get('human')
+    if human is None:
+        human = np.zeros((nframes, animals), bool)
     rois = [np.asarray(p, dtype=float) for p in result['metadata']['rois']]
     fungi = len(rois)-1
     if animals < 2 or fungi < 1 or raw.shape != xy.shape or nframes < 1:
@@ -59,11 +62,14 @@ def write_frame_data(result, destination):
     accepted = np.isfinite(xy[:-1]).all(axis=2) & np.isfinite(xy[1:]).all(axis=2) & (lengths <= speed)
     observed = [[[] for _ in range(animals)] for _ in range(nframes)]
     pscp = [[[] for _ in range(animals)] for _ in range(nframes)]
+    unresolved = [[[] for _ in range(animals)] for _ in range(nframes)]
     for a, b in itertools.combinations(range(animals), 2):
         for t in np.flatnonzero(result['masks'][a, b]):
             observed[t][a].append(b); observed[t][b].append(a)
         for t in np.flatnonzero(group['masks'][a, b]):
             pscp[t][a].append(b); pscp[t][b].append(a)
+        for t in np.flatnonzero(group.get('unresolved_masks', {}).get((a,b), np.zeros(nframes, bool))):
+            unresolved[t][a].append(b); unresolved[t][b].append(a)
     start = result['metadata']['settings']['start']
     with Path(destination).open('w', newline='') as stream:
         writer = csv.DictWriter(stream, fieldnames=fields_for_fungi(fungi))
@@ -75,10 +81,12 @@ def write_frame_data(result, destination):
                            raw_x=raw[t,a,0], raw_y=raw[t,a,1], x=xy[t,a,0], y=xy[t,a,1],
                            location_source=group['source'][t,a], inferred=int(group['inferred'][t,a]),
                            group_id=int(group['group_ids'][t,a]), ambiguous=int(group['ambiguous'][t,a]),
+                           human_intervention=int(human[t,a]),
                            location_known=int(known), in_arena=int(membership[t,a,0]),
                            any_fungus=int(membership[t,a,1:].any()),
                            observed_proximity_partners=';'.join(map(str, observed[t][a])),
                            pscp_partners=';'.join(map(str, pscp[t][a])),
+                           unresolved_contact_partners=';'.join(map(str, unresolved[t][a])),
                            step_from_previous_accepted=int(t > 0 and accepted[t-1,a]))
                 for fungus in range(1, fungi+1):
                     row[f'fungus_{fungus}'] = int(membership[t,a,fungus])
@@ -101,6 +109,10 @@ def aggregate(frame_csv, start, end):
         if fungus_ids != list(range(1, len(fungus_ids)+1)) or not fungus_ids:
             raise ValueError('Fungus columns must be numbered consecutively from 1')
         missing = set(fields_for_fungi(len(fungus_ids))) - set(header)
+        # Older canonical bundles remain rewindowable; they did not distinguish
+        # a locationless pile from ordinary missingness in the frame CSV.
+        missing.discard('unresolved_contact_partners')
+        missing.discard('human_intervention')
         if missing:
             raise ValueError(f'Missing frame-data columns: {sorted(missing)}')
         for row in reader:
@@ -142,9 +154,11 @@ def aggregate(frame_csv, start, end):
     for a, b in itertools.combinations(sorted(animals), 2):
         observed = sum(str(b) in by_frame[t][a]['observed_proximity_partners'].split(';') for t in expected)
         presumed = sum(str(b) in by_frame[t][a]['pscp_partners'].split(';') for t in expected)
+        unresolved_frames = sum(str(b) in by_frame[t][a].get('unresolved_contact_partners', '').split(';') for t in expected)
         pairs.append(dict(animal_a=a, animal_b=b, start_global_frame=start,
                           end_global_frame_inclusive=end, frame_observations=frames,
-                          observed_proximity_frames=observed, pscp_frames=presumed))
+                          observed_proximity_frames=observed, pscp_frames=presumed,
+                          unresolved_contact_frames=unresolved_frames))
     return beetles, pairs
 
 

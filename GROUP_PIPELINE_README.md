@@ -26,11 +26,47 @@ python run_group_pipeline.py \
 pipeline uses the session's detection evidence; it refuses to invent pile
 positions when the evidence is missing. Source trajectories and TOMLs are not
 overwritten. Both output folders must be new.
+The Firebird GUI exposes the automatic pile parameters (gap search growth,
+radius cap, maximum gap frames, and split confirmation). Their defaults are
+20 px/frame, 300 px, 30 frames, and three frames, respectively. Change them
+by making a new automatic run; frame review decisions do not alter the model.
 
 The analysis bundle contains its PDF, canonical and raw coordinate tables,
 `frame_data.csv`, pair and fungus summaries, and a hashed manifest. The review
 folder contains a synchronized HTML viewer and its video. These are
 **UNREVIEWED** inference outputs until checked against the source recording.
+
+## Review and correct the synchronized video
+
+Open `review/interaction_review.html` with its `review_video.mp4` beside it.
+For reliable seeking in a browser preview, you can also run
+`python serve_review.py /path/to/review --port 8769` and open the localhost URL
+it prints; this serves only that folder and supports MP4 byte ranges.
+Expand **Review and correct frames**. Select a beetle, partner when relevant,
+inclusive frame range, decision, reviewer, and reason. The viewer can override
+presumed social contact, visible proximity, the beetle's location (raw,
+missing, or co-located with a detected partner), and fungus identity. The
+timeline, video overlay, and beetle-status panel update immediately. Gray pair
+segments mean pile membership remains plausible but no position was detected;
+those frames do not contribute automatic distance or fungus occupancy.
+
+Use **Export review log** to save a JSON record bound to the exact automatic
+bundle hashes. It contains each dated decision and can be imported back into
+the same viewer. The browser does not overwrite the source CSVs or TOMLs. To
+create a new reviewed CSV bundle and a portable reviewed HTML/video folder:
+
+```sh
+python apply_review_decisions.py /path/to/analysis \
+  /path/to/beetle_review_FIRST_LAST.json /new/reviewed_output \
+  --source-review /path/to/review
+```
+
+The reviewed output has frame-level human-intervention flags, raw and reviewed
+coordinates, pair labels, fungus and movement data, summaries, the decision
+log, and a hash manifest. A fungus correction needs a supported or manually
+reviewed coordinate. These are attributed training candidates; do not merge
+them silently into automatic results. Changing the algorithm's global search
+and split thresholds requires a fresh processing run, not a frame annotation.
 
 For a PDF and CSVs without making the review video, use
 `python group_processor.py --help`. It requires a trajectory, session,

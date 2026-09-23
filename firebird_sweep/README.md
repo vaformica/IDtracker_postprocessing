@@ -11,8 +11,9 @@ are standardized to [422,16998], analysis to inclusive422–7622 at30fps.
 `run.slurm` is a 60-task GPU array capped at3 concurrent tasks,8CPUs/48GB and2h
 per task. `run_task.py` preserves every log, requires independent session
 completion evidence even if IDtracker exits1, records original-coordinate
-missingness/IDtracker quality statistics, and invokes the complete v0.7.0
-persistent-pile pipeline. Every successful run contains the 13-page PDF,
+missingness/IDtracker quality statistics, and invokes the packaged
+persistent-pile pipeline. New sweep packages include the frame exporter and
+portable human-review editor. Every successful run contains the 13-page PDF,
 canonical and raw-coordinate CSVs, provenance manifests, a cropped MP4, and the
 synchronized interactive review HTML. Review/video outputs use the exact same
 `canonical_states.npz` that drives the estimated metrics.
@@ -31,5 +32,6 @@ For ordinary individual-session work, launch `six_beetle_firebird_gui.py` on
 the Mac. It discovers Firebird sessions over SSH, exposes proximity, jump,
 movement, and ROI-buffer settings, previews the exact command, deploys a hashed
 code snapshot, submits a compute Slurm job, and downloads a checksum-verified
-portable bundle. The original dyadic GUI remains a separate supported profile;
-the six-beetle report layer does not yet support animal counts above six.
+portable bundle. The shared group GUI also supports dyads and other animal
+counts of at least two, with one or more fungus ROIs. Historical sweep outputs
+remain versioned snapshots and are not retroactively changed by later models.

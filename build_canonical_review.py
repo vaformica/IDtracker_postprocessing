@@ -57,6 +57,7 @@ def build(
     html_name="interaction_review.html",
     video_name="review_video.mp4",
     link_video=False,
+    initial_decisions=None,
 ):
     """Create a self-contained HTML/video review directory without overwriting."""
     bundle = Path(bundle)
@@ -109,9 +110,14 @@ def build(
             & np.isfinite(xy[:, [animal_a, animal_b]]).all(axis=(1, 2))
         )
         pscp = same_group & (data["inferred"][:, animal_a] | data["inferred"][:, animal_b])
+        unresolved = (
+            (data["group_ids"][:, animal_a] == data["group_ids"][:, animal_b])
+            & (data["group_ids"][:, animal_a] >= 0)
+            & ~np.isfinite(xy[:, [animal_a, animal_b]]).all(axis=(1, 2))
+        )
         assigned = (data["source"][:, animal_a] == "ASSIGNED") & (data["source"][:, animal_b] == "ASSIGNED")
         proximity = assigned & (np.linalg.norm(xy[:, animal_a] - xy[:, animal_b], axis=1) <= proximity_px)
-        pair_states.append(np.where(pscp, 2, np.where(proximity, 1, 0)))
+        pair_states.append(np.where(pscp, 2, np.where(unresolved, 4, np.where(proximity, 1, 0))))
 
     zero = np.zeros(xy.shape[:2], dtype=int)
     accepted = data["source"] == "ASSIGNED"
@@ -121,6 +127,9 @@ def build(
         fps=float(fps),
         maxStep=max_step_px,
         proximityThreshold=proximity_px,
+        modelSettings=meta.get('persistent_group_settings',{}),
+        analysisManifestSha256=sha256(manifest_path),
+        canonicalSha256=expected,
         raw=clean(raw),
         held=clean(xy),
         reviewed=zero.tolist(),
@@ -139,6 +148,11 @@ def build(
     )
 
     template = Path(__file__).with_name("interaction_review_template.html").read_text()
+    editor_path = Path(__file__).with_name("review_editor.js")
+    template_path = Path(__file__).with_name("interaction_review_template.html")
+    editor = editor_path.read_text()
+    editor = _replace_once(editor, "__INITIAL_DECISIONS__", json.dumps(initial_decisions or [], separators=(",", ":")).replace('<', '\\u003c'))
+    template = _replace_once(template, "__EDITOR_SCRIPT__", editor)
     template = _replace_once(template, "2024 six-beetle battles — OLD review", f"{animal_count}-beetle review — {label}")
     template = _replace_once(template, "2024 six-beetle battles · OLD · synchronized interaction review", f"{animal_count}-beetle synchronized interaction review · {label}")
     template = _replace_once(template, "Pink: provisional user-reviewed contact.", "All positions come from the report bundle. UNREVIEWED: identity attribution remains uncertain.")
@@ -148,10 +162,6 @@ def build(
         template,
         "(p[0]-1600)*1280/1366,(p[1]-192)*920/982",
         f"(p[0]-{x})*1280/{width},(p[1]-{y})*920/{height}",
-    )
-    template = template.replace(
-        "(Math.max(D.start,Math.min(D.end,f))-D.start)/D.fps",
-        "(Math.max(D.start,Math.min(D.end,f))-D.start+0.5)/D.fps",
     )
     template = template.replace("Math.round(v.currentTime*D.fps)", "Math.floor(v.currentTime*D.fps+0.0001)")
     template = template.replace("Math.round(m.mediaTime*D.fps)", "Math.floor(m.mediaTime*D.fps+0.0001)")
@@ -187,7 +197,11 @@ def build(
                 shutil.copy2(video, destination_video)
         source_manifest = dict(
             schema="six-beetle-interaction-review-v1" if animal_count == 6 else "group-interaction-review-v1",
-            status="UNREVIEWED",
+            status="HUMAN_REVIEWED_UNVERIFIED" if initial_decisions else "UNREVIEWED",
+            decision_count=len(initial_decisions or []),
+            review_code_sha256={"build_canonical_review.py":sha256(Path(__file__)),
+                                "interaction_review_template.html":sha256(template_path),
+                                "review_editor.js":sha256(editor_path)},
             animal_count=animal_count,
             fungus_count=len(roi_polygons)-1,
             label=label,

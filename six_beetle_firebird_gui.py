@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import queue
 import shlex
 import subprocess
@@ -34,6 +35,8 @@ DEPLOY_FILES = (
     "export_blob_evidence.py",
     "build_canonical_review.py",
     "interaction_review_template.html",
+    "review_editor.js",
+    "apply_review_decisions.py",
     "run_six_beetle_pipeline.py",
     "run_group_pipeline.py",
 )
@@ -202,14 +205,24 @@ def validated_parameters(values: dict) -> dict:
     parsed = dict(values)
     for key in ("start", "end"):
         parsed[key] = int(values[key])
+    for key, default in (("split_confirmation", 3), ("gap_frames", 30)):
+        parsed[key] = int(values.get(key, default))
     for key in ("fps", "movement", "wall", "fungus", "proximity", "jump", "reconstruction"):
         parsed[key] = float(values[key])
+    for key, default in (("gap_speed", 20), ("gap_cap", 300)):
+        parsed[key] = float(values.get(key, default))
+    if not all(math.isfinite(parsed[key]) for key in
+               ("fps", "movement", "wall", "fungus", "proximity", "jump", "reconstruction", "gap_speed", "gap_cap")):
+        raise ValueError('All numeric settings must be finite')
     if parsed["start"] < 0 or parsed["end"] < parsed["start"]:
         raise ValueError("Frame range must have a nonnegative start and end at or after start")
     if parsed["fps"] <= 0 or parsed["movement"] <= 0 or parsed["proximity"] <= 0 or parsed["jump"] <= 0 or parsed["reconstruction"] <= 0:
         raise ValueError("FPS and movement, proximity, jump, and reconstruction thresholds must be positive")
     if parsed["wall"] < 0 or parsed["fungus"] < 0:
         raise ValueError("ROI buffers cannot be negative")
+    if (parsed['split_confirmation'] < 1 or parsed['gap_frames'] < 1 or
+            parsed['gap_speed'] <= 0 or parsed['gap_cap'] < parsed['proximity']):
+        raise ValueError('Persistent-group gap and split settings are invalid')
     for key in ("session", "video", "label"):
         if not str(parsed[key]).strip():
             raise ValueError(f"{key} cannot be blank")
@@ -236,6 +249,10 @@ def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_py
         "--proximity-px", str(parameters["proximity"]),
         "--jump-threshold-px", str(parameters["jump"]),
         "--reconstruction-speed-px", str(parameters["reconstruction"]),
+        "--split-confirmation-frames", str(parameters.get('split_confirmation', 3)),
+        "--gap-speed-px", str(parameters.get('gap_speed', 20)),
+        "--gap-radius-cap-px", str(parameters.get('gap_cap', 300)),
+        "--max-reacquire-gap-frames", str(parameters.get('gap_frames', 30)),
         "--idtracker-python", idtracker_python,
         "--ffmpeg", ffmpeg,
         "--ffprobe", ffprobe,
@@ -315,13 +332,16 @@ class App(tk.Tk):
         settings = ttk.LabelFrame(self, text="3. Review paths and analysis settings")
         settings.pack(fill="x", padx=10, pady=4)
         defaults = dict(session="", trajectory="", video="", label="", start="422", end="7622", fps="30",
-                        movement="30", wall="30", fungus="30", proximity="60", jump="200", reconstruction="100")
+                        movement="30", wall="30", fungus="30", proximity="60", jump="200", reconstruction="100",
+                        split_confirmation="3", gap_speed="20", gap_cap="300", gap_frames="30")
         self.variables = {key: tk.StringVar(value=value) for key, value in defaults.items()}
         labels = [
             ("session", "Remote session"), ("trajectory", "Remote trajectory (optional)"), ("video", "Remote source video"),
             ("label", "Output label"), ("start", "Start frame"), ("end", "End frame inclusive"), ("fps", "FPS"),
             ("movement", "Wake movement px"), ("wall", "Wall buffer px"), ("fungus", "Fungus buffer px"),
             ("proximity", "Proximity px"), ("jump", "Analysis jump px"), ("reconstruction", "One-frame identity speed px"),
+            ("split_confirmation", "Split confirmation frames"), ("gap_speed", "Gap search growth px/frame"),
+            ("gap_cap", "Gap search radius cap px"), ("gap_frames", "Maximum automatic gap frames"),
         ]
         for index, (key, label) in enumerate(labels):
             row, pair = divmod(index, 2)

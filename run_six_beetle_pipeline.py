@@ -228,6 +228,14 @@ def run(args) -> Path:
         str(args.jump_threshold_px),
         "--reconstruction-speed-px",
         str(args.reconstruction_speed_px),
+        "--split-confirmation-frames",
+        str(args.split_confirmation_frames),
+        "--gap-speed-px",
+        str(args.gap_speed_px),
+        "--gap-radius-cap-px",
+        str(args.gap_radius_cap_px),
+        "--max-reacquire-gap-frames",
+        str(args.max_reacquire_gap_frames),
     ]
     subprocess.run(command, check=True)
 
@@ -322,6 +330,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--proximity-px", type=float, default=60.0)
     result.add_argument("--jump-threshold-px", type=float, default=200.0)
     result.add_argument("--reconstruction-speed-px", type=float, default=100.0)
+    result.add_argument("--split-confirmation-frames", type=int, default=3)
+    result.add_argument("--gap-speed-px", type=float, default=20.0)
+    result.add_argument("--gap-radius-cap-px", type=float, default=300.0)
+    result.add_argument("--max-reacquire-gap-frames", type=int, default=30)
     result.add_argument("--crop", type=int, nargs=4, metavar=("X", "Y", "WIDTH", "HEIGHT"))
     result.add_argument("--crop-padding", type=int, default=20)
     result.add_argument(

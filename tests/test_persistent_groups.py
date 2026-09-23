@@ -13,6 +13,18 @@ class PersistentTests(unittest.TestCase):
   self.assertTrue(np.isnan(g['xy'][3]).all())
   for t in [1,2,4,5,6]:self.assertTrue(g['masks'][0,1][t])
   self.assertEqual(g['group_ids'][2,1],g['group_ids'][3,1])
+  self.assertTrue(g['unresolved_masks'][0,1][3])
+ def test_moving_pile_reacquires_after_short_total_detection_gap(self):
+  r=np.full((4,2,2),np.nan);r[0]=[[0,0],[4,0]];r[3,0]=[80,0]
+  b={'0':[blob(2)],'1':[],'2':[],'3':[blob(80)]}
+  g=persistent_groups(r,b)
+  self.assertTrue(np.isnan(g['xy'][1:3]).all())
+  self.assertTrue(g['unresolved_masks'][0,1][1:3].all())
+  self.assertEqual(list(g['xy'][3,:,0]),[80,80])
+  self.assertTrue(g['masks'][0,1][3])
+  strict=persistent_groups(r,b,gap_radius_cap=65.)
+  self.assertTrue(np.isnan(strict['xy'][3]).all())
+  self.assertTrue(strict['unresolved_masks'][0,1][3])
  def test_distant_identity_is_not_stolen(self):
   r=np.array([[[0,0]],[[500,0]],[[500,0]]],float)
   g=persistent_groups(r,{'0':[blob(0)],'1':[blob(500)],'2':[blob(500)]})

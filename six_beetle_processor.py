@@ -21,7 +21,7 @@ from trajectory_reconstruction import reconstruct
 from persistent_groups import persistent_groups,MODEL_VERSION
 from frame_data import write_frame_data
 
-SCRIPT_VERSION = '0.7.0-group'
+SCRIPT_VERSION = '0.8.0-group'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -230,10 +230,15 @@ def summarize_window(xy, animal, lo, hi, label, start, rois, settings, turtling,
 
 def analyze_six(trajectory, session, start, window=7200, threshold=30.,
                 wall_buffer_px=30., fungus_buffer_px=30., social_distance_threshold_px=60.,
-                jump_threshold_px=200., reconstruction_speed_px=100., blob_evidence=None):
-    numeric = [threshold, social_distance_threshold_px, jump_threshold_px, reconstruction_speed_px]
+                jump_threshold_px=200., reconstruction_speed_px=100., blob_evidence=None,
+                split_confirmation_frames=3, gap_speed_px=20., gap_radius_cap_px=300., max_reacquire_gap_frames=30):
+    numeric = [threshold, social_distance_threshold_px, jump_threshold_px, reconstruction_speed_px,
+               gap_speed_px, gap_radius_cap_px]
     if start <= 0 or window <= 0 or not all(np.isfinite(v) and v > 0 for v in numeric):
         raise ValueError('Positive start, window, and finite positive thresholds are required')
+    if (split_confirmation_frames < 1 or max_reacquire_gap_frames < 1 or
+            gap_radius_cap_px < social_distance_threshold_px):
+        raise ValueError('Invalid persistent-group confirmation or gap settings')
     if not all(np.isfinite(v) and v >= 0 for v in [wall_buffer_px, fungus_buffer_px]):
         raise ValueError('Buffer widths must be finite and nonnegative')
     trajectory, session = Path(trajectory), Path(session)
@@ -292,9 +297,12 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     if not blob_path.is_file():
         raise FileNotFoundError('Persistent-group analysis requires blob_evidence.json. Run export_blob_evidence.py with the session IDtracker environment first.')
     blob_data=json.loads(blob_path.read_text())
-    history = persistent_groups(data[:start+window+1],blob_data['frames'],social_distance_threshold_px,reconstruction_speed_px)
-    group = {key: value[start:] for key,value in history.items() if key not in ('masks','events')}
+    history = persistent_groups(data[:start+window+1],blob_data['frames'],social_distance_threshold_px,
+        reconstruction_speed_px,confirmation=split_confirmation_frames,gap_speed=gap_speed_px,
+        gap_radius_cap=gap_radius_cap_px,max_reacquire_gap=max_reacquire_gap_frames)
+    group = {key: value[start:] for key,value in history.items() if key not in ('masks','unresolved_masks','events')}
     group['masks'] = {pair: mask[start:] for pair,mask in history['masks'].items()}
+    group['unresolved_masks'] = {pair: mask[start:] for pair,mask in history['unresolved_masks'].items()}
     visible_masks = {}
     for a,b in masks:
         assigned=(group['source'][:,a]=='ASSIGNED')&(group['source'][:,b]=='ASSIGNED')
@@ -312,13 +320,20 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
             events.append(dict(kind='PRESUMED_GROUP_CONTACT',window='full',animal_a=a,animal_b=b,
                 start_global_frame=start+event['start_offset'],end_global_frame_inclusive=start+event['end_offset'],
                 frames=event['frames'],candidate_partner_count=1,attribution='PERSISTENT_DETECTED_GROUP'))
+    for (a,b),mask in group['unresolved_masks'].items():
+        for event in legacy._events_from_mask(mask):
+            events.append(dict(kind='PILE_LOCATION_UNRESOLVED',window='full',animal_a=a,animal_b=b,
+                start_global_frame=start+event['start_offset'],end_global_frame_inclusive=start+event['end_offset'],
+                frames=event['frames'],candidate_partner_count=1,attribution='GROUP_MEMBERSHIP_WITHOUT_DETECTION'))
     for row in pairs:
         pair=row['animal_a'],row['animal_b']
         pscp_mask=group['masks'][pair]
+        unresolved_mask=group['unresolved_masks'][pair]
         proximity_mask=visible_masks[pair]
         assigned=(group['source'][:,pair[0]]=='ASSIGNED')&(group['source'][:,pair[1]]=='ASSIGNED')
         if row['window'] != 'full':
             pscp_mask=pscp_mask[shared:shared+3601]
+            unresolved_mask=unresolved_mask[shared:shared+3601]
             proximity_mask=proximity_mask[shared:shared+3601]
             assigned=assigned[shared:shared+3601]
         row['jointly_visible_frames']=int(assigned.sum())
@@ -327,6 +342,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         row['proximity_bouts']=len(legacy._events_from_mask(proximity_mask))
         row['legacy_disappearance_candidate_events']=row.pop('disappearance_candidate_events')
         row['presumed_social_disappearance_events']=len(legacy._events_from_mask(pscp_mask))
+        row['unresolved_group_frames']=int(unresolved_mask.sum())
         row['presumed_group_frames']=int(pscp_mask.sum())
     masks=visible_masks
     timeline = frame_states(group['xy'], start, masks, events)
@@ -361,7 +377,11 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         frame_state_definition='Presumed social disappearance takes precedence: membership in a causal visible-anchor group. Observed proximity alone does not change the individual display state. Otherwise coordinate present = observed/ID assigned; no coordinate = missing. Ambiguous disappearance remains flagged separately. Observed refers to the selected trajectory source, which may already contain IDtracker gap filling.',
         rois=[p.tolist() for p in rois], fixed_anchor_rule='ALL_SIX_WAKE_LATEST_CROSSING',
         qc_status='UNREVIEWED', coordinate_substitution=True, raw_coordinates_preserved=True,
-        presumed_group_rule='Persistent detection-supported groups survive identity loss and true detection gaps. No detection means missing position. Three consistent separate assigned detections required to split. No frame-specific overrides.',
+        presumed_group_rule='Persistent groups survive identity loss and true detection gaps. No detection means missing position; contact membership remains unresolved. Short-gap reacquisition uses a bounded elapsed-frame radius. Separate assigned detections require repeated confirmation to split. No frame-specific automatic overrides.',
+        persistent_group_settings=dict(social_radius_px=social_distance_threshold_px,
+            max_step_px_per_frame=reconstruction_speed_px,split_confirmation_frames=split_confirmation_frames,
+            gap_speed_px_per_frame=gap_speed_px,gap_radius_cap_px=gap_radius_cap_px,
+            max_reacquire_gap_frames=max_reacquire_gap_frames),
         persistent_model_version=MODEL_VERSION,blob_evidence_sha256=sha256(blob_path),blob_evidence_file=str(blob_path.resolve()),
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
@@ -668,6 +688,10 @@ def main():
     parser.add_argument('--fps',type=float,help='Optional source frame-rate metadata; reports always use frames')
     parser.add_argument('--window',type=int,default=7200)
     parser.add_argument('--reconstruction-speed-px',type=float,default=100.,help='Separate position-screening limit in original pixels per frame')
+    parser.add_argument('--split-confirmation-frames',type=int,default=3)
+    parser.add_argument('--gap-speed-px',type=float,default=20.)
+    parser.add_argument('--gap-radius-cap-px',type=float,default=300.)
+    parser.add_argument('--max-reacquire-gap-frames',type=int,default=30)
     for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',200.)]:
         parser.add_argument('--'+name,type=float,default=value)
     args=vars(parser.parse_args())

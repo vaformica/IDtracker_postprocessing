@@ -8,12 +8,16 @@ is a hypothesis and raw coordinates must be retained separately.
 import itertools
 import numpy as np
 
-MODEL_VERSION='1.0.1'
+MODEL_VERSION='1.1.0'
 
 
-def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3):
+def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3,
+                      gap_speed=20., gap_radius_cap=300., max_reacquire_gap=30):
     raw=np.asarray(raw,float);nframes,nanimals,_=raw.shape
-    if social_radius<=0 or max_step<=0 or confirmation<1:raise ValueError('Invalid model parameters')
+    if (not np.isfinite([social_radius,max_step,gap_speed,gap_radius_cap]).all() or
+            social_radius<=0 or max_step<=0 or confirmation<1 or gap_speed<=0
+            or gap_radius_cap<social_radius or max_reacquire_gap<1):
+        raise ValueError('Invalid model parameters')
     xy=np.full_like(raw,np.nan);group_ids=np.full((nframes,nanimals),-1,int)
     inferred=np.zeros((nframes,nanimals),bool);ambiguous=np.zeros_like(inferred)
     anchors=np.full((nframes,nanimals),-1,int)
@@ -41,9 +45,19 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                 next_id+=1;initialized.add(a)
         proposals=[]
         for e in entities:
-            radius=max_step if t-e['last_frame']<=1 or e['split_count']>0 else social_radius
-            search_points=[e['last']]+e.get('pending_positions',[])
-            candidates=[j for j,b in enumerate(bs) if any(np.linalg.norm(np.asarray(b['centroid'])-p)<=radius for p in search_points)]
+            gap=t-e['last_frame']
+            # Group membership persists without detections, but no position is
+            # assigned during the gap. Reacquire only over a bounded plausible
+            # displacement; the old fixed 60-pixel gate lost moving piles.
+            if gap>max_reacquire_gap:
+                candidates=[]
+            else:
+                radius=(max_step if gap<=1 or e['split_count']>0 else
+                        min(gap_radius_cap, max_step*gap,
+                            social_radius+gap_speed*(gap-1)))
+                candidates=[j for j,b in enumerate(bs) if any(
+                    np.linalg.norm(np.asarray(b['centroid'])-p)<=radius
+                    for p in [e['last']]+e.get('pending_positions',[]))]
             # Identity-guided choice is allowed only inside the spatial gate.
             votes={raw_blob(t,a,bs) for a in e['members']};votes.discard(None)
             votes&=set(candidates)
@@ -105,6 +119,11 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                 group_ids[t,a]=e['id'];ambiguous[t,a]=len(bs)>0
                 # No position: preserve identity membership only.
         entities=active
-    masks={(a,b):(group_ids[:,a]>=0)&(group_ids[:,a]==group_ids[:,b])&np.isfinite(xy[:,a]).all(axis=1)&np.isfinite(xy[:,b]).all(axis=1)&(inferred[:,a]|inferred[:,b])
-           for a,b in itertools.combinations(range(nanimals),2)}
-    return dict(xy=xy,group_ids=group_ids,inferred=inferred,ambiguous=ambiguous,anchors=anchors,masks=masks,source=source,events=events)
+    shared={(a,b):(group_ids[:,a]>=0)&(group_ids[:,a]==group_ids[:,b])
+            for a,b in itertools.combinations(range(nanimals),2)}
+    masks={(a,b):joined&np.isfinite(xy[:,a]).all(axis=1)&np.isfinite(xy[:,b]).all(axis=1)&(inferred[:,a]|inferred[:,b])
+           for (a,b),joined in shared.items()}
+    unresolved_masks={(a,b):joined&(~np.isfinite(xy[:,a]).all(axis=1)|~np.isfinite(xy[:,b]).all(axis=1))
+                      for (a,b),joined in shared.items()}
+    return dict(xy=xy,group_ids=group_ids,inferred=inferred,ambiguous=ambiguous,anchors=anchors,
+                masks=masks,unresolved_masks=unresolved_masks,source=source,events=events)
