@@ -1,4 +1,6 @@
 import unittest
+from io import StringIO
+from unittest.mock import patch
 
 from idtracker_toml_gui import App
 
@@ -69,6 +71,37 @@ class GUIStagingTests(unittest.TestCase):
         App._capture_current(editor)
         self.assertIn("source.toml", editor.draft_text)
         self.assertNotIn("source.toml", editor.staged_text)
+
+    def test_postprocessor_launch_reports_child_startup_failure(self):
+        class Launcher:
+            postprocessor_process = None
+            postprocessor_announced = False
+            _check_postprocessor = App._check_postprocessor
+
+            def __init__(self):
+                self.messages = []
+                self.scheduled = []
+
+            def log(self, message):
+                self.messages.append(message)
+
+            def after(self, delay, callback):
+                self.scheduled.append((delay, callback))
+
+        class FailedProcess:
+            stderr = StringIO("NameError: name 'profile' is not defined")
+
+            def poll(self):
+                return 1
+
+        launcher = Launcher()
+        with patch("idtracker_toml_gui.subprocess.Popen", return_value=FailedProcess()), \
+                patch("idtracker_toml_gui.messagebox.showerror") as showerror:
+            App.open_postprocessor(launcher)
+            self.assertEqual(len(launcher.scheduled), 1)
+            App._check_postprocessor(launcher)
+            self.assertIn("NameError", launcher.messages[-1])
+            showerror.assert_called_once()
 
 
 if __name__ == "__main__":

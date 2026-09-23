@@ -86,6 +86,8 @@ class App(tk.Tk):
         self.draft_text: dict[str, str] = {}
         self.staged_origin: dict[str, str] = {}
         self.jobs: list[dict] = []
+        self.postprocessor_process: subprocess.Popen | None = None
+        self.postprocessor_announced = False
         self.current_path = ""
         self.loading_editor = False
         self._build()
@@ -651,12 +653,50 @@ class App(tk.Tk):
         body.columnconfigure(0, weight=1); body.rowconfigure(0, weight=1)
 
     def open_postprocessor(self):
-        """Open the existing six-beetle processor after tracking completes."""
-        subprocess.Popen([sys.executable, str(BASE / "six_beetle_firebird_gui.py")], cwd=BASE)
-        self.log(
-            "Opened the six-beetle post-processing GUI. Click 'Find six-beetle sessions'; "
-            "the managed IDtracker run folder is included in its default search roots."
-        )
+        """Launch the processor and report startup errors from the child process."""
+        if self.postprocessor_process and self.postprocessor_process.poll() is None:
+            self.log("The post-processing GUI is already running; select its Python window.")
+            return
+        try:
+            self.postprocessor_process = subprocess.Popen(
+                [sys.executable, str(BASE / "six_beetle_firebird_gui.py")],
+                cwd=BASE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+        except OSError as exc:
+            self.log(f"Could not start the post-processing GUI: {exc}")
+            messagebox.showerror("Post-processing GUI", str(exc))
+            return
+        self.postprocessor_announced = False
+        self.log("Starting the post-processing GUI…")
+        self.after(1000, self._check_postprocessor)
+
+    def _check_postprocessor(self):
+        process = self.postprocessor_process
+        if process is None:
+            return
+        status = process.poll()
+        if status is None:
+            if not self.postprocessor_announced:
+                self.log(
+                    "Post-processing GUI is running. Click 'Find sessions'; "
+                    "the managed IDtracker run folder is in its search roots."
+                )
+                self.postprocessor_announced = True
+            self.after(1000, self._check_postprocessor)
+            return
+        error = process.stderr.read().strip() if process.stderr else ""
+        if process.stderr:
+            process.stderr.close()
+        self.postprocessor_process = None
+        if status:
+            detail = error[-4000:] or f"Python exited with status {status}."
+            self.log(f"Post-processing GUI exited unexpectedly:\n{detail}")
+            messagebox.showerror("Post-processing GUI failed", detail)
+        elif self.postprocessor_announced:
+            self.log("Post-processing GUI closed.")
 
 
 def main():

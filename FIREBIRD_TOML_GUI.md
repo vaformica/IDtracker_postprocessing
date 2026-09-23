@@ -33,7 +33,7 @@ The companion `compare_paired_firebird.py results/paired_20260922_004953_utc` wr
 
 Wait until the managed job reports `COMPLETE_UNREVIEWED` or `OUTPUT_READY_WITH_EXIT_WARNING` with a verified trajectory. Select it and click **Open post-processing GUI**. In the processor window:
 
-1. Click **Find six-beetle sessions**. The managed IDtracker run folder is already included in the default search roots.
+1. Click **Find sessions**. The managed IDtracker run folder is already included in the default search roots; the processor starts with the six-beetle filter selected.
 2. Select the completed session. Confirm the source video, global start and inclusive end frames, and the proximity, jump, and reconstruction settings.
 3. Click **Preview exact Firebird command** to review the complete command and destination.
 4. Click **Submit complete pipeline**. This runs the six-beetle processor and creates the CSV tables, PDF, interactive HTML review, and synchronized review video.
