@@ -60,6 +60,8 @@ def page_one(canvas: Canvas, pairs: list[dict]) -> None:
     header(canvas, 1, "Paired tracking settings: quantitative comparison")
     text(canvas, 40, 507, "Human settings retain each source's original intensity and blob area; shared settings use 50-255 and 400 px2.", 9)
     text(canvas, 40, 493, "Original start/end frames and all four ROIs are identical within each pair. End frame is exclusive.", 9)
+    complete = sum(pair.get("human_missing_percent") not in (None, "") and pair.get("shared_missing_percent") not in (None, "") for pair in pairs)
+    right(canvas, 752, 493, f"{complete} / {len(pairs)} pairs measured", 9, HUMAN, "Helvetica-Bold")
 
     headings = [(40, "Source / original settings"), (293, "Missing: human"), (397, "Missing: shared"), (506, "Change (pp)"), (600, "Est. ID H / C"), (749, ">100px H / C")]
     canvas.setFillColor(INK)
