@@ -19,8 +19,9 @@ import numpy as np
 import processor as legacy
 from trajectory_reconstruction import reconstruct
 from persistent_groups import persistent_groups,MODEL_VERSION
+from frame_data import write_frame_data
 
-SCRIPT_VERSION = '0.6.1-six-beetle'
+SCRIPT_VERSION = '0.6.2-six-beetle'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -616,6 +617,7 @@ def write_bundle(result, output, video, cell, pdf_name=None):
             writer=csv.writer(stream);writer.writerow(['global_frame','animal_id','x','y','state','group_id'])
             for t in range(len(result['xy'])):
                 for a in range(6):writer.writerow([meta['settings']['start']+t,a,*result['group']['xy'][t,a],result['group']['source'][t,a],result['group']['group_ids'][t,a]])
+        write_frame_data(result, staging/'frame_data.csv')
         with (staging/'presumed_positions.csv').open('w',newline='') as stream:
             fields=['global_frame','animal_id','raw_x','raw_y','estimated_x','estimated_y','inferred','group_representative_id','ambiguous']
             writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader()
@@ -670,7 +672,7 @@ def main():
     if any(sha256(p)!=value for p,value in before.items()): raise RuntimeError('Input changed during analysis')
     result['metadata']['frames_per_second']=fps
     result['metadata']['input_sha256']=before
-    result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__),Path(__file__).with_name('persistent_groups.py')]}
+    result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__),Path(__file__).with_name('persistent_groups.py'),Path(__file__).with_name('frame_data.py')]}
     write_bundle(result,output,video,cell,pdf_name)
     print(f'Wrote UNREVIEWED six-beetle output: {output}')
 

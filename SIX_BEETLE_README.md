@@ -1,8 +1,8 @@
-## Persistent detection-supported analysis (v0.6.1)
+## Persistent detection-supported analysis (v0.6.2)
 
 All six-beetle CLI runs now use the same persistent group model by default. The
 recommended pipeline command exports real detection evidence with the session's
-IDtracker environment, runs the v0.6.1 analysis, and creates a portable
+IDtracker environment, runs the v0.6.2 analysis, and creates a portable
 synchronized HTML/video review from the same canonical state bundle:
 
 ```sh
@@ -125,6 +125,23 @@ Each complete new output directory contains:
 - `frame_states.csv`: every global frame and animal, with the display state,
   coordinate presence, nearby-partner count, disappearance-candidate status,
   and ambiguous-attribution flag.
+- `frame_data.csv`: one row for each beetle at each global frame, joining raw
+  and canonical coordinates, evidence source, fungus membership, visible
+  proximity partners, PSCP partners, and accepted movement-step allocation.
+  For a later inclusive subwindow, run
+  `python frame_data.py BUNDLE --start FIRST --end LAST --output NEW_FOLDER`.
+  This recalculates per-beetle fungus frames, percentages, distances, and
+  pairwise proximity/PSCP frame counts without rerunning tracking. The selected
+  first frame's incoming movement step is excluded. The command checks the
+  frame CSV against the source manifest and never overwrites the original.
+  For older canonical bundles, first run
+  `python backfill_frame_data.py OLD_BUNDLE NEW_FOLDER`; this creates a separate
+  verified export without altering the older bundle.
+
+The three existing Trial 01 bundles have separate backfilled exports under
+`results/frame_data_v062/Box01_OLD`, `Box01_OLD_TEst`, and `Box02_MIX`.
+Their full-window recalculations reproduce the saved canonical fungus frame,
+fungus distance, proximity, and PSCP totals for every beetle and pair.
 - `manifest.json`: settings, actual ROI vertices, input and code SHA-256,
   output SHA-256, source paths, versions, video/cell, and `UNREVIEWED` status.
 
@@ -201,7 +218,7 @@ assigned coordinate before each missing run, an X/Y/time 3D trajectory page, and
 a six-row fungus occupancy/distance table. The original pairwise and individual
 state timelines are retained. `fungus_summary.csv` preserves exact frame counts
 and distances in pixels. Distance uses the existing accepted-step midpoint rule.
-There are 12 PDF pages in this historical version; current v0.6.1 reports
+There are 12 PDF pages in this historical version; current v0.6.2 reports
 contain 13 pages.
 
 PDF names default to `<video stem>_<cell label>.pdf`; `--pdf-name <TOML stem>.pdf`

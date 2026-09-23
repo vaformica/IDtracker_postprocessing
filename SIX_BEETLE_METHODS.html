@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-processor-version="0.6.1-six-beetle" data-model-version="1.0.1" data-base-version="0.8.1">
+<html lang="en" data-processor-version="0.6.2-six-beetle" data-model-version="1.0.1" data-base-version="0.8.1">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Six-beetle post-processing methods</title>
 <style>
@@ -7,7 +7,7 @@
 </style></head><body><main>
 <header><h1>Post-processing six freely interacting beetles</h1>
 <p class="lede">Methods for converting IDtracker.ai trajectories and detection evidence into auditable movement, fungus-use, proximity, and presumed social disappearance measurements for arenas containing six beetles and three fungus regions.</p>
-<span class="version">Six-beetle processor 0.6.1</span><span class="version">Persistent-group model 1.0.1</span><span class="version">Shared primitives 0.8.1</span>
+<span class="version">Six-beetle processor 0.6.2</span><span class="version">Persistent-group model 1.0.1</span><span class="version">Shared primitives 0.8.1</span>
 <p class="small">Current method revised 22 September 2026. All outputs remain <strong>UNREVIEWED</strong> until a person compares inferred identities and contacts with the source video.</p></header>
 <div class="callout limit"><strong>What this analysis can establish</strong>The pipeline measures where IDtracker.ai placed each identity, where a detected blob plausibly carries temporarily unresolved identities, and when assigned beetles are close. These are screens for movement and social behavior. They are not by themselves proof of attack, physical contact, dominance, or posture.</div>
 <nav><strong>Contents</strong><ul><li><a href="#inputs">Inputs and design</a></li><li><a href="#coordinates">Coordinates and frames</a></li><li><a href="#evidence">Evidence states</a></li><li><a href="#groups">Persistent groups</a></li><li><a href="#social">Proximity and PSCP</a></li><li><a href="#movement">Movement mathematics</a></li><li><a href="#wake">Wake and windows</a></li><li><a href="#regions">Arena and fungi</a></li><li><a href="#outputs">Reports and outputs</a></li><li><a href="#limits">Limitations</a></li><li><a href="#maintenance">Maintenance</a></li></ul></nav>
@@ -80,6 +80,12 @@
 <p>Each fungus has a whole-polygon count, a 30-pixel inward edge buffer, and the remaining interior. Any-fungus is the union of all fungi, avoiding double-counting if polygons overlap. Individual fungi may overlap and are not necessarily additive.</p>
 <p>The PDF provides original and estimated fungus tables. Original counts are controls and omit missing identities. Estimated counts use canonical positions, so supported pile movement and occupancy are credited to every member. All time columns are frames; no seconds are calculated.</p></section>
 
+<section id="frame-data"><h2>Frame-by-frame data and later analysis windows</h2>
+<p><code>frame_data.csv</code> joins the evidence needed for each beetle at each global frame: raw and canonical x/y, source label, inferred and ambiguous flags, group ID, arena and fungus membership, observed-proximity partners, and PSCP partners. A missing canonical location has blank x/y and is outside every fungus for counting. A beetle carried by a detected pile has its own row at the pile centroid and receives its own fungus frame and movement step; its <code>inferred</code> flag keeps that assumption visible. Proximity requires two independently assigned identities within the configured distance. PSCP partner IDs describe a persistent shared group and are kept separate from visible proximity.</p>
+<p>Each row also records whether the step <em>from the preceding global frame</em> was accepted under the canonical speed limit, its pixel length, and which fungus contained the step midpoint. The first row in a newly selected analysis window does <em>not</em> contribute the incoming step from before that window. The frame CSV and the source manifest are sufficient to recalculate these counts for any complete subwindow of the exported interval without rerunning IDtracker.ai or changing the original bundle.</p>
+<div class="equation">fungus percent of all frames = 100 × fungus centroid frames / selected frames<br>fungus percent of known-location frames = 100 × fungus centroid frames / canonical frames with a location<br>fungus distance = sum of accepted adjacent-step lengths whose midpoint is in that fungus, excluding the incoming step at the new start frame</div>
+<p>Run <code>python frame_data.py BUNDLE --start FIRST --end LAST --output NEW_FOLDER</code>, using inclusive global frames. The command writes a per-beetle summary, a 15-pair summary, and a provenance JSON with the source CSV hash and original settings. It verifies the frame CSV against the bundle manifest, requires all six rows for every selected frame, and refuses to overwrite an existing output folder. Existing canonical bundles can gain this export in a separate, hashed folder with <code>python backfill_frame_data.py OLD_BUNDLE NEW_FOLDER</code>; the old bundle stays untouched. Re-windowing can change totals and percentages, but changing ROI geometry, proximity cutoff, or pile rules requires a fresh analysis.</p></section>
+
 <section id="outputs"><h2>9. PDF, interactive review, and output tables</h2>
 <p>The 13-page PDF contains a QC summary; all-six map; six full-page individual traces; all 15 pair timelines; the six-row position-state timeline; a 3D x/y/global-frame graph; and separate original and estimated fungus tables. Individual traces mark the last raw coordinate before disappearance and draw inferred canonical segments more heavily.</p>
 <p>The portable HTML review synchronizes the cropped video with canonical positions, 300-frame path traces, pair states, and per-beetle status. It reads the hashed <code>canonical_states.npz</code> produced by the analysis rather than rerunning another inference method.</p>
@@ -89,6 +95,7 @@
 <tr><td><code>pairs.csv</code>, <code>events.csv</code></td><td>Pair summaries and exact inclusive proximity/PSCP intervals.</td></tr>
 <tr><td><code>frame_states.csv</code></td><td>One beetle-frame state with coordinate support, partner count, and ambiguity.</td></tr>
 <tr><td><code>canonical_positions.csv</code></td><td>Canonical x/y, evidence state, and group ID for every beetle-frame.</td></tr>
+<tr><td><code>frame_data.csv</code></td><td>Joined per-beetle, per-global-frame locations, fungus flags, observed-proximity and PSCP partners, plus accepted midpoint-allocated movement steps. Supports later window summaries.</td></tr>
 <tr><td><code>presumed_positions.csv</code></td><td>Raw and canonical coordinates side by side for substitution audit.</td></tr>
 <tr><td><code>reconstructed_positions.csv</code></td><td>Separate jump/bridge diagnostics; not the canonical scientific path.</td></tr>
 <tr><td><code>manifest.json</code>, <code>pipeline_receipt.json</code></td><td>Versions, settings, paths, commands, ROIs, hashes, and UNREVIEWED status.</td></tr></table>
@@ -106,7 +113,7 @@
 
 <section id="maintenance"><h2>11. Provenance and method maintenance</h2>
 <p>Every analysis records processor and model versions, input and code hashes, the blob-evidence hash, ROI vertices, thresholds, source paths, and output hashes. Outputs are written to new directories; existing research results are not overwritten.</p>
-<p>This page describes <code>six_beetle_processor.py</code> 0.6.1, <code>persistent_groups.py</code> model 1.0.1, and shared processor primitives 0.8.1. Tests verify that these embedded versions match the code and that the central evidence classes and equations remain present. Any subsequent change to pile membership, split confirmation, proximity, missingness, movement, region allocation, outputs, or report interpretation must update this page in the same commit.</p>
+<p>This page describes <code>six_beetle_processor.py</code> 0.6.2, <code>persistent_groups.py</code> model 1.0.1, and shared processor primitives 0.8.1. Tests verify that these embedded versions match the code and that the central evidence classes and equations remain present. Any subsequent change to pile membership, split confirmation, proximity, missingness, movement, region allocation, outputs, or report interpretation must update this page in the same commit.</p>
 <div class="callout"><strong>Recommended reporting language</strong>Describe original-coordinate results as IDtracker-assigned measurements. Describe canonical results as detection-supported estimates using persistent-group model 1.0.1, and report the social radius, one-frame reconstruction limit, three-frame split confirmation, and human-review status.</div></section>
-<footer>Six-beetle methods · processor 0.6.1-six-beetle · persistent-group model 1.0.1 · shared primitives 0.8.1 · human review required.</footer>
+<footer>Six-beetle methods · processor 0.6.2-six-beetle · persistent-group model 1.0.1 · shared primitives 0.8.1 · human review required.</footer>
 </main></body></html>
