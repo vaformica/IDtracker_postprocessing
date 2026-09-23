@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""Build a portable ZIP of completed dyadic reviews, reports, and TOML receipts.
+
+Run only after final analysis has completed. The source video and original
+IDtracker trajectories remain on Firebird; review MP4s are smaller derivatives
+with frame count and frame rate preserved for the synchronized HTML viewer.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import shutil
+import subprocess
+import tempfile
+import zipfile
+from pathlib import Path
+
+from dyadic_batch_collect import collect
+from dyadic_batch_worker import FFMPEG, FFPROBE
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def video_frames(path: Path) -> tuple[str, str]:
+    result = subprocess.check_output([FFPROBE, '-v', 'error', '-select_streams', 'v:0',
+                                      '-show_entries', 'stream=nb_frames,r_frame_rate',
+                                      '-of', 'json', str(path)], text=True)
+    stream = json.loads(result)['streams'][0]
+    return stream['nb_frames'], stream['r_frame_rate']
+
+
+def package(root: Path, destination: Path) -> dict:
+    plan = json.loads((root / 'plan.json').read_text())
+    status = collect(root)
+    if status['status_counts'].get('COMPLETE_UNREVIEWED', 0) != len(plan['tasks']):
+        raise RuntimeError(f'Only {status["status_counts"].get("COMPLETE_UNREVIEWED", 0)} of {len(plan["tasks"])} tasks are complete')
+    if destination.exists():
+        raise FileExistsError(destination)
+    with tempfile.TemporaryDirectory(prefix='dyad-package-', dir=root) as temporary:
+        stage = Path(temporary)
+        (stage / 'reports').mkdir()
+        for source in (root / 'reports').iterdir():
+            if source.is_file():
+                shutil.copy2(source, stage / 'reports' / source.name)
+        shutil.copy2(root / 'plan.json', stage / 'plan.json')
+        readme = ('2026 dyadic fight IDtracker and presumed social contact reviews\n\n'
+                  'Open each tasks/<id>/review/interaction_review.html next to its review_video.mp4.\n'
+                  'The MP4 is a compact derivative of the full-resolution Firebird review; '
+                  'frame count and frame rate match the original. Source TOMLs are unchanged.\n'
+                  'submitted.toml is the exact immutable tracking input with background subtraction on.\n'
+                  'The original TOML interval ends exclusively; final analysis converts it to an inclusive end.\n'
+                  'All outputs are UNREVIEWED computational suggestions, not human-verified identities.\n'
+                  'See reports/beetle_quality.csv for raw, screened-without-PSC and after-PSC missingness.\n'
+                  'IDtracker identity scores are self-reported scores, not calibrated correctness probabilities.\n')
+        (stage / 'README.txt').write_text(readme)
+        manifests = []
+        for index, task in enumerate(plan['tasks'], 1):
+            folder = root / 'tasks' / task['id']
+            out = stage / 'tasks' / task['id']
+            (out / 'analysis').mkdir(parents=True)
+            (out / 'review').mkdir()
+            (out / 'input').mkdir()
+            for name in ('source.toml', 'submitted.toml'):
+                shutil.copy2(folder / 'input' / name, out / 'input' / name)
+            for name in ('task.json', 'final_status.json', 'quality_final.json'):
+                shutil.copy2(folder / name, out / name)
+            for source in (folder / 'analysis_final').iterdir():
+                if source.is_file():
+                    shutil.copy2(source, out / 'analysis' / source.name)
+            review = folder / 'review_final'
+            shutil.copy2(review / 'interaction_review.html', out / 'review' / 'interaction_review.html')
+            original = review / 'review_video.mp4'
+            compact = out / 'review' / 'review_video.mp4'
+            command = [FFMPEG, '-hide_banner', '-loglevel', 'error', '-y', '-i', str(original),
+                       '-an', '-vf', 'scale=960:-2', '-c:v', 'libx264', '-preset', 'veryfast',
+                       '-crf', '36', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(compact)]
+            subprocess.run(command, check=True)
+            if video_frames(original) != video_frames(compact):
+                raise RuntimeError(f'Video frame or rate mismatch: {task["id"]}')
+            source_manifest = json.loads((review / 'source_manifest.json').read_text())
+            source_manifest['original_review_video_sha256'] = source_manifest.get('copied_video_sha256')
+            source_manifest['copied_video_sha256'] = sha256(compact)
+            source_manifest['portable_video_transcode'] = command[:-1] + ['review_video.mp4']
+            (out / 'review' / 'source_manifest.json').write_text(json.dumps(source_manifest, indent=2) + '\n')
+            manifests.append(dict(task_id=task['id'], original_bytes=original.stat().st_size,
+                                  compact_bytes=compact.stat().st_size,
+                                  compact_sha256=sha256(compact)))
+            print(f'{index}/{len(plan["tasks"])} {task["id"]}: {compact.stat().st_size} bytes', flush=True)
+        (stage / 'reports' / 'portable_videos.json').write_text(json.dumps(manifests, indent=2) + '\n')
+        with zipfile.ZipFile(destination, 'x', compression=zipfile.ZIP_DEFLATED,
+                             compresslevel=6, allowZip64=True) as archive:
+            for path in sorted(stage.rglob('*')):
+                if path.is_file():
+                    archive.write(path, path.relative_to(stage))
+    return dict(zip=str(destination), bytes=destination.stat().st_size,
+                sha256=sha256(destination), task_count=len(manifests))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('root', type=Path)
+    parser.add_argument('destination', type=Path)
+    args = parser.parse_args()
+    print(json.dumps(package(args.root, args.destination), indent=2))
+
+
+if __name__ == '__main__':
+    main()
