@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import shlex
+import statistics
 from pathlib import Path
 
 from idtracker_toml_manager import DEFAULT_IDTRACKER_ENV
@@ -92,10 +93,11 @@ def render_report(rows: list[dict], batch_root: str) -> str:
         "",
         "Missingness and jumps below use original IDtracker coordinates on the full specified tracking interval [start, end); presumed social contact positions are not substituted. A present IDtracker coordinate is not necessarily a direct visual detection. Estimated accuracy is IDtracker's estimate, not human identity validation. No failed run is assigned a zero-missingness score.",
         "",
-        "| Source | Start–end (end exclusive) | Human missing % | Shared missing % | Shared − human (pp) | Human estimated accuracy % | Shared estimated accuracy % | Human jumps >100 px | Shared jumps >100 px | Status |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
+        "| Source | Start–end (end exclusive) | Human intensity / min area | Human missing % | Shared missing % | Shared − human (pp) | Human estimated accuracy % | Shared estimated accuracy % | Human jumps >100 px | Shared jumps >100 px | Status |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
     completed = 0
+    deltas = []
     for source, pair in sorted(by_source.items()):
         human = pair.get("human_bkg_on", {})
         shared = pair.get("shared_50_400_bkg_on", {})
@@ -103,10 +105,18 @@ def render_report(rows: list[dict], batch_root: str) -> str:
         if has_both:
             completed += 1
         start_end = human.get("tracking_intervals", shared.get("tracking_intervals", [["?", "?"]]))[0]
+        human_intensity = human.get("intensity_ths", ["?", "?"])
+        human_area = human.get("area_ths", ["?"])
+        human_settings = f"{human_intensity[0]}–{human_intensity[1]} / {human_area[0]}"
         delta = shared["missing_percent"] - human["missing_percent"] if has_both else None
+        if delta is not None:
+            deltas.append(delta)
         status = "both measurable" if has_both else f"H: {human.get('stage','?')}; C: {shared.get('stage','?')}"
-        lines.append(f"| {source} | {start_end[0]}–{start_end[1]} | {fmt(human.get('missing_percent'))} | {fmt(shared.get('missing_percent'))} | {fmt(delta)} | {fmt(human.get('estimated_accuracy_percent'))} | {fmt(shared.get('estimated_accuracy_percent'))} | {human.get('jumps_over_100_px','—')} | {shared.get('jumps_over_100_px','—')} | {status} |")
-    lines += ["", f"Paired comparisons available: **{completed}/{len(by_source)}**.", "", "The shared setting should be judged across missingness, estimated accuracy, per-beetle results, and jump counts. Neither setting has been manually reviewed for identity continuity or pile interactions.", "", f"Firebird batch: `{batch_root}`. Detailed run and per-beetle metrics are in `runs.csv`; pairwise differences are in `pairs.csv`.", ""]
+        lines.append(f"| {source} | {start_end[0]}–{start_end[1]} | {human_settings} | {fmt(human.get('missing_percent'))} | {fmt(shared.get('missing_percent'))} | {fmt(delta)} | {fmt(human.get('estimated_accuracy_percent'))} | {fmt(shared.get('estimated_accuracy_percent'))} | {human.get('jumps_over_100_px','—')} | {shared.get('jumps_over_100_px','—')} | {status} |")
+    lines += ["", f"Paired comparisons available: **{completed}/{len(by_source)}**."]
+    if deltas:
+        lines += [f"Shared settings reduced missingness in **{sum(delta < 0 for delta in deltas)}/{len(deltas)}** measurable pairs; median within-pair change was **{statistics.median(deltas):+.2f} percentage points**. This is descriptive, not a test of biological significance."]
+    lines += ["", "The shared setting should be judged across missingness, estimated accuracy, per-beetle results, and jump counts. Neither setting has been manually reviewed for identity continuity or pile interactions. Estimated accuracy can be misleading when almost all coordinates are missing.", "", f"Firebird batch: `{batch_root}`. Detailed run metrics are in `runs.csv`; pairwise differences are in `pairs.csv`, and individual-beetle missingness is in `per_beetle.csv`.", ""]
     return "\n".join(lines)
 
 
@@ -129,13 +139,31 @@ def main() -> None:
     pairs = []
     for source, group in sorted(by_source.items()):
         h, c = group.get("human_bkg_on", {}), group.get("shared_50_400_bkg_on", {})
-        pair = {"source_toml": source, "human_job_id": h.get("job_id"), "shared_job_id": c.get("job_id"), "human_stage": h.get("stage"), "shared_stage": c.get("stage")}
+        interval = h.get("tracking_intervals", c.get("tracking_intervals", [[None, None]]))[0]
+        human_intensity = h.get("intensity_ths", [None, None])
+        human_area = h.get("area_ths", [None])
+        pair = {"source_toml": source, "human_job_id": h.get("job_id"), "shared_job_id": c.get("job_id"),
+                "start_frame": interval[0], "end_frame_exclusive": interval[1],
+                "human_intensity_low": human_intensity[0], "human_intensity_high": human_intensity[1],
+                "human_area_min_px2": human_area[0],
+                "human_stage": h.get("stage"), "shared_stage": c.get("stage")}
         for key in ("missing_percent", "all_six_present_percent", "estimated_accuracy_percent", "jumps_over_100_px", "jumps_over_200_px"):
             pair["human_" + key] = h.get(key)
             pair["shared_" + key] = c.get(key)
             pair["shared_minus_human_" + key] = c[key] - h[key] if isinstance(h.get(key), (int, float)) and isinstance(c.get(key), (int, float)) else None
         pairs.append(pair)
     write_csv(args.batch_dir / "pairs.csv", pairs, list(pairs[0]))
+    beetles = []
+    for source, group in sorted(by_source.items()):
+        h, c = group.get("human_bkg_on", {}), group.get("shared_50_400_bkg_on", {})
+        hm, cm = h.get("per_animal_missing_percent"), c.get("per_animal_missing_percent")
+        for beetle in range(6):
+            human_value = hm[beetle] if hm else None
+            shared_value = cm[beetle] if cm else None
+            beetles.append({"source_toml": source, "beetle_id_zero_based": beetle,
+                            "human_missing_percent": human_value, "shared_missing_percent": shared_value,
+                            "shared_minus_human_pp": shared_value-human_value if human_value is not None and shared_value is not None else None})
+    write_csv(args.batch_dir / "per_beetle.csv", beetles, list(beetles[0]))
     (args.batch_dir / "COMPARISON.md").write_text(render_report(rows, batch_root))
     print(f"{sum('missing_percent' in r for r in rows)}/{len(rows)} runs measurable; report: {args.batch_dir / 'COMPARISON.md'}")
 

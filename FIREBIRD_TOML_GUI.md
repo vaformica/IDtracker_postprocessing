@@ -25,11 +25,11 @@ The background-subtraction checkbox now follows each selected TOML. Merely typin
 
 `run_paired_firebird.py --submit` pins the five original 2024 GroupTrial TOMLs that lacked trajectories in the first managed batch by SHA-256. It makes two separate background-subtracted runs per source: original human thresholds and area, and the provisional shared 50–255 intensity / 400.0 px² minimum area setting. The source TOMLs, four ROIs, and each individual start/end frame are preserved. The original MIX threshold with background enabled is a deliberate control and may perform poorly; it is not a recommended operating setting. The jobs request Quadro 8000 GPUs on `gpu02` because the four prior no-output jobs encountered uncorrectable ECC errors on `gpu04`.
 
-The companion `compare_paired_firebird.py results/paired_20260922_004953_utc` writes `runs.csv`, `pairs.csv`, and `COMPARISON.md` from actual trajectory files. It reports raw missing coordinates, per-beetle missingness, all-six-present frames, IDtracker's estimated identity accuracy, and adjacent jumps. Failed or unfinished runs remain unscored. These are tracking-quality measures, before presumed social contact reconstruction; visual review of identity continuity is still needed.
+The companion `compare_paired_firebird.py results/paired_20260922_004953_utc` writes `runs.csv`, `pairs.csv`, `per_beetle.csv`, and `COMPARISON.md` from actual trajectory files. It reports raw missing coordinates, per-beetle missingness, all-six-present frames, IDtracker's estimated identity accuracy, and adjacent jumps. Failed or unfinished runs remain unscored. These are tracking-quality measures, before presumed social contact reconstruction; visual review of identity continuity is still needed.
 
 ## Run the six-beetle processor
 
-Wait until the managed job reports `COMPLETE_UNREVIEWED`. Select it and click **Open post-processing GUI**. In the processor window:
+Wait until the managed job reports `COMPLETE_UNREVIEWED` or `OUTPUT_READY_WITH_EXIT_WARNING` with a verified trajectory. Select it and click **Open post-processing GUI**. In the processor window:
 
 1. Click **Find six-beetle sessions**. The managed IDtracker run folder is already included in the default search roots.
 2. Select the completed session. Confirm the source video, global start and inclusive end frames, and the proximity, jump, and reconstruction settings.
