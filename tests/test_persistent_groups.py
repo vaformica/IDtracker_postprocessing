@@ -8,12 +8,20 @@ class PersistentTests(unittest.TestCase):
   r=np.full((7,2,2),np.nan);r[0]=[[0,0],[10,0]];r[4,0]=[14,0]
   b={'0':[blob(5)],'1':[blob(7)],'2':[blob(9)],'3':[],'4':[blob(14)],'5':[blob(16)],'6':[blob(18)]}
   g=persistent_groups(r,b)
-  self.assertFalse(g['masks'][0,1][0])
-  self.assertEqual(list(g['source'][0]),['ASSIGNED','ASSIGNED'])
+  self.assertTrue(g['masks'][0,1][0])
+  self.assertEqual(sorted(g['source'][0]),['ASSIGNED','PSCP_BLOB'])
   self.assertTrue(np.isnan(g['xy'][3]).all())
   for t in [1,2,4,5,6]:self.assertTrue(g['masks'][0,1][t])
   self.assertEqual(g['group_ids'][2,1],g['group_ids'][3,1])
   self.assertTrue(g['unresolved_masks'][0,1][3])
+ def test_two_idtracker_coordinates_on_one_blob_are_one_visible_plus_pscp(self):
+  r=np.array([[[0,0],[10,0]],[[2,0],[8,0]],[[3,0],[7,0]]],float)
+  b={str(t):[blob(6+t)] for t in range(3)}
+  g=persistent_groups(r,b)
+  self.assertTrue(g['masks'][0,1].all())
+  self.assertTrue((g['inferred'].sum(axis=1)==1).all())
+  self.assertTrue((g['source']=='ASSIGNED').sum(axis=1).tolist()==[1,1,1])
+  self.assertTrue(np.isfinite(g['xy']).all())
  def test_moving_pile_reacquires_after_short_total_detection_gap(self):
   r=np.full((4,2,2),np.nan);r[0]=[[0,0],[4,0]];r[3,0]=[80,0]
   b={'0':[blob(2)],'1':[],'2':[],'3':[blob(80)]}

@@ -8,7 +8,7 @@ is a hypothesis and raw coordinates must be retained separately.
 import itertools
 import numpy as np
 
-MODEL_VERSION='1.1.0'
+MODEL_VERSION='1.2.0'
 
 
 def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3,
@@ -107,12 +107,18 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
             else:e=es[0]
             p=np.asarray(bs[j]['centroid'],float);e['last']=p;e['last_frame']=t;active.append(e)
             members=sorted(e['members']);is_pile=len(members)>1
+            # IDtracker can report several identity coordinates for one
+            # segmented blob. Those coordinates are not independent sightings:
+            # one blob supports at most one visible identity. Pick the closest
+            # raw coordinate as its anchor, then infer the other pile members.
+            matched=[a for a in members if raw_blob(t,a,bs)==j]
+            visible=min(matched,key=lambda a:(np.linalg.norm(raw[t,a]-p),a)) if matched else None
             for a in members:
-                matched=raw_blob(t,a,bs)==j
-                xy[t,a]=p if is_pile else (raw[t,a] if matched and np.isfinite(raw[t,a]).all() else p)
-                group_ids[t,a]=e['id'];inferred[t,a]=not matched
-                anchors[t,a]=members[0]
-                source[t,a]='ASSIGNED' if matched else 'PSCP_BLOB' if is_pile else 'BLOB_CONTINUITY'
+                assigned=a==visible
+                xy[t,a]=p if is_pile else (raw[t,a] if assigned else p)
+                group_ids[t,a]=e['id'];inferred[t,a]=not assigned
+                anchors[t,a]=visible if visible is not None else members[0]
+                source[t,a]='ASSIGNED' if assigned else 'PSCP_BLOB' if is_pile else 'BLOB_CONTINUITY'
         for e in unseen:
             active.append(e)
             for a in e['members']:

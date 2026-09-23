@@ -7,7 +7,7 @@ with **no detected location**. The last state is gray in the HTML timeline and
 has `unresolved_contact_partners` in `frame_data.csv`. It adds no coordinates,
 movement, or automatic fungus occupancy.
 
-The persistent-group model is version 1.1.0. After a detection gap, membership
+Version 1.1.0 introduced bounded gap reconnection, retained in 1.2.0. After a detection gap, membership
 persists. A returning blob can reconnect the group within a bounded radius
 that grows with elapsed frames. Defaults: 20 px/frame growth from the 60-px
 social radius, a 300-px cap, a 30-frame maximum automatic gap, and three
@@ -15,6 +15,24 @@ consistent separate detections to split a group. These are tunable in the
 Firebird post-processing GUI and recorded with each automatic result. Longer
 or ambiguous gaps remain unresolved for human review. These parameters are
 engineering hypotheses, not measured beetle-speed limits.
+
+### One detected blob, several IDtracker coordinates (model 1.2.0)
+
+Vince identified a missed 1–5 PSC episode in the 2024 OLD sample. The
+segmentation evidence has one blob near them while IDtracker supplies finite
+coordinates for both IDs. Model 1.1.0 counted both as assigned and excluded
+most of their shared-blob episode from PSC. Model 1.2.0 gives one blob at most
+one visible identity: the coordinate closest to its centroid is the anchor,
+and the other group member is an inferred PSCP position. In frames 2200–2600,
+pair 1–5 now has 389 position-supported PSC frames instead of 39. At frame
+2300, beetle 5 anchors the blob and beetle 1 is inferred there. Which ID is
+actually visible remains a review question; blob evidence alone cannot prove
+that a fight occurred or that a hidden beetle never separated.
+
+The HTML now supports dragging across a pair's timeline row to select an
+inclusive range, then applying PSC, no PSC, or locationless pile with one
+button. The older detailed controls remain for location, proximity, and
+fungus edits. A selected range highlights on the timeline.
 
 The portable HTML is now an attributed review interface for any supported
 animal count and fungus count. A reviewer selects a beetle, partner, inclusive
@@ -58,8 +76,8 @@ outputs remain scientifically unverified until the source video is examined.
 
 ## Review examples
 
-- [Six-beetle gap HTML](../results/review_editor_validation_20260923/six_gap_review_final_v2/interaction_review.html), [PDF](../results/review_editor_validation_20260923/six_gap_analysis_final/six_gap_2200_2600.pdf), [frame CSV](../results/review_editor_validation_20260923/six_gap_analysis_final/frame_data.csv).
-- [Two-beetle HTML](../results/review_editor_validation_20260923/dyad_review_final_v2/interaction_review.html), [PDF](../results/review_editor_validation_20260923/dyad_analysis_final/dyad_new_model_820_1120.pdf), [frame CSV](../results/review_editor_validation_20260923/dyad_analysis_final/frame_data.csv).
+- [Revised six-beetle 1–5 HTML](../results/review_editor_validation_20260923/six_gap_one_blob_v12_final_review/interaction_review.html), [PDF](../results/review_editor_validation_20260923/six_gap_one_blob_v12_final_analysis/six_gap_one_blob_v12_final.pdf), [frame CSV](../results/review_editor_validation_20260923/six_gap_one_blob_v12_final_analysis/frame_data.csv).
+- [Revised dyadic HTML](../results/review_editor_validation_20260923/dyad_one_blob_v12_final_review/interaction_review.html), [PDF](../results/review_editor_validation_20260923/dyad_one_blob_v12_final_analysis/dyad_one_blob_v12_final.pdf).
 
 Each HTML requires its adjacent `review_video.mp4`. For reliable browser
 seeking, use `python serve_review.py REVIEW_FOLDER --port 8769` and open the

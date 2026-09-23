@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-processor-version="0.8.0-group" data-model-version="1.1.0" data-base-version="0.8.1">
+<html lang="en" data-processor-version="0.8.0-group" data-model-version="1.2.0" data-base-version="0.8.1">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Six-beetle post-processing methods</title>
 <style>
@@ -7,8 +7,8 @@
 </style></head><body><main>
 <header><h1>Post-processing six freely interacting beetles</h1>
 <p class="lede">Methods for converting IDtracker.ai trajectories and detection evidence into auditable movement, fungus-use, proximity, and presumed social disappearance measurements. The 2024 GroupTrial profile contains six beetles and three fungi; the shared processor also accepts other group and fungus counts.</p>
-<span class="version">Group processor 0.8.0</span><span class="version">Persistent-group model 1.1.0</span><span class="version">Shared primitives 0.8.1</span>
-<p class="small">Current method revised 22 September 2026. All outputs remain <strong>UNREVIEWED</strong> until a person compares inferred identities and contacts with the source video.</p></header>
+<span class="version">Group processor 0.8.0</span><span class="version">Persistent-group model 1.2.0</span><span class="version">Shared primitives 0.8.1</span>
+<p class="small">Current method revised 23 September 2026. All outputs remain <strong>UNREVIEWED</strong> until a person compares inferred identities and contacts with the source video.</p></header>
 <div class="callout limit"><strong>What this analysis can establish</strong>The pipeline measures where IDtracker.ai placed each identity, where a detected blob plausibly carries temporarily unresolved identities, and when assigned beetles are close. These are screens for movement and social behavior. They are not by themselves proof of attack, physical contact, dominance, or posture.</div>
 <nav><strong>Contents</strong><ul><li><a href="#inputs">Inputs and design</a></li><li><a href="#coordinates">Coordinates and frames</a></li><li><a href="#evidence">Evidence states</a></li><li><a href="#groups">Persistent groups</a></li><li><a href="#social">Proximity and PSCP</a></li><li><a href="#movement">Movement mathematics</a></li><li><a href="#wake">Wake and windows</a></li><li><a href="#regions">Arena and fungi</a></li><li><a href="#outputs">Reports and outputs</a></li><li><a href="#limits">Limitations</a></li><li><a href="#maintenance">Maintenance</a></li></ul></nav>
 
@@ -26,7 +26,7 @@
 <section id="evidence"><h2>3. Original and canonical positional evidence</h2>
 <p>The original trajectory is never overwritten. A separate canonical path combines it with detections. Every canonical coordinate has an evidence label:</p>
 <table><tr><th>State</th><th>Interpretation</th><th>Canonical position</th></tr>
-<tr><td><strong>ASSIGNED</strong></td><td>A finite identity coordinate uniquely matches a nearby detection.</td><td>The detection supports the assigned identity.</td></tr>
+<tr><td><strong>ASSIGNED</strong></td><td>A finite identity coordinate matches a nearby detection and is selected as that blob's single visible anchor.</td><td>The detection supports this assigned identity.</td></tr>
 <tr><td><strong>PSCP_BLOB</strong></td><td>The identity belongs to a multi-beetle group but is not independently assigned to its current blob.</td><td>The shared detected-blob centroid is an inferred position.</td></tr>
 <tr><td><strong>BLOB_CONTINUITY</strong></td><td>A singleton identity is carried by one plausible detection without a unique raw match.</td><td>The detected centroid is inferred; this alone is not social contact.</td></tr>
 <tr><td><strong>MISSING</strong></td><td>No compatible detection supports the entity’s location.</td><td>No position is assigned.</td></tr></table>
@@ -42,6 +42,7 @@
 <p>After a true detection gap, membership persists while position is missing. By default, for gaps of at most 30 frames, a returning blob can reacquire the group inside a bounded radius: the smaller of 300 pixels, 100 pixels times elapsed frames, and 60 plus 20 pixels for each additional elapsed frame. This permits limited movement during a brief blackout without filling in unseen coordinates. Beyond the configured maximum gap, automatic long-distance reacquisition is withheld for human review. The Firebird post-processing GUI exposes gap growth, radius cap, maximum gap, and split confirmation for a fresh automatic run; their actual values are saved in its manifest. An identity label can guide selection only inside these spatial gates.</p>
 <h3>4.3 Forming and moving a pile</h3>
 <p>Each active entity contains one or more identities. When two entities choose the same detection, their members merge into one group. A third beetle can join an existing pair by converging on the same blob. The group then follows a compatible detected blob frame by frame, so inferred members move with the visible pile instead of remaining frozen where they disappeared.</p>
+<p><strong>One blob supports one visible identity.</strong> IDtracker can emit coordinates for several IDs close to one segmented blob. They are not separate visual detections. The model selects the IDtracker coordinate closest to that blob centroid as its visible anchor; other members at the same blob are labeled <code>PSCP_BLOB</code>. The anchor may change as IDtracker assignments change, so this is a provisional identity choice, not visual proof of which beetle is on top.</p>
 <div class="callout assumption"><strong>How pile movement enters the data</strong>If beetles 4 and 5 remain in a supported pile for 1,000 pixels, the canonical movement table assigns that path to both. If 300 supported frames fall within fungus 3, the estimated fungus table assigns 300 fungus-3 frames to both. These are explicit model-based estimates, not two independent visual observations.</div>
 <h3>4.4 Detection gaps</h3>
 <p>If identities disappear but one compatible blob remains, the group follows it. If both identities and all compatible blobs disappear, membership persists but location is missing. Those frames add neither distance nor fungus occupancy. A later compatible blob can reacquire the group near its last supported position.</p>
@@ -56,6 +57,7 @@
 <h3>5.2 Presumed social contact position (PSCP)</h3>
 <div class="equation">PSCP<sub>ij</sub>(f) = same persistent group<br>AND both canonical positions finite<br>AND at least one identity inferred</div>
 <p>This prevents ordinary interactions from becoming PSCP. Two assigned beetles 20 pixels apart are visible proximity. They become PSCP only when they share a persistent group and at least one position is inferred. Groups may contain three or more beetles; overlapping pair durations must not be summed as elapsed group time.</p>
+<p>In the 2024 OLD review, IDtracker supplied both beetles 1 and 5 with nearby coordinates while the detection export contained one blob. Earlier code labeled both assigned, causing hundreds of false non-PSC frames. Under the one-blob rule, the second identity is inferred at that shared blob and the pair receives PSCP. A reviewer should still inspect the video for true separation that segmentation failed to resolve.</p>
 <p>If group membership persists without a detection, there is no PSCP position. The pair is marked <strong>unresolved pile location</strong> in frame data and the gray pair timeline; it is not counted as position-supported PSCP, movement, or fungus occupancy. No straight line is drawn through the missing interval.</p>
 <h3>5.3 Timeline colors</h3>
 <p>In the pair panel, teal is visible assigned proximity and gold is pair-specific PSCP. In the individual panel, blue is a supported non-inferred position, orange is missing, and gold is any inferred canonical position. Individual gold can be social <code>PSCP_BLOB</code> or singleton <code>BLOB_CONTINUITY</code>; use the pair panel and evidence-state CSV to distinguish them. Hatching marks unresolved attribution.</p></section>
@@ -114,7 +116,7 @@
 
 <section id="maintenance"><h2>11. Provenance and method maintenance</h2>
 <p>Every analysis records processor and model versions, input and code hashes, the blob-evidence hash, ROI vertices, thresholds, source paths, and output hashes. Outputs are written to new directories; existing research results are not overwritten.</p>
-<p>This page describes <code>six_beetle_processor.py</code> 0.8.0, <code>persistent_groups.py</code> model 1.1.0, and shared processor primitives 0.8.1. Despite its historical filename, the processor accepts any group with at least two animals and one fungus ROI. Tests verify that these embedded versions match the code and that the central evidence classes and equations remain present. Any subsequent change to pile membership, split confirmation, proximity, missingness, movement, region allocation, outputs, or report interpretation must update this page in the same commit.</p>
-<div class="callout"><strong>Recommended reporting language</strong>Describe original-coordinate results as IDtracker-assigned measurements. Describe canonical results as detection-supported estimates using persistent-group model 1.1.0, and report the social radius, one-frame reconstruction limit, 30-frame gap reacquisition window, three-frame split confirmation, and human-review status.</div></section>
-<footer>Group methods · processor 0.8.0-group · persistent-group model 1.1.0 · shared primitives 0.8.1 · human review required.</footer>
+<p>This page describes <code>six_beetle_processor.py</code> 0.8.0, <code>persistent_groups.py</code> model 1.2.0, and shared processor primitives 0.8.1. Despite its historical filename, the processor accepts any group with at least two animals and one fungus ROI. Tests verify that these embedded versions match the code and that the central evidence classes and equations remain present. Any subsequent change to pile membership, split confirmation, proximity, missingness, movement, region allocation, outputs, or report interpretation must update this page in the same commit.</p>
+<div class="callout"><strong>Recommended reporting language</strong>Describe original-coordinate results as IDtracker-assigned measurements. Describe canonical results as detection-supported estimates using persistent-group model 1.2.0, and report the social radius, one-frame reconstruction limit, 30-frame gap reacquisition window, three-frame split confirmation, one-blob-one-anchor rule, and human-review status.</div></section>
+<footer>Group methods · processor 0.8.0-group · persistent-group model 1.2.0 · shared primitives 0.8.1 · human review required.</footer>
 </main></body></html>

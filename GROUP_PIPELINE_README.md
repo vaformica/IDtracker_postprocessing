@@ -42,13 +42,19 @@ Open `review/interaction_review.html` with its `review_video.mp4` beside it.
 For reliable seeking in a browser preview, you can also run
 `python serve_review.py /path/to/review --port 8769` and open the localhost URL
 it prints; this serves only that folder and supports MP4 byte ranges.
-Expand **Review and correct frames**. Select a beetle, partner when relevant,
-inclusive frame range, decision, reviewer, and reason. The viewer can override
+Expand **Review and correct frames**. For a long episode, turn on **Select range
+on timeline** and drag along a pair row. The inclusive frame range and pair
+fill in; the beetle inferred more often in that interval is selected first.
+Check that choice, enter reviewer and reason, then use a one-click PSC action
+or the detailed controls. The viewer can override
 presumed social contact, visible proximity, the beetle's location (raw,
 missing, or co-located with a detected partner), and fungus identity. The
 timeline, video overlay, and beetle-status panel update immediately. Gray pair
 segments mean pile membership remains plausible but no position was detected;
 those frames do not contribute automatic distance or fungus occupancy.
+The automatic model treats multiple IDtracker identity coordinates near a
+single segmented blob as one visible anchor plus inferred pile members. It
+does not count the coordinates as independent sightings.
 
 Use **Export review log** to save a JSON record bound to the exact automatic
 bundle hashes. It contains each dated decision and can be imported back into

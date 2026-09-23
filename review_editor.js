@@ -8,6 +8,16 @@ $('modelSettings').textContent=`Automatic settings: proximity ${D.proximityThres
 const animal=$('reviewAnimal'),partner=$('reviewPartner'),kind=$('reviewKind'),value=$('reviewValue');
 for(let a=0;a<count;a++){animal.add(new Option(String(a),String(a)));partner.add(new Option(String(a),String(a)))}
 partner.value=count>1?'1':'0';$('reviewStart').value=D.start;$('reviewEnd').value=D.start;
+let selection=null,dragStart=null;
+window.reviewRangeMode=false;
+const graph=document.getElementById('timeline');
+function graphCoordinates(e){const r=graph.getBoundingClientRect();return {x:(e.clientX-r.left)*graph.width/r.width,y:(e.clientY-r.top)*graph.height/r.height}}
+function frameAt(x){return Math.max(D.start,Math.min(D.end,Math.round(D.start+(x-55)/1440*(D.end-D.start))))}
+window.paintReviewRange=context=>{if(!selection)return;const x0=55+(selection.lo-D.start)/(D.end-D.start)*1440,x1=55+(selection.hi-D.start)/(D.end-D.start)*1440;context.fillStyle='#ffffff35';context.fillRect(x0,0,Math.max(3,x1-x0),graph.height-12);if(selection.row>=0){context.strokeStyle='#ffffff';context.lineWidth=2;context.strokeRect(x0,18+selection.row*17,Math.max(3,x1-x0),12)}};
+$('rangeMode').onclick=()=>{window.reviewRangeMode=!window.reviewRangeMode;$('rangeMode').setAttribute('aria-pressed',String(window.reviewRangeMode));$('rangeMode').textContent=window.reviewRangeMode?'Range selection on — click to turn off':'Select range on timeline';$('rangeSummary').textContent=window.reviewRangeMode?'Drag across a pair row to select frames and beetles.':'Click the timeline to seek.';graph.style.cursor=window.reviewRangeMode?'crosshair':'pointer'};
+graph.addEventListener('pointerdown',e=>{if(!window.reviewRangeMode)return;const p=graphCoordinates(e);dragStart={frame:frameAt(p.x),row:Math.floor((p.y-18)/17)};graph.setPointerCapture(e.pointerId);e.preventDefault()});
+graph.addEventListener('pointermove',e=>{if(!window.reviewRangeMode||!dragStart)return;const f=frameAt(graphCoordinates(e).x);selection={lo:Math.min(f,dragStart.frame),hi:Math.max(f,dragStart.frame),row:dragStart.row};draw(+slider.value)});
+graph.addEventListener('pointerup',e=>{if(!window.reviewRangeMode||!dragStart)return;const f=frameAt(graphCoordinates(e).x);selection={lo:Math.min(f,dragStart.frame),hi:Math.max(f,dragStart.frame),row:dragStart.row};dragStart=null;$('reviewStart').value=selection.lo;$('reviewEnd').value=selection.hi;const pair=D.pairs[selection.row];if(pair){let [a,b]=pair;const inferredA=D.inferred.slice(selection.lo-D.start,selection.hi-D.start+1).reduce((n,row)=>n+Number(row[a]),0),inferredB=D.inferred.slice(selection.lo-D.start,selection.hi-D.start+1).reduce((n,row)=>n+Number(row[b]),0);if(inferredB>inferredA)[a,b]=[b,a];animal.value=String(a);partner.value=String(b)}$('rangeSummary').textContent=`Selected ${selection.lo}–${selection.hi}${pair?' · pair '+pair.join('–'):''}. Review the beetle choice before applying.`;draw(+slider.value);e.preventDefault()});
 animal.onchange=()=>{if(animal.value===partner.value)partner.value=String((Number(animal.value)+1)%count)};
 $('useStart').onclick=()=>$('reviewStart').value=slider.value;
 $('useEnd').onclick=()=>$('reviewEnd').value=slider.value;
@@ -73,6 +83,7 @@ $('applyReview').onclick=()=>{try{
  const d={created_utc:new Date().toISOString(),reviewer:$('reviewer').value.trim(),reason:$('reviewReason').value.trim(),kind:kind.value,value:value.value,animal_id:Number(animal.value),partner_id:kind.value==='fungus'?null:Number(partner.value),start_frame:Number($('reviewStart').value),end_frame_inclusive:Number($('reviewEnd').value)};
  validate(d);log.push(d);rebuild();
 }catch(e){$('reviewMessage').textContent=e.message}};
+for(const [id,choice] of [['quickPSC','yes'],['quickUnresolved','unresolved'],['quickNoPSC','no']])$(id).onclick=()=>{kind.value='pscp';values();value.value=choice;$('applyReview').click()};
 $('undoReview').onclick=()=>{log.pop();rebuild()};
 $('exportReview').onclick=()=>{
  const documentData={schema:'beetle-review-v1',analysis_manifest_sha256:D.analysisManifestSha256,canonical_sha256:D.canonicalSha256,frame_start:D.start,frame_end_inclusive:D.end,exported_utc:new Date().toISOString(),decisions:log};
