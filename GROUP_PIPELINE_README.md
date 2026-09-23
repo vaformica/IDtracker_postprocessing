@@ -58,8 +58,21 @@ Older canonical bundles can receive a separate frame export with
 `python backfill_frame_data.py OLD_BUNDLE NEW_FOLDER`; the old bundle remains
 unchanged.
 
-The current Firebird session-discovery GUI is a specialized six-beetle,
-four-ROI interface. The general CLI is the supported path for dyads and larger
-groups until their own GUI profiles are implemented. Tests exercise the core,
-PDF, and frame export for 2/1, 6/3, and 7/4 animal/fungus configurations; these
-are software checks, not validation of biological identity assignments.
+For an SSH-based local interface, run `python group_firebird_gui.py`. Its
+profile menu can show all supported sessions, only dyads, or the established
+six-beetle/four-ROI sessions. Selecting a session fills its recorded start and
+end frames into the analysis fields; review them before submission. The GUI
+deploys a hashed code snapshot to Firebird, submits the same shared pipeline,
+reports the Slurm job, and can download a verified bundle. The historical
+`six_beetle_firebird_gui.py` starts with the six-beetle filter selected but can
+also switch profiles. The separate older dyadic `firebird_gui.py` and v0.8.1
+processor remain available for comparison; their outputs do not silently mix
+with these new persistent-pile estimates.
+
+Tests exercise the core, PDF, HTML, and frame export for 2/1, 6/3, and 7/4
+animal/fungus configurations. These are software checks, not validation of
+biological identity assignments.
+
+A real 2026 two-beetle/one-fungus Firebird run, its portable reviews, and the
+important long-contact caveat are recorded in
+[`reports/DYADIC_GENERIC_VALIDATION_2026-09-22.md`](reports/DYADIC_GENERIC_VALIDATION_2026-09-22.md).

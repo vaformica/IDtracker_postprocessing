@@ -13,7 +13,7 @@ const D=__DATA__;
 const v=document.getElementById('video'),c=document.getElementById('overlay'),ctx=c.getContext('2d'),graph=document.getElementById('timeline'),gx=graph.getContext('2d'),slider=document.getElementById('slider');
 const colors=['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b'];
 const color=a=>colors[a%colors.length],animalCount=D.held[0].length;
-graph.height=Math.max(290,24+D.pairs.length*17);
+graph.height=Math.max(100,24+D.pairs.length*17);
 graph.style.height=Math.min(800,graph.height)+'px';
 document.getElementById('thresholdNote').textContent=`Teal: assigned-identity proximity (≤${D.proximityThreshold} px). Gold: automatic PSCP. Cursor and slider use global frames. Proximity/PSCP do not establish fighting.`;
 document.getElementById('trailNote').textContent=`Solid dots: supported assignments. Hollow dots: inferred pile members. No detection means MISSING. Fading trails show up to 300 frame intervals and break at gaps or steps over ${D.maxStep} px. No linear interpolation or position holding is displayed. Fungus state for inferred coordinates is estimated.`;

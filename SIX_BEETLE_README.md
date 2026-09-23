@@ -84,11 +84,11 @@ The download action packages the PDF, CSVs, manifest, interactive HTML, and MP4
 and verifies the archive SHA-256 after transfer. Jobs write only under the
 configured output root. They never approve results automatically.
 
-This is an explicit **six-beetle persistent-piles** profile. The existing
-`firebird_gui.py` and processor v0.8.1 remain the supported dyadic path. Animal
-counts above six are not yet supported by the six-beetle report layer, even
-though the lower-level persistent-group model is written for an arbitrary
-number of identities.
+The original `six_beetle_firebird_gui.py` opens with the six-beetle profile.
+`group_firebird_gui.py` offers all-group and dyadic discovery and runs the same
+persistent-pile processor, PDF, frame data, and HTML review. The older
+`firebird_gui.py` and processor v0.8.1 remain as the historical dyadic baseline;
+their scientific outputs are kept separate from the new inferred-pile outputs.
 
 ## Analysis-only command
 

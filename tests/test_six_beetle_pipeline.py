@@ -1,6 +1,8 @@
 import hashlib
 import json
 import re
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +14,7 @@ from run_six_beetle_pipeline import arena_crop, find_trajectory
 from six_beetle_firebird_gui import (
     DEFAULT_SESSION_ROOTS,
     DEFAULT_SSH_HOST,
+    REMOTE_DISCOVERY,
     connection_error,
     pipeline_command,
     validated_parameters,
@@ -83,9 +86,13 @@ class PortableReviewTests(unittest.TestCase):
             dyad = root / "dyad_analysis"
             dyad.mkdir()
             dyad_state = dyad / "canonical_states.npz"
-            np.savez_compressed(dyad_state, raw=raw[:,:2], xy=xy[:,:2],
-                inferred=inferred[:,:2], group_ids=group_ids[:,:2],
-                source=source[:,:2], ambiguous=np.zeros((frames,2),dtype=bool))
+            dyad_raw=raw[:,:2].copy();dyad_xy=xy[:,:2].copy()
+            dyad_source=source[:,:2].copy();dyad_ids=group_ids[:,:2].copy()
+            dyad_raw[2,1]=np.nan;dyad_xy[2,1]=dyad_xy[2,0]
+            dyad_source[2,1]='PSCP_BLOB';dyad_ids[2,1]=dyad_ids[2,0]
+            np.savez_compressed(dyad_state, raw=dyad_raw, xy=dyad_xy,
+                inferred=dyad_source=='PSCP_BLOB', group_ids=dyad_ids,
+                source=dyad_source, ambiguous=np.zeros((frames,2),dtype=bool))
             (dyad / "manifest.json").write_text(json.dumps(dict(
                 settings={"start":100,"social_distance_threshold_px":60}, rois=rois[:2],
                 output_sha256={dyad_state.name:hashlib.sha256(dyad_state.read_bytes()).hexdigest()})))
@@ -93,12 +100,33 @@ class PortableReviewTests(unittest.TestCase):
             dyad_payload = json.loads(re.search(r"const D=(.*);\nconst v=",dyad_html.read_text()).group(1))
             self.assertEqual(dyad_payload['pairs'],[[0,1]])
             self.assertEqual(len(dyad_payload['fungus'][0]),2)
+            self.assertEqual(dyad_payload['pairStates'][0][2],2)
 
 
 class PipelineHelpersTests(unittest.TestCase):
+    def test_group_discovery_filters_dyadic_and_six_profiles(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for count, rois in ((2,2),(6,4)):
+                session = root/str(count)
+                session.mkdir()
+                (session/'session.json').write_text(json.dumps(dict(number_of_animals=count,
+                    roi_list=[[[0,0],[10,0],[10,10],[0,10]]]*rois,
+                    tracking_intervals=[[100,200]], video_paths=['video.mp4'])))
+                (session/'trajectories.npy').write_bytes(b'test')
+            def discover(profile):
+                proc = subprocess.run([sys.executable,'-c',REMOTE_DISCOVERY],
+                    input=json.dumps(dict(roots=[str(root)],profile=profile)),
+                    text=True,capture_output=True,check=True)
+                return json.loads(proc.stdout)
+            self.assertEqual([r['animal_count'] for r in discover('dyadic')],[2])
+            self.assertEqual([r['animal_count'] for r in discover('six')],[6])
+            self.assertEqual({r['animal_count'] for r in discover('all')},{2,6})
+
     def test_gui_uses_established_firebird_alias_and_explains_vpn_failure(self):
         self.assertEqual(DEFAULT_SSH_HOST, "firebird")
         self.assertIn("managed_idtracker_runs", DEFAULT_SESSION_ROOTS)
+        self.assertIn("2026_Fights_Recorded", DEFAULT_SESSION_ROOTS)
         message = connection_error(
             "ssh: Could not resolve hostname firebird.swarthmore.edu", "firebird"
         )

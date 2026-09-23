@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local GUI for finding Firebird sessions and running six-beetle post-processing."""
+"""Local GUI for finding Firebird sessions and running shared group processing."""
 
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ DEFAULT_SSH_KEY = "~/.ssh/id_ed25519_firebird"
 DEFAULT_SESSION_ROOTS = ";".join((
     "/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024/managed_idtracker_runs",
     "/data/labs/vformic1-swat-lab/2024_Videos",
+    "/data/labs/vformic1-swat-lab/2026_Videos/2026_Fights/2026_Fights_Recorded",
     "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs",
 ))
 DEPLOY_FILES = (
@@ -67,7 +68,9 @@ def intervals(value, trail=""):
             if isinstance(child,(dict,list)):output.extend(intervals(child,f"{trail}[{index}]") )
     return output
 
-roots=json.load(sys.stdin)
+request=json.load(sys.stdin)
+roots=request if isinstance(request,list) else request['roots']
+profile='six' if isinstance(request,list) else request.get('profile','all')
 records=[]
 seen=set()
 for root_text in roots:
@@ -81,7 +84,9 @@ for root_text in roots:
         except Exception:continue
         animal_count=data.get("number_of_animals")
         rois=data.get("roi_list")
-        if animal_count != 6 or not isinstance(rois,list) or len(rois)!=4:continue
+        if not isinstance(animal_count,int) or animal_count<2 or not isinstance(rois,list) or len(rois)<2:continue
+        if profile=='six' and (animal_count!=6 or len(rois)!=4):continue
+        if profile=='dyadic' and animal_count!=2:continue
         trajectory=""
         for name in names:
             candidates=[]
@@ -97,6 +102,7 @@ for root_text in roots:
         pairs=intervals(data)
         start,end=(pairs[0][:2] if pairs else (0,0))
         records.append(dict(session=str(session),trajectory=trajectory,video=video,start=start,end=end,
+            animal_count=animal_count,roi_count=len(rois),
             label=session.name,blob_evidence=(session/"blob_evidence.json").is_file(),
             blob_source=(session/"preprocessing/list_of_blobs.pickle").is_file()))
 records.sort(key=lambda row:row["session"],reverse=True)
@@ -210,11 +216,11 @@ def validated_parameters(values: dict) -> dict:
     return parsed
 
 
-def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_python: str, ffmpeg: str, ffprobe: str, parameters: dict) -> list[str]:
+def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_python: str, ffmpeg: str, ffprobe: str, parameters: dict, script_name="run_six_beetle_pipeline.py") -> list[str]:
     pdf_name = parameters["label"].replace("/", "_") + ".pdf"
     command = [
         post_python,
-        f"{code_dir}/run_six_beetle_pipeline.py",
+        f"{code_dir}/{script_name}",
         "--session", parameters["session"],
         "--source-video", parameters["video"],
         "--analysis-output", f"{run_dir}/analysis",
@@ -240,9 +246,10 @@ def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_py
 
 
 class App(tk.Tk):
-    def __init__(self):
+    def __init__(self, profile="six"):
         super().__init__()
-        self.title("Six-beetle Firebird analysis")
+        self.title("Firebird beetle group analysis")
+        self.profile = tk.StringVar(value=profile)
         self.geometry("1180x820")
         self.minsize(960, 700)
         self.events = queue.Queue()
@@ -271,7 +278,8 @@ class App(tk.Tk):
         self.host = tk.StringVar(value=DEFAULT_SSH_HOST)
         self.key = tk.StringVar(value=DEFAULT_SSH_KEY)
         self.roots = tk.StringVar(value=DEFAULT_SESSION_ROOTS)
-        self.output_root = tk.StringVar(value="/data/labs/vformic1-swat-lab/six_beetle_postprocessing")
+        default_root = "six_beetle_postprocessing" if self.profile.get() == "six" else "group_postprocessing"
+        self.output_root = tk.StringVar(value=f"/data/labs/vformic1-swat-lab/{default_root}")
         self.post_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtracker_reprocess_v1/bin/python")
         self.idtracker_python = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python")
         self.ffmpeg = tk.StringVar(value="/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffmpeg")
@@ -286,14 +294,15 @@ class App(tk.Tk):
             ttk.Entry(connection, textvariable=variable).grid(row=row, column=1, sticky="ew", padx=6, pady=2)
         connection.columnconfigure(1, weight=1)
         ttk.Button(connection, text="Test SSH", command=self.test_ssh).grid(row=0, column=2, padx=6)
-        ttk.Button(connection, text="Find six-beetle sessions", command=self.search).grid(row=2, column=2, padx=6)
+        ttk.Combobox(connection, textvariable=self.profile, values=("six", "dyadic", "all"), state="readonly", width=12).grid(row=1, column=2, padx=6)
+        ttk.Button(connection, text="Find sessions", command=self.search).grid(row=2, column=2, padx=6)
 
-        sessions = ttk.LabelFrame(self, text="2. Select a six-beetle IDtracker session")
+        sessions = ttk.LabelFrame(self, text="2. Select an IDtracker session (profile: six, dyadic, or all)")
         sessions.pack(fill="both", expand=True, padx=10, pady=4)
-        columns = ("label", "start", "end", "trajectory", "video", "blobs")
+        columns = ("label", "animals", "rois", "start", "end", "trajectory", "video", "blobs")
         self.tree = ttk.Treeview(sessions, columns=columns, show="tree headings", height=9)
         self.tree.heading("#0", text="Session")
-        for name, width in [("label", 130), ("start", 65), ("end", 75), ("trajectory", 220), ("video", 250), ("blobs", 80)]:
+        for name, width in [("label", 130), ("animals", 65), ("rois", 55), ("start", 65), ("end", 75), ("trajectory", 220), ("video", 250), ("blobs", 80)]:
             self.tree.heading(name, text=name.title())
             self.tree.column(name, width=width, stretch=name in {"trajectory", "video"})
         self.tree.column("#0", width=360)
@@ -362,7 +371,7 @@ class App(tk.Tk):
                 name, value, error = self.events.get_nowait()
                 if error:
                     self.log(f"ERROR: {error}")
-                    messagebox.showerror("Six-beetle Firebird GUI", str(error))
+                    messagebox.showerror("Firebird group GUI", str(error))
                 elif name == "ssh":self.log(f"Connected to {value}")
                 elif name == "search":self._show_records(value)
                 elif name == "submit":
@@ -383,19 +392,19 @@ class App(tk.Tk):
         if not roots:
             messagebox.showerror("Search", "Enter at least one Firebird search root")
             return
-        self.log("Searching Firebird for sessions with six animals and four ROIs…")
+        self.log(f"Searching Firebird for {self.profile.get()} sessions…")
         def task():
             ssh = self.ssh()
             command = f"{shlex.quote(self.post_python.get())} -c {shlex.quote(REMOTE_DISCOVERY)}"
-            return json.loads(ssh.run(command, json.dumps(roots), timeout=900))
+            return json.loads(ssh.run(command, json.dumps(dict(roots=roots,profile=self.profile.get())), timeout=900))
         self.background("search", task)
 
     def _show_records(self, records):
         self.records = records
         self.tree.delete(*self.tree.get_children())
         for index, row in enumerate(records):
-            self.tree.insert("", "end", iid=str(index), text=row["session"], values=(row["label"], row["start"], row["end"], row["trajectory"], row["video"], "yes" if row["blob_source"] else "NO"))
-        self.log(f"Found {len(records)} six-beetle sessions with four ROIs.")
+            self.tree.insert("", "end", iid=str(index), text=row["session"], values=(row["label"], row["animal_count"], row["roi_count"], row["start"], row["end"], row["trajectory"], row["video"], "yes" if row["blob_source"] else "NO"))
+        self.log(f"Found {len(records)} {self.profile.get()} sessions.")
 
     def select_record(self, _event=None):
         chosen = self.tree.selection()
@@ -403,10 +412,14 @@ class App(tk.Tk):
         row = self.records[int(chosen[0])]
         for key in ("session", "trajectory", "video", "label"):
             if row.get(key) not in (None, "", 0):self.variables[key].set(str(row[key]))
+        if isinstance(row.get('start'), int) and isinstance(row.get('end'), int) and row['start']>=0 and row['end']>row['start']:
+            self.variables['start'].set(str(row['start']))
+            self.variables['end'].set(str(row['end']-1))  # IDtracker intervals are end-exclusive.
         self.log(
             f"Selected {row['session']}\n"
-            f"Recorded tracking interval: {row.get('start')}–{row.get('end')}. "
-            f"Analysis range remains {self.variables['start'].get()}–{self.variables['end'].get()} until you change it."
+            f"{row['animal_count']} animals, {row['roi_count']-1} fungi. "
+            f"Recorded tracking interval: [{row.get('start')}, {row.get('end')}). "
+            f"Analysis range set to {self.variables['start'].get()}–{self.variables['end'].get()} inclusive; review before submission."
         )
 
     def parameters(self):
@@ -451,7 +464,8 @@ class App(tk.Tk):
             if observed != expected:
                 raise RuntimeError("Firebird code snapshot hashes do not match the local files")
             self.events.put(("status", "Deployed immutable code snapshot:\n" + remote_hashes, None))
-        command = pipeline_command(code_dir, run_dir, post_python, idtracker_python, ffmpeg, ffprobe, parameters)
+        script = 'run_six_beetle_pipeline.py' if self.profile.get() == 'six' else 'run_group_pipeline.py'
+        command = pipeline_command(code_dir, run_dir, post_python, idtracker_python, ffmpeg, ffprobe, parameters, script)
         return ssh, run_dir, command
 
     def preview(self):
@@ -470,7 +484,8 @@ class App(tk.Tk):
             ssh, run_dir, command = self.remote_context(deploy=True)
             ssh.run("mkdir -p " + shlex.quote(run_dir))
             wrapped = shlex.join(command)
-            submit = ["sbatch", "--parsable", "--job-name=six_beetle_post", "--partition=compute", "--cpus-per-task=4", "--mem=24G", "--time=04:00:00", f"--output={run_dir}/slurm-%j.log", "--wrap", wrapped]
+            job_name = 'six_beetle_post' if self.profile.get() == 'six' else 'group_beetle_post'
+            submit = ["sbatch", "--parsable", f"--job-name={job_name}", "--partition=compute", "--cpus-per-task=4", "--mem=24G", "--time=04:00:00", f"--output={run_dir}/slurm-%j.log", "--wrap", wrapped]
             job_id = ssh.run(shlex.join(submit), timeout=120).strip().split(";", 1)[0]
             return dict(job_id=job_id, run_dir=run_dir, command=command)
         self.background("submit", task)
