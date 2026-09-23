@@ -40,7 +40,7 @@ from pathlib import Path
 root=Path(json.load(sys.stdin)["root"]).expanduser()
 records=[]
 if root.is_dir():
-    for folder in root.iterdir():
+    for folder in list(root.iterdir()) + list(root.glob("paired_*/*")):
         if not folder.is_dir():continue
         receipt=folder/"submission_receipt.json"
         request=folder/"submission_request.json"
@@ -83,6 +83,8 @@ class App(tk.Tk):
         self.record_by_path: dict[str, dict] = {}
         self.source_text: dict[str, str] = {}
         self.staged_text: dict[str, str] = {}
+        self.draft_text: dict[str, str] = {}
+        self.staged_origin: dict[str, str] = {}
         self.jobs: list[dict] = []
         self.current_path = ""
         self.loading_editor = False
@@ -321,8 +323,11 @@ class App(tk.Tk):
         if not self.current_path or self.loading_editor:
             return
         text = self.raw.get("1.0", "end-1c")
-        if text and text != self.source_text.get(self.current_path, ""):
-            self.staged_text[self.current_path] = text
+        saved = self.staged_text.get(self.current_path, self.source_text.get(self.current_path, ""))
+        if text and text != saved:
+            self.draft_text[self.current_path] = text
+        else:
+            self.draft_text.pop(self.current_path, None)
 
     def select_toml(self, _event=None):
         selected = self.selected_records()
@@ -331,7 +336,9 @@ class App(tk.Tk):
         self._capture_current()
         row = selected[0]
         path = row["path"]
-        if path in self.staged_text:
+        if path in self.draft_text:
+            self._show_toml(path, self.draft_text[path], row)
+        elif path in self.staged_text:
             self._show_toml(path, self.staged_text[path], row)
         elif path in self.source_text:
             self._show_toml(path, self.source_text[path], row)
@@ -357,6 +364,7 @@ class App(tk.Tk):
             for key, value in values.items():
                 self.fields[key].set(str(value))
             self.use_bkg.set(fields["use_bkg"])
+            self.use_bkg.set(fields["use_bkg"])
         finally:
             self.loading_editor = False
 
@@ -376,6 +384,8 @@ class App(tk.Tk):
             })
             self.raw.delete("1.0", "end"); self.raw.insert("1.0", changed)
             self.staged_text[self.current_path] = changed
+            self.draft_text.pop(self.current_path, None)
+            self.staged_origin[self.current_path] = "common_inputs"
             self.log("Applied common inputs and staged a validated in-memory copy. The source TOML on Firebird is unchanged.")
             self.apply_filter()
         except Exception as exc:
@@ -389,6 +399,8 @@ class App(tk.Tk):
             text = self.raw.get("1.0", "end-1c")
             data = validate_six_beetle_toml(text)
             self.staged_text[self.current_path] = text
+            self.draft_text.pop(self.current_path, None)
+            self.staged_origin[self.current_path] = "raw_validated"
             self.log(f"Validated and staged {self.current_path}\nSHA-256: {sha256_text(text)}\nName: {data.get('name')}")
             self.apply_filter()
         except Exception as exc:
@@ -398,7 +410,7 @@ class App(tk.Tk):
         if not self.current_path:
             return
         path = self.current_path
-        self.staged_text.pop(path, None); self.source_text.pop(path, None)
+        self.staged_text.pop(path, None); self.draft_text.pop(path, None); self.staged_origin.pop(path, None); self.source_text.pop(path, None)
         row = self.record_by_path[path]
         self.background("toml", lambda: (path, self.ssh().run("cat -- " + shlex.quote(path)), row))
         self.apply_filter()
@@ -421,8 +433,13 @@ class App(tk.Tk):
         self._capture_current()
         lines = []
         for row in selected:
-            mark = "edited" if row["path"] in self.staged_text else "unchanged"
-            lines.append(f"{row['relative']}  [{mark}; animals={row.get('animals')}; ROIs={row.get('roi_count')}; video={'found' if row.get('video_exists') else 'MISSING'}]")
+            path = row["path"]
+            mark = "DRAFT: validate before submission" if path in self.draft_text else ("staged edit" if path in self.staged_text else "unchanged")
+            details = ""
+            if path in self.staged_text:
+                fields = common_fields(self.staged_text[path])
+                details = f"; bkg={fields['use_bkg']}; intensity={fields['intensity_min']}–{fields['intensity_max']}; area min={fields['area_min']}; start={fields['start']}"
+            lines.append(f"{row['relative']}  [{mark}; animals={row.get('animals')}; ROIs={row.get('roi_count')}; video={'found' if row.get('video_exists') else 'MISSING'}{details}]")
         messagebox.showinfo("Submission preview", "No jobs submitted.\n\n" + "\n".join(lines))
 
     def submit_selected(self):
@@ -431,6 +448,10 @@ class App(tk.Tk):
             messagebox.showinfo("Submit", "Select one or more TOMLs")
             return
         self._capture_current()
+        drafts = [row["relative"] for row in selected if row["path"] in self.draft_text]
+        if drafts:
+            messagebox.showerror("Unstaged TOML edits", "These raw edits have not been validated and staged:\n" + "\n".join(drafts) + "\n\nUse Validate and stage, or Revert from Firebird.")
+            return
         for row in selected:
             if not row.get("eligible"):
                 messagebox.showerror("Submit", f"Not a six-beetle/four-ROI TOML:\n{row['path']}")
@@ -481,6 +502,7 @@ class App(tk.Tk):
                 request = {
                     "schema_version": 1, "source_toml": row["path"], "source_sha256": row.get("sha256"),
                     "submitted_toml_sha256": sha256_text(text), "modified": text != source_text,
+                    "edit_origin": self.staged_origin.get(row["path"], "source_unchanged"),
                     "submitted_utc": dt.datetime.now(dt.timezone.utc).isoformat(), "run_dir": run_dir,
                     "idtracker_environment": environment, "command": command,
                     "slurm": {"partition":"gpu","gres":"gpu:l40s:1","cpus":16,"memory":"64G","time":"08:00:00"},
