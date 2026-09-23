@@ -1,4 +1,4 @@
-"""Auditable beetle-frame export and window recalculation for six-beetle bundles."""
+"""Auditable per-frame export and window recalculation for tracked animals."""
 from __future__ import annotations
 
 import argparse
@@ -8,20 +8,26 @@ import itertools
 import json
 import math
 from pathlib import Path
+import re
 
 import numpy as np
 import processor as legacy
 
 
-FIELDS = [
+BASE_FIELDS = [
     'global_frame', 'animal_id', 'raw_x', 'raw_y', 'x', 'y',
     'location_source', 'inferred', 'group_id', 'ambiguous', 'location_known',
-    'in_arena', 'fungus_1', 'fungus_2', 'fungus_3', 'any_fungus',
+    'in_arena', 'any_fungus',
     'observed_proximity_partners', 'pscp_partners',
     'step_from_previous_accepted', 'step_distance_px',
-    'step_midpoint_fungus_1', 'step_midpoint_fungus_2',
-    'step_midpoint_fungus_3',
 ]
+
+
+def fields_for_fungi(count):
+    if count < 1:
+        raise ValueError('At least one fungus ROI is required')
+    return (BASE_FIELDS + [f'fungus_{i}' for i in range(1, count+1)]
+            + [f'step_midpoint_fungus_{i}' for i in range(1, count+1)])
 
 
 def _inside(points, polygon):
@@ -38,16 +44,17 @@ def write_frame_data(result, destination):
     xy = group['xy']
     nframes, animals, _ = xy.shape
     rois = [np.asarray(p, dtype=float) for p in result['metadata']['rois']]
-    if animals != 6 or len(rois) != 4:
-        raise ValueError('Frame export requires six animals and four ROIs')
+    fungi = len(rois)-1
+    if animals < 2 or fungi < 1 or raw.shape != xy.shape or nframes < 1:
+        raise ValueError('Frame export requires matching paths, at least two animals, and arena plus fungus ROIs')
     speed = float(result['metadata']['reconstruction']['max_speed_px_per_frame'])
     if not math.isfinite(speed) or speed <= 0:
         raise ValueError('Invalid canonical step limit')
     membership = np.stack([_inside(xy[:, a], polygon) for a in range(animals)
-                           for polygon in rois]).reshape(animals, 4, nframes).transpose(2, 0, 1)
+                           for polygon in rois]).reshape(animals, len(rois), nframes).transpose(2, 0, 1)
     midpoints = (xy[:-1] + xy[1:]) / 2
     mid_fungus = np.stack([_inside(midpoints[:, a], polygon) for a in range(animals)
-                           for polygon in rois[1:]]).reshape(animals, 3, nframes-1).transpose(2, 0, 1)
+                           for polygon in rois[1:]]).reshape(animals, fungi, nframes-1).transpose(2, 0, 1)
     lengths = np.linalg.norm(np.diff(xy, axis=0), axis=2)
     accepted = np.isfinite(xy[:-1]).all(axis=2) & np.isfinite(xy[1:]).all(axis=2) & (lengths <= speed)
     observed = [[[] for _ in range(animals)] for _ in range(nframes)]
@@ -59,7 +66,7 @@ def write_frame_data(result, destination):
             pscp[t][a].append(b); pscp[t][b].append(a)
     start = result['metadata']['settings']['start']
     with Path(destination).open('w', newline='') as stream:
-        writer = csv.DictWriter(stream, fieldnames=FIELDS)
+        writer = csv.DictWriter(stream, fieldnames=fields_for_fungi(fungi))
         writer.writeheader()
         for t in range(nframes):
             for a in range(animals):
@@ -73,7 +80,7 @@ def write_frame_data(result, destination):
                            observed_proximity_partners=';'.join(map(str, observed[t][a])),
                            pscp_partners=';'.join(map(str, pscp[t][a])),
                            step_from_previous_accepted=int(t > 0 and accepted[t-1,a]))
-                for fungus in range(1, 4):
+                for fungus in range(1, fungi+1):
                     row[f'fungus_{fungus}'] = int(membership[t,a,fungus])
                     row[f'step_midpoint_fungus_{fungus}'] = int(t > 0 and mid_fungus[t-1,a,fungus-1])
                 row['step_distance_px'] = float(lengths[t-1,a]) if t > 0 and accepted[t-1,a] else ''
@@ -88,7 +95,12 @@ def aggregate(frame_csv, start, end):
     by_frame = {}
     with Path(frame_csv).open(newline='') as stream:
         reader = csv.DictReader(stream)
-        missing = set(FIELDS) - set(reader.fieldnames or [])
+        header = reader.fieldnames or []
+        fungus_ids = sorted(int(match.group(1)) for name in header
+            if (match := re.fullmatch(r'fungus_(\d+)', name)))
+        if fungus_ids != list(range(1, len(fungus_ids)+1)) or not fungus_ids:
+            raise ValueError('Fungus columns must be numbered consecutively from 1')
+        missing = set(fields_for_fungi(len(fungus_ids))) - set(header)
         if missing:
             raise ValueError(f'Missing frame-data columns: {sorted(missing)}')
         for row in reader:
@@ -100,11 +112,13 @@ def aggregate(frame_csv, start, end):
                     raise ValueError(f'Duplicate beetle {animal} in frame {frame}')
                 frame_rows[animal] = row
     expected = set(range(start, end+1))
-    if set(by_frame) != expected or any(set(rows) != set(range(6)) for rows in by_frame.values()):
-        raise ValueError('Requested window lacks complete six-beetle frame coverage')
+    animals = set(by_frame.get(start, {}))
+    if (not animals or animals != set(range(len(animals))) or set(by_frame) != expected
+            or any(set(rows) != animals for rows in by_frame.values())):
+        raise ValueError('Requested window lacks complete per-animal frame coverage')
     frames = end-start+1
     beetles = []
-    for a in range(6):
+    for a in sorted(animals):
         rows = [by_frame[t][a] for t in range(start, end+1)]
         known = sum(int(r['location_known']) for r in rows)
         inferred = sum(int(r['inferred']) for r in rows)
@@ -116,7 +130,7 @@ def aggregate(frame_csv, start, end):
                     any_fungus_percent_all_frames=100*sum(int(r['any_fungus']) for r in rows)/frames,
                     any_fungus_percent_known_frames=(100*sum(int(r['any_fungus']) for r in rows)/known if known else ''),
                     distance_px=sum(float(r['step_distance_px']) for r in rows[1:] if r['step_distance_px']!=''))
-        for fungus in range(1, 4):
+        for fungus in fungus_ids:
             count = sum(int(r[f'fungus_{fungus}']) for r in rows)
             item[f'fungus_{fungus}_frames'] = count
             item[f'fungus_{fungus}_percent_all_frames'] = 100*count/frames
@@ -125,7 +139,7 @@ def aggregate(frame_csv, start, end):
                 if r['step_distance_px']!='' and int(r[f'step_midpoint_fungus_{fungus}']))
         beetles.append(item)
     pairs = []
-    for a, b in itertools.combinations(range(6), 2):
+    for a, b in itertools.combinations(sorted(animals), 2):
         observed = sum(str(b) in by_frame[t][a]['observed_proximity_partners'].split(';') for t in expected)
         presumed = sum(str(b) in by_frame[t][a]['pscp_partners'].split(';') for t in expected)
         pairs.append(dict(animal_a=a, animal_b=b, start_global_frame=start,
@@ -142,7 +156,7 @@ def _write_rows(path, rows):
 
 def main():
     parser = argparse.ArgumentParser(description='Recalculate fungus and proximity summaries from frame_data.csv')
-    parser.add_argument('bundle', type=Path, help='Completed six-beetle analysis bundle')
+    parser.add_argument('bundle', type=Path, help='Completed canonical analysis bundle')
     parser.add_argument('--start', type=int, required=True, help='First global frame, inclusive')
     parser.add_argument('--end', type=int, required=True, help='Last global frame, inclusive')
     parser.add_argument('--output', type=Path, required=True, help='New output folder')

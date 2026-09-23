@@ -84,20 +84,23 @@ def build(
     data = np.load(state_path)
     xy = data["xy"]
     raw = data["raw"]
-    if xy.ndim != 3 or xy.shape[1:] != (6, 2):
-        raise ValueError(f"Expected canonical shape (frames, 6, 2), found {xy.shape}")
+    if xy.ndim != 3 or xy.shape[1] < 2 or xy.shape[2] != 2:
+        raise ValueError(f"Expected canonical shape (frames, animals, 2), found {xy.shape}")
+    animal_count = xy.shape[1]
     frames = len(xy)
     start = int(meta["settings"]["start"])
     label = label or meta.get("cell_label") or Path(meta.get("video", "session")).stem
     roi_polygons = [np.asarray(polygon, float) for polygon in meta["rois"]]
+    proximity_px = float(meta['settings'].get('social_distance_threshold_px', 60))
+    max_step_px = float(meta.get('reconstruction', {}).get('max_speed_px_per_frame', 100))
 
     fungus = np.zeros(xy.shape[:2], dtype=int)
-    for animal in range(6):
+    for animal in range(animal_count):
         masks = regions(xy[:, animal], roi_polygons, 30, 30)
-        for fungus_id in range(1, 4):
+        for fungus_id in range(1, len(roi_polygons)):
             fungus[masks[f"fungus_{fungus_id}"], animal] = fungus_id
 
-    pairs = list(itertools.combinations(range(6), 2))
+    pairs = list(itertools.combinations(range(animal_count), 2))
     pair_states = []
     for animal_a, animal_b in pairs:
         same_group = (
@@ -107,7 +110,7 @@ def build(
         )
         pscp = same_group & (data["inferred"][:, animal_a] | data["inferred"][:, animal_b])
         assigned = (data["source"][:, animal_a] == "ASSIGNED") & (data["source"][:, animal_b] == "ASSIGNED")
-        proximity = assigned & (np.linalg.norm(xy[:, animal_a] - xy[:, animal_b], axis=1) <= 60)
+        proximity = assigned & (np.linalg.norm(xy[:, animal_a] - xy[:, animal_b], axis=1) <= proximity_px)
         pair_states.append(np.where(pscp, 2, np.where(proximity, 1, 0)))
 
     zero = np.zeros(xy.shape[:2], dtype=int)
@@ -116,6 +119,8 @@ def build(
         start=start,
         end=start + frames - 1,
         fps=float(fps),
+        maxStep=max_step_px,
+        proximityThreshold=proximity_px,
         raw=clean(raw),
         held=clean(xy),
         reviewed=zero.tolist(),
@@ -125,7 +130,7 @@ def build(
         accepted=accepted.astype(int).tolist(),
         rejected=(np.isfinite(raw).all(axis=2) & ~accepted).astype(int).tolist(),
         bridge=clean(xy),
-        anchors=np.tile(np.arange(6), (frames, 1)).tolist(),
+        anchors=np.tile(np.arange(animal_count), (frames, 1)).tolist(),
         inferred=(data["source"] == "PSCP_BLOB").astype(int).tolist(),
         fungus=fungus.tolist(),
         pairs=pairs,
@@ -134,8 +139,8 @@ def build(
     )
 
     template = Path(__file__).with_name("interaction_review_template.html").read_text()
-    template = _replace_once(template, "2024 six-beetle battles — OLD review", f"Six-beetle review — {label}")
-    template = _replace_once(template, "2024 six-beetle battles · OLD · synchronized interaction review", f"Six-beetle synchronized interaction review · {label}")
+    template = _replace_once(template, "2024 six-beetle battles — OLD review", f"{animal_count}-beetle review — {label}")
+    template = _replace_once(template, "2024 six-beetle battles · OLD · synchronized interaction review", f"{animal_count}-beetle synchronized interaction review · {label}")
     template = _replace_once(template, "Pink: provisional user-reviewed contact.", "All positions come from the report bundle. UNREVIEWED: identity attribution remains uncertain.")
     template = template.replace("OLD_source_crop.mp4", video_name)
     template = _replace_once(template, "point(D.raw[t][D.anchors[t][a]])", "point(D.held[t][a])")
@@ -181,8 +186,10 @@ def build(
             except OSError:
                 shutil.copy2(video, destination_video)
         source_manifest = dict(
-            schema="six-beetle-interaction-review-v1",
+            schema="six-beetle-interaction-review-v1" if animal_count == 6 else "group-interaction-review-v1",
             status="UNREVIEWED",
+            animal_count=animal_count,
+            fungus_count=len(roi_polygons)-1,
             label=label,
             analysis_bundle=str(bundle.resolve()),
             analysis_manifest_sha256=sha256(manifest_path),

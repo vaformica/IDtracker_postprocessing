@@ -11,7 +11,7 @@ are standardized to [422,16998], analysis to inclusive422–7622 at30fps.
 `run.slurm` is a 60-task GPU array capped at3 concurrent tasks,8CPUs/48GB and2h
 per task. `run_task.py` preserves every log, requires independent session
 completion evidence even if IDtracker exits1, records original-coordinate
-missingness/IDtracker quality statistics, and invokes the complete v0.6.2
+missingness/IDtracker quality statistics, and invokes the complete v0.7.0
 persistent-pile pipeline. Every successful run contains the 13-page PDF,
 canonical and raw-coordinate CSVs, provenance manifests, a cropped MP4, and the
 synchronized interactive review HTML. Review/video outputs use the exact same

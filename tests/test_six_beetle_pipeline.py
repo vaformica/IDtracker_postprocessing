@@ -80,6 +80,19 @@ class PortableReviewTests(unittest.TestCase):
             manifest = json.loads((output / "source_manifest.json").read_text())
             self.assertEqual(manifest["canonical_sha256"], digest)
             self.assertEqual(manifest["status"], "UNREVIEWED")
+            dyad = root / "dyad_analysis"
+            dyad.mkdir()
+            dyad_state = dyad / "canonical_states.npz"
+            np.savez_compressed(dyad_state, raw=raw[:,:2], xy=xy[:,:2],
+                inferred=inferred[:,:2], group_ids=group_ids[:,:2],
+                source=source[:,:2], ambiguous=np.zeros((frames,2),dtype=bool))
+            (dyad / "manifest.json").write_text(json.dumps(dict(
+                settings={"start":100,"social_distance_threshold_px":60}, rois=rois[:2],
+                output_sha256={dyad_state.name:hashlib.sha256(dyad_state.read_bytes()).hexdigest()})))
+            dyad_html = build(dyad, video, root/"dyad_review", (0,0,800,600), 30, label="Dyad")
+            dyad_payload = json.loads(re.search(r"const D=(.*);\nconst v=",dyad_html.read_text()).group(1))
+            self.assertEqual(dyad_payload['pairs'],[[0,1]])
+            self.assertEqual(len(dyad_payload['fungus'][0]),2)
 
 
 class PipelineHelpersTests(unittest.TestCase):

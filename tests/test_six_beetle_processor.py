@@ -108,11 +108,38 @@ class SixBeetleTests(unittest.TestCase):
     def test_reject_wrong_dimensions_rois_and_invalid_settings(self):
         for kw in [dict(threshold=float('nan')),dict(wall_buffer_px=float('inf'))]:
             with self.assertRaises(ValueError): self.analyze(**kw)
-        np.save(self.source,{'trajectories':self.xy[:,:2]})
-        with self.assertRaisesRegex(ValueError,'six'): self.analyze()
+        np.save(self.source,{'trajectories':self.xy[:,:1]})
+        with self.assertRaisesRegex(ValueError,'at least two'): self.analyze()
         np.save(self.source,{'trajectories':self.xy})
+        (self.root/'session.json').write_text(json.dumps({'roi_list':self.rois[:1]}))
+        with self.assertRaisesRegex(ValueError,'at least one fungus'): self.analyze()
+
+    def test_dyadic_analysis_with_one_fungus(self):
+        np.save(self.source,{'trajectories':self.xy[:,:2]})
         (self.root/'session.json').write_text(json.dumps({'roi_list':self.rois[:2]}))
-        with self.assertRaisesRegex(ValueError,'four'): self.analyze()
+        result = self.analyze()
+        self.assertEqual(result['metadata']['animal_count'],2)
+        self.assertEqual(result['metadata']['roi_order'],['arena','fungus_1'])
+        self.assertEqual(len([r for r in result['pairs'] if r['window']=='full']),1)
+        self.assertEqual(len(six.fungus_summary(result)),2)
+        output = self.root/'dyadic_bundle'
+        six.write_bundle(result, output, 'synthetic.mp4', 'D1')
+        self.assertTrue((output/'frame_data.csv').is_file())
+        self.assertTrue((output/'synthetic_D1.pdf').is_file())
+
+    def test_seven_animals_four_fungi(self):
+        seventh = np.tile(np.array([850., 800.]), (len(self.xy), 1, 1))
+        np.save(self.source,{'trajectories':np.concatenate([self.xy,seventh],axis=1)})
+        rois = self.rois + [[[810,400],[870,400],[870,460],[810,460]]]
+        (self.root/'session.json').write_text(json.dumps({'roi_list':rois}))
+        result = self.analyze()
+        self.assertEqual(result['metadata']['animal_count'],7)
+        self.assertEqual(len([r for r in result['pairs'] if r['window']=='full']),21)
+        self.assertEqual(len(six.fungus_summary(result)),7)
+        output = self.root/'seven_bundle'
+        six.write_bundle(result, output, 'synthetic.mp4', 'G1')
+        self.assertTrue((output/'frame_data.csv').is_file())
+        self.assertTrue((output/'synthetic_G1.pdf').is_file())
 
     def test_no_valid_steps_are_missing_not_zero(self):
         self.xy[:,0]=np.nan; np.save(self.source,{'trajectories':self.xy})

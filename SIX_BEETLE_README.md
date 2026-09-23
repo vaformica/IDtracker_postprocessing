@@ -1,8 +1,11 @@
-## Persistent detection-supported analysis (v0.6.2)
+## Persistent detection-supported analysis (v0.7.0)
 
-All six-beetle CLI runs now use the same persistent group model by default. The
+For the reusable two-or-more-animal command and input contract, see
+[GROUP_PIPELINE_README.md](GROUP_PIPELINE_README.md).
+
+All group-analysis CLI runs use the same persistent group model by default. The
 recommended pipeline command exports real detection evidence with the session's
-IDtracker environment, runs the v0.6.2 analysis, and creates a portable
+IDtracker environment, runs the v0.7.0 analysis, and creates a portable
 synchronized HTML/video review from the same canonical state bundle:
 
 ```sh
@@ -19,6 +22,17 @@ already exists, the export is written beside the new analysis directory. Do not
 delete `preprocessing/list_of_blobs.pickle`; it is the detection evidence needed
 for persistent piles. New sweep packages automatically include and invoke this
 complete pipeline.
+
+For a different group size, use the same options with `run_group_pipeline.py`.
+It reads the number of animals from the trajectory array and the number of
+fungi from the session ROI list (arena first, then one or more fungi). The
+processor, CSV, PDF, and synchronized review all use those counts. For an
+analysis-only run, `group_processor.py --help` shows the direct entry point.
+The current Firebird discovery GUI is deliberately limited to the six-beetle,
+four-ROI project; the general command-line pipeline is the reusable interface
+for dyads and larger groups. Tests cover two animals/one fungus, the established
+six/three profile, and seven animals/four fungi. Identity and pile results for
+new experimental designs still require video QC before scientific use.
 
 Canonical positions in `canonical_states.npz` and `canonical_positions.csv` drive estimated report metrics and `build_canonical_review.py`. Original-coordinate control tables remain separate. Assigned beetles within 60 pixels remain proximity interactions; PSCP requires at least one inferred identity in a shared detected blob. Persistent membership does not imply a known position: no supporting detection means missing. Model outputs remain UNREVIEWED; tested recovery of the 4–5 pile does not validate every identity. See [validation and limitations](reports/PERSISTENT_GROUPS_2026-09-21.md).
 
@@ -218,7 +232,7 @@ assigned coordinate before each missing run, an X/Y/time 3D trajectory page, and
 a six-row fungus occupancy/distance table. The original pairwise and individual
 state timelines are retained. `fungus_summary.csv` preserves exact frame counts
 and distances in pixels. Distance uses the existing accepted-step midpoint rule.
-There are 12 PDF pages in this historical version; current v0.6.2 reports
+There are 12 PDF pages in this historical version; current six-animal reports
 contain 13 pages.
 
 PDF names default to `<video stem>_<cell label>.pdf`; `--pdf-name <TOML stem>.pdf`

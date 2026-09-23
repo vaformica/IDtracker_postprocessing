@@ -1,4 +1,4 @@
-"""Export frame_data.csv from an older canonical six-beetle bundle, unchanged."""
+"""Export frame_data.csv from an older canonical bundle, unchanged."""
 from __future__ import annotations
 
 import argparse
@@ -26,12 +26,13 @@ def backfill(source, output):
     with np.load(state_file, allow_pickle=False) as state:
         raw, xy = state['raw'], state['xy']
         group = {key: state[key] for key in ('xy','source','inferred','group_ids','ambiguous')}
-    if raw.shape != xy.shape or raw.ndim != 3 or raw.shape[1:] != (6,2):
-        raise ValueError('Expected matching six-beetle raw and canonical arrays')
+    if raw.shape != xy.shape or raw.ndim != 3 or raw.shape[1] < 2 or raw.shape[2] != 2:
+        raise ValueError('Expected matching multi-animal raw and canonical arrays')
+    animals = raw.shape[1]
     ids, inferred = group['group_ids'], group['inferred']
     limit = manifest['settings']['social_distance_threshold_px']
     masks, group_masks = {}, {}
-    for a,b in itertools.combinations(range(6),2):
+    for a,b in itertools.combinations(range(animals),2):
         assigned = (group['source'][:,a]=='ASSIGNED') & (group['source'][:,b]=='ASSIGNED')
         masks[a,b] = assigned & (np.linalg.norm(xy[:,a]-xy[:,b],axis=1)<=limit)
         group_masks[a,b] = ((ids[:,a]>=0) & (ids[:,a]==ids[:,b])

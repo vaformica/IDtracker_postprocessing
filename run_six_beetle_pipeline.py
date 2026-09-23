@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the complete six-beetle analysis and portable video-review pipeline."""
+"""Run multi-animal analysis and a portable synchronized video review."""
 
 from __future__ import annotations
 
@@ -65,8 +65,8 @@ def session_json(session: Path) -> Path:
 
 def load_rois(session: Path):
     polygons = load_session_rois(session)
-    if len(polygons) != 4:
-        raise ValueError("Six-beetle processing requires exactly four ROIs: arena then fungus 1, 2, 3")
+    if len(polygons) < 2:
+        raise ValueError("Processing requires an arena ROI followed by at least one fungus ROI")
     if any(polygon.ndim != 2 or polygon.shape[1] != 2 for polygon in polygons):
         raise ValueError("Every ROI must be an x/y polygon")
     return polygons
@@ -264,11 +264,13 @@ def run(args) -> Path:
 
     manifest = json.loads((analysis_output / "manifest.json").read_text())
     receipt = dict(
-        schema="six-beetle-pipeline-run-v1",
+        schema="six-beetle-pipeline-run-v1" if manifest.get('animal_count') == 6 else "group-pipeline-run-v1",
         created_utc=datetime.now(timezone.utc).isoformat(),
         status="COMPLETE_UNREVIEWED",
         model=f"persistent-groups-{manifest.get('persistent_model_version')}",
         processor_version=manifest.get("script_version"),
+        animal_count=manifest.get('animal_count'),
+        fungus_count=len(manifest.get('rois', []))-1,
         session=str(session),
         trajectory=str(trajectory),
         trajectory_sha256=sha256(trajectory),

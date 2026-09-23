@@ -9,6 +9,30 @@ from frame_data import aggregate, write_frame_data
 
 
 class FrameDataTests(unittest.TestCase):
+    def test_two_animals_one_fungus_uses_dynamic_columns_and_pairs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)/'frame_data.csv'
+            xy = np.array([[[5., 5.], [6., 5.]], [[15., 5.], [16., 5.]]])
+            masks = {(0,1): np.array([True, False])}
+            result = dict(xy=xy.copy(), group=dict(xy=xy, source=np.full((2,2),'ASSIGNED'),
+                inferred=np.zeros((2,2),bool), group_ids=np.array([[0,1],[0,1]]),
+                ambiguous=np.zeros((2,2),bool), masks={(0,1):np.zeros(2,bool)}),
+                masks=masks, metadata=dict(settings=dict(start=10),
+                reconstruction=dict(max_speed_px_per_frame=100), rois=[
+                    [[0,0],[100,0],[100,100],[0,100]],
+                    [[10,0],[20,0],[20,10],[10,10]]]))
+            write_frame_data(result, output)
+            with output.open(newline='') as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(len(rows), 4)
+            self.assertIn('fungus_1', rows[0])
+            self.assertNotIn('fungus_2', rows[0])
+            beetles, pairs = aggregate(output, 10, 11)
+            self.assertEqual(len(beetles), 2)
+            self.assertEqual(len(pairs), 1)
+            self.assertEqual(beetles[0]['fungus_1_frames'], 1)
+            self.assertEqual(pairs[0]['observed_proximity_frames'], 1)
+
     def test_rewindow_preserves_pile_credit_and_excludes_incoming_step(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)/'frame_data.csv'

@@ -27,12 +27,14 @@ DEPLOY_FILES = (
     "processor.py",
     "six_beetle_processor.py",
     "frame_data.py",
+    "group_processor.py",
     "persistent_groups.py",
     "trajectory_reconstruction.py",
     "export_blob_evidence.py",
     "build_canonical_review.py",
     "interaction_review_template.html",
     "run_six_beetle_pipeline.py",
+    "run_group_pipeline.py",
 )
 
 REMOTE_DISCOVERY = r"""
