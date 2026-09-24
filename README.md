@@ -724,13 +724,19 @@ folder into `approved_pdfs/`. If an approved PDF is not present in the local
 cache, the export writes `approved_pdf_copy_warnings.txt` instead of silently
 pretending the PDF was copied.
 
-## Six-beetle development entry point
+## Shared PSC 1.3.0 group and dyadic analysis
 
-A separate six-beetle / three-fungus-ROI CLI is available as
-`six_beetle_processor.py`. See [SIX_BEETLE_README.md](SIX_BEETLE_README.md)
-and [SIX_BEETLE_METHODS.html](SIX_BEETLE_METHODS.html). Its group tables are a
-new schema; the existing GUI, two-animal processor, and QC exports retain their
-existing behavior.
+`six_beetle_processor.py` 0.8.1-group accepts any group of at least two
+animals and an arena plus at least one fungus ROI. `dyadic_processor.py` is a
+dyadic-named command-line entry point to that same code. The complete
+PDF/video/HTML pipeline uses `run_group_pipeline.py`, and
+`dyadic_firebird_gui.py` opens the shared Firebird GUI filtered to two-beetle
+sessions. See [SIX_BEETLE_README.md](SIX_BEETLE_README.md) and
+[SIX_BEETLE_METHODS.html](SIX_BEETLE_METHODS.html). These routes enforce PSC
+model 1.3.0, paired raw/PSC statistics, and the same pile rules for dyadic and
+larger fights. The older standalone `processor.py` 0.8.1 and its
+`firebird_gui.py` remain historical tools; their older social-disappearance
+logic must not be used for the new 2026 dyadic fight batch.
 # Firebird TOML submission GUI
 
 For Charlotte's six-beetle GroupTrial TOMLs, run:

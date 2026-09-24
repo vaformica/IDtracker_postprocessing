@@ -28,6 +28,7 @@ DEFAULT_SESSION_ROOTS = ";".join((
 DEPLOY_FILES = (
     "processor.py",
     "six_beetle_processor.py",
+    "dyadic_processor.py",
     "frame_data.py",
     "group_processor.py",
     "persistent_groups.py",
