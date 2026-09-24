@@ -8,7 +8,7 @@ is a hypothesis and raw coordinates must be retained separately.
 import itertools
 import numpy as np
 
-MODEL_VERSION='1.2.0'
+MODEL_VERSION='1.3.0'
 
 
 def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3,
@@ -64,7 +64,23 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
             partitions={}
             for a in e['members']:
                 j=raw_blob(t,a,bs)
-                if j in candidates:partitions.setdefault(j,set()).add(a)
+                # A member may emerge well away from the pile after being
+                # hidden. The pile's spatial gate must not veto evidence for
+                # a *split*. It still gates movement of the whole pile.
+                if j is not None:partitions.setdefault(j,set()).add(a)
+            # When only a departing member has a raw label, an unlabeled blob
+            # continuing the pile is evidence for the other members. Without
+            # this partition the distant label could drag the whole pile.
+            if len(e['members'])>1 and len(partitions)==1:
+                raw_j=next(iter(partitions))
+                remaining=e['members']-partitions[raw_j]
+                # Do not recruit an unrelated beetle's clearly labeled blob
+                # as the supposed continuation of the hidden pile.
+                near=[j for j in candidates if j!=raw_j and not
+                      (set(bs[j].get('identities',[]))-{a+1 for a in e['members']})]
+                if remaining and near:
+                    near_j=min(near,key=lambda j:np.linalg.norm(np.asarray(bs[j]['centroid'])-e['last']))
+                    partitions[near_j]=set(remaining)
             # A returning subset can separate without requiring every hidden member.
             assigned=set().union(*partitions.values()) if partitions else set()
             if len(partitions)>1 and assigned != e['members']:
@@ -72,8 +88,15 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                 partitions[nearest] |= e['members']-assigned
             split=len(partitions)>1
             key=tuple(sorted(tuple(sorted(v)) for v in partitions.values())) if split else None
-            if key and key==e['split_key']:e['split_count']+=1
+            positions={tuple(sorted(v)):np.asarray(bs[j]['centroid'],float)
+                       for j,v in partitions.items()} if split else {}
+            smooth=key==e['split_key'] and all(
+                members in e.get('split_positions',{}) and
+                np.linalg.norm(p-e['split_positions'][members])<=max_step
+                for members,p in positions.items())
+            if key and smooth:e['split_count']+=1
             else:e['split_key']=key;e['split_count']=1 if key else 0
+            e['split_positions']=positions
             if split and e['split_count']>=confirmation:
                 events.append(dict(frame=t,kind='SPLIT_CONFIRMED',members=sorted(e['members'])))
                 for j,members in partitions.items():
@@ -115,6 +138,14 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
             visible=min(matched,key=lambda a:(np.linalg.norm(raw[t,a]-p),a)) if matched else None
             for a in members:
                 assigned=a==visible
+                other=raw_blob(t,a,bs)
+                disputed=is_pile and other is not None and other!=j and not assigned
+                if disputed:
+                    # A conflicting raw label is not yet a trusted departure,
+                    # but the pile location is no longer defensible either.
+                    group_ids[t,a]=e['id'];ambiguous[t,a]=True
+                    source[t,a]='SPLIT_PENDING'
+                    continue
                 xy[t,a]=p if is_pile else (raw[t,a] if assigned else p)
                 group_ids[t,a]=e['id'];inferred[t,a]=not assigned
                 anchors[t,a]=visible if visible is not None else members[0]
