@@ -50,10 +50,22 @@ These identity scores are algorithmic self-scores, **not calibrated
 probabilities of correct identity**. The batch report also carries the
 session-level IDtracker estimated accuracy and silhouette score.
 
+During unattended tracking, two student TOMLs set `check_segmentation=true`.
+IDtracker stopped after 2-3 frames with extra blobs. The recovery runs use
+separate, hashed TOML copies with only that interactive stop flag set to false;
+the segmentation thresholds and all other settings stay the same. Their
+original failed outputs and logs remain available. A third Testing TOML
+(`Camera_1_40169154_20260630_1342_FIGHT_ACT1__cell01`) was excluded from
+review production because IDtracker detected zero animal blobs with its
+original thresholds and requested background subtraction. It has no trajectory
+to analyze, so no PDF or identity score is invented. Its receipt and log are
+retained for later, separately labeled threshold work.
+
 `dyadic_batch_collect.py` counts a task as complete only when its corrected
-`final_status.json` says `COMPLETE_UNREVIEWED`. Once all 100 are complete,
-`dyadic_batch_package.py` creates a portable ZIP containing each source and
-submitted TOML, PDF, CSVs, quality file, HTML, and compact review video. The
+`final_status.json` says `COMPLETE_UNREVIEWED`. After all runs resolve,
+`dyadic_batch_package.py` creates a portable ZIP containing each completed
+source and submitted TOML, PDF, CSVs, quality file, HTML, and compact review
+video, plus the documented exclusion and its logs. The
 compact MP4 preserves the original frame count and frame rate; the corrected
 sample retained all 8,241 review frames at 30 fps. Source video and full-resolution
 IDtracker trajectories remain on Firebird.

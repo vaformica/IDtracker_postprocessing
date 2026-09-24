@@ -39,8 +39,11 @@ def video_frames(path: Path) -> tuple[str, str]:
 def package(root: Path, destination: Path) -> dict:
     plan = json.loads((root / 'plan.json').read_text())
     status = collect(root)
-    if status['status_counts'].get('COMPLETE_UNREVIEWED', 0) != len(plan['tasks']):
-        raise RuntimeError(f'Only {status["status_counts"].get("COMPLETE_UNREVIEWED", 0)} of {len(plan["tasks"])} tasks are complete')
+    counts = status['status_counts']
+    complete_count = counts.get('COMPLETE_UNREVIEWED', 0)
+    excluded_count = counts.get('EXCLUDED_TRACKING_NO_BLOBS', 0)
+    if complete_count + excluded_count != len(plan['tasks']):
+        raise RuntimeError(f'Only {complete_count} completed reviews and {excluded_count} documented tracking exclusions among {len(plan["tasks"])} tasks')
     if destination.exists():
         raise FileExistsError(destination)
     with tempfile.TemporaryDirectory(prefix='dyad-package-', dir=root) as temporary:
@@ -56,21 +59,29 @@ def package(root: Path, destination: Path) -> dict:
                   'frame count and frame rate match the original. Source TOMLs are unchanged.\n'
                   'submitted.toml is the exact immutable tracking input with background subtraction on.\n'
                   'The original TOML interval ends exclusively; final analysis converts it to an inclusive end.\n'
-                  'All outputs are UNREVIEWED computational suggestions, not human-verified identities.\n'
+                  'Completed outputs are UNREVIEWED computational suggestions, not human-verified identities.\n'
+                  'Any failed original-settings tracking run is retained as an excluded receipt and log, without an invented PDF.\n'
                   'See reports/beetle_quality.csv for raw, screened-without-PSC and after-PSC missingness.\n'
                   'IDtracker identity scores are self-reported scores, not calibrated correctness probabilities.\n')
         (stage / 'README.txt').write_text(readme)
         manifests = []
         for index, task in enumerate(plan['tasks'], 1):
             folder = root / 'tasks' / task['id']
+            state = json.loads((folder / 'final_status.json').read_text())
             out = stage / 'tasks' / task['id']
-            (out / 'analysis').mkdir(parents=True)
-            (out / 'review').mkdir()
             (out / 'input').mkdir()
             for name in ('source.toml', 'submitted.toml'):
                 shutil.copy2(folder / 'input' / name, out / 'input' / name)
-            for name in ('task.json', 'final_status.json', 'quality_final.json'):
+            for name in ('task.json', 'final_status.json', 'status.json'):
                 shutil.copy2(folder / name, out / name)
+            if state['stage'] == 'EXCLUDED_TRACKING_NO_BLOBS':
+                for log in folder.glob('idtracker_attempt_*.log'):
+                    shutil.copy2(log, out / log.name)
+                print(f'{index}/{len(plan["tasks"])} {task["id"]}: excluded tracking input', flush=True)
+                continue
+            (out / 'analysis').mkdir()
+            (out / 'review').mkdir()
+            shutil.copy2(folder / 'quality_final.json', out / 'quality_final.json')
             for source in (folder / 'analysis_final').iterdir():
                 if source.is_file():
                     shutil.copy2(source, out / 'analysis' / source.name)
@@ -100,7 +111,8 @@ def package(root: Path, destination: Path) -> dict:
                 if path.is_file():
                     archive.write(path, path.relative_to(stage))
     return dict(zip=str(destination), bytes=destination.stat().st_size,
-                sha256=sha256(destination), task_count=len(manifests))
+                sha256=sha256(destination), completed_review_count=len(manifests),
+                excluded_tracking_count=excluded_count)
 
 
 def main() -> None:
