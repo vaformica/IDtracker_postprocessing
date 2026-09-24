@@ -12,7 +12,7 @@ class SixBeetleTests(unittest.TestCase):
     def test_methods_page_tracks_versions_and_current_rules(self):
         import dyadic_processor
         self.assertIs(dyadic_processor.main, six.main)
-        self.assertEqual(dyadic_processor.MODEL_VERSION,'1.5.0')
+        self.assertEqual(dyadic_processor.MODEL_VERSION,'1.5.1')
         methods = Path(six.__file__).with_name('SIX_BEETLE_METHODS.html').read_text()
         self.assertIn(f'data-processor-version="{six.SCRIPT_VERSION}"', methods)
         self.assertIn(f'data-model-version="{persistent_groups.MODEL_VERSION}"', methods)

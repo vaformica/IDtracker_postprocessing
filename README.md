@@ -724,7 +724,7 @@ folder into `approved_pdfs/`. If an approved PDF is not present in the local
 cache, the export writes `approved_pdf_copy_warnings.txt` instead of silently
 pretending the PDF was copied.
 
-## Shared PSC 1.5.0 group and dyadic analysis
+## Shared PSC 1.5.1 group and dyadic analysis
 
 `six_beetle_processor.py` 0.8.1-group accepts any group of at least two
 animals and an arena plus at least one fungus ROI. `dyadic_processor.py` is a
@@ -733,13 +733,14 @@ PDF/video/HTML pipeline uses `run_group_pipeline.py`, and
 `dyadic_firebird_gui.py` opens the shared Firebird GUI filtered to two-beetle
 sessions. See [SIX_BEETLE_README.md](SIX_BEETLE_README.md) and
 [SIX_BEETLE_METHODS.html](SIX_BEETLE_METHODS.html). These routes enforce PSC
-model 1.5.0, paired raw/PSC statistics, and the same pile rules for dyadic and
+model 1.5.1, paired raw/PSC statistics, and the same pile rules for dyadic and
 larger fights. A confirmed raw identity can be traced backward through a
 unique, smooth, unclaimed unlabeled-blob path; those inferred coordinates
 remain ambiguous. Conflicting ownership is flagged for review. At an
 ambiguous multiway split, the hidden animal is marked
 `UNRESOLVED_SPLIT` with no location, movement, or fungus occupancy until a
-supported return or a logged human correction. PSC 1.2.0, 1.3.0, and 1.4.0 output
+supported return or a logged human correction. PSC 1.2.0, 1.3.0, 1.4.0,
+and preliminary 1.5.0 output
 packages are withdrawn. The older standalone `processor.py` 0.8.1 and its
 `firebird_gui.py` remain historical tools; their older social-disappearance
 logic must not be used for the new 2026 dyadic fight batch.

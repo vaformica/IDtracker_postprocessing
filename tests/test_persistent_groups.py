@@ -127,6 +127,8 @@ class PendingSplitTests(unittest.TestCase):
    b[str(t)]=[blob(0,ids=(2,))]
    if t>=4:b[str(t)].append(blob(20+10*(t-4),ids=(1,) if t>=14 else (None,)))
   g=persistent_groups(r,b)
+  self.assertTrue((g['source'][1:4,0]=='DEPARTURE_UNCERTAIN').all())
+  self.assertTrue(np.isnan(g['xy'][1:4,0]).all())
   self.assertEqual(g['source'][4,0],'RETRO_REID_BLOB')
   self.assertTrue(g['ambiguous'][4,0])
   self.assertEqual(g['xy'][10,0,0],80)

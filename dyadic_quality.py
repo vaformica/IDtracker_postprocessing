@@ -113,6 +113,7 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
             retrospective_reidentification_frames=sum(row['location_source']=='RETRO_REID_BLOB' for row in animal_rows),
             raw_psc_identity_conflict_frames=sum(row.get('identity_conflict')=='1' for row in animal_rows),
             unresolved_raw_psc_conflict_frames=sum(row['location_source']=='RAW_PSC_CONFLICT' for row in animal_rows),
+            uncertain_departure_frames=sum(row['location_source']=='DEPARTURE_UNCERTAIN' for row in animal_rows),
             pscp_frames=sum(pscp), pscp_percent=100*sum(pscp)/total,
             unresolved_pile_frames=sum(unresolved),
             independently_assigned_frames=sum(assigned),

@@ -97,3 +97,14 @@ path back to the former pile. It marks that path as inferred and ambiguous,
 and flags raw-versus-PSC identity conflicts explicitly. This is a hypothesis
 for video review, not ground truth. Only new, fully validated 1.5.0 bundles
 may replace the withdrawn outputs.
+
+## Preliminary PSC 1.5.0 candidate withdrawn before release
+
+The Box02_MIX backtrace correctly separated beetle 0 from beetle 5 on frames
+14021–14561, but the preceding nine frames (14012–14020) still credited the
+pile even though the exact departure time was not visible. Vince had asked
+for uncertainty rather than unsupported contact scoring. The preliminary
+1.5.0 GroupTrial full array 899457 was canceled; its derived outputs are
+withdrawn. Shared model 1.5.1 marks up to ten such immediately preceding
+frames `DEPARTURE_UNCERTAIN`, with no canonical location, movement, fungus
+occupancy, or position-supported PSCP. Raw tracking and TOMLs are untouched.

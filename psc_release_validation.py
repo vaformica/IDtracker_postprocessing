@@ -38,6 +38,10 @@ def validate_bundle(analysis: Path, model: str, processor: str) -> dict:
             np.any(~ambiguous[ownership_conflict]) or
             np.any(~conflict[ownership_conflict])):
         raise ValueError(f'Raw/PSC ownership conflict lacks missing position or flags: {analysis}')
+    uncertain_departure = source == 'DEPARTURE_UNCERTAIN'
+    if (np.any(np.isfinite(xy[uncertain_departure])) or
+            np.any(~ambiguous[uncertain_departure])):
+        raise ValueError(f'Uncertain departure was scored with a position: {analysis}')
     unresolved = source == 'UNRESOLVED_SPLIT'
     if np.any(np.isfinite(xy[unresolved])) or np.any(~ambiguous[unresolved]):
         raise ValueError(f'Unresolved split has position or lacks ambiguity flag: {analysis}')
@@ -58,5 +62,6 @@ def validate_bundle(analysis: Path, model: str, processor: str) -> dict:
                 unresolved_animal_frames=int(unresolved.sum()),
                 retrospective_reidentification_frames=int(retrospective.sum()),
                 unresolved_raw_psc_conflict_frames=int(ownership_conflict.sum()),
+                uncertain_departure_frames=int(uncertain_departure.sum()),
                 raw_psc_identity_conflict_frames=int(conflict.sum()),
                 peak_speed_px_per_elapsed_frame=peak_rate)

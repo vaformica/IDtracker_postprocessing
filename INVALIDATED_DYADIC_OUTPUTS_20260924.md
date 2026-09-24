@@ -60,3 +60,13 @@ canceled; original tracking sessions, TOMLs, logs, and exclusion receipts are
 preserved. PSC model 1.5.0 is a candidate, not yet a released dataset. It
 adds conservative retrospective tracing of unique unlabeled blobs and an
 explicit raw/PSC identity-conflict flag for video review.
+
+## Preliminary PSC 1.5.0 candidate withdrawn before release
+
+The six-beetle Box02_MIX backtrace left nine unsupported pile frames before
+the first separate unlabeled blob appeared. Because dyadic analysis uses the
+same shared engine, preliminary dyadic array 899462 was canceled and its
+1.5.0-derived outputs are withdrawn. Model 1.5.1 marks this short departure
+interval as unknown location and excludes it from pile movement and fungus
+tallies. Source TOMLs, IDtracker tracking, and prior exclusion receipts remain
+untouched. Complete dyadic replacement requires new versioned outputs.

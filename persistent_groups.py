@@ -8,7 +8,7 @@ is a hypothesis and raw coordinates must be retained separately.
 import itertools
 import numpy as np
 
-MODEL_VERSION='1.5.0'
+MODEL_VERSION='1.5.1'
 
 
 def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3,
@@ -347,6 +347,19 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                                members=[a],earliest_candidate=first))
             identity_conflict[first:end,a]=True
             continue
+        # The blob path identifies where the animal is from `first` onward,
+        # but does not establish the exact departure frame immediately before
+        # it appeared. Do not leave that short interval credited to the old
+        # pile. Keep its membership hypothesis while making location unknown.
+        uncertain=[]
+        for prior in range(max(0,first-distant_confirmation),first):
+            if (group_ids[prior,a]==former_id and
+                    source[prior,a]=='PSCP_BLOB' and
+                    not np.isfinite(raw[prior,a]).all()):
+                xy[prior,a]=np.nan;inferred[prior,a]=False
+                ambiguous[prior,a]=True;anchors[prior,a]=-1
+                source[prior,a]='DEPARTURE_UNCERTAIN'
+                uncertain.append(prior)
         for prior,p,own in trail:
             xy[prior,a]=raw[prior,a] if own else p
             inferred[prior,a]=not own
@@ -356,7 +369,8 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
             anchors[prior,a]=a if own else -1
         events.append(dict(frame=end,kind='RETRO_REID_BACKTRACE',members=[a],
                            first_frame=first,last_frame=end-1,
-                           unlabeled_frames=sum(not own for _,_,own in trail)))
+                           unlabeled_frames=sum(not own for _,_,own in trail),
+                           uncertain_departure_frames=uncertain))
     shared={(a,b):(group_ids[:,a]>=0)&(group_ids[:,a]==group_ids[:,b])
             for a,b in itertools.combinations(range(nanimals),2)}
     masks={(a,b):joined&np.isfinite(xy[:,a]).all(axis=1)&np.isfinite(xy[:,b]).all(axis=1)&(inferred[:,a]|inferred[:,b])

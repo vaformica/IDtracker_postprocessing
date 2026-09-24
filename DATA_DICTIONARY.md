@@ -2,14 +2,14 @@
 
 Version documented: **0.8.1**
 
-## Shared group processor addendum — PSC model 1.5.0
+## Shared group processor addendum — PSC model 1.5.1
 
 The standalone 0.8.1 schema documented below is historical. New 2024
 six-beetle and 2026 dyadic fight reviews use the shared
-`six_beetle_processor.py` **0.8.1-group** with persistent-group model **1.5.0**.
+`six_beetle_processor.py` **0.8.1-group** with persistent-group model **1.5.1**.
 The name of that script does not restrict it to six animals: it accepts two or
 more animals and an arena plus one or more fungus ROIs. Results from the older
-PSC models 1.2.0, 1.3.0, and 1.4.0 are withdrawn for biological interpretation. Check
+PSC models 1.2.0, 1.3.0, 1.4.0, and preliminary 1.5.0 are withdrawn for biological interpretation. Check
 `analysis/manifest.json` for both `script_version` and
 `persistent_model_version`; a new file date alone is not proof of the model.
 
@@ -29,7 +29,7 @@ limit (100 px per frame by default). A detected moving pile credits each member
 with its own estimated distance and fungus occupancy. No compatible detection
 leaves the position missing and credits neither path distance nor fungus
 occupancy. A three-frame pending split can remain locationless rather than
-force an identity to jump. Model 1.5.0 applies the same spatial gate to
+force an identity to jump. Model 1.5.1 applies the same spatial gate to
 individual split branches as to whole-pile motion, rejects short distant ID
 bursts, and allows a distant identity to return only after ten consecutive
 smooth, singly labeled frames. If another entity owns that blob, the model
@@ -41,7 +41,11 @@ unclaimed blobs moving no more than 100 pixels per frame. It accepts that
 backtrace only if it reaches the identity's former pile within the social
 radius. Those retrospectively attributed frames have
 `location_source=RETRO_REID_BLOB`, `inferred=1`, and `ambiguous=1`: the path is
-a reviewable estimate, not independent IDtracker identification. A later
+a reviewable estimate, not independent IDtracker identification. Up to ten
+immediately preceding presumed pile frames without a raw ID become
+`DEPARTURE_UNCERTAIN` with unknown location and no movement or fungus credit;
+the separate blob establishes departure by its first frame, but not the exact
+moment during the preceding short interval. A later
 raw-PSC contradiction has `identity_conflict=1` even when the backtrace
 resolves it; the event log records `RETRO_REID_BACKTRACE`. If no unique path
 exists, the model retains missing or unresolved positions and logs
@@ -54,7 +58,7 @@ The selected trajectory may be an IDtracker validated or gap-processed array;
 check `trajectory_source_kind` and the input hash before interpreting `raw_`
 as unfilled detector output.
 
-Dyadic `quality_v150r081.json` and `reports_v150r081/beetle_quality.csv`
+Dyadic `quality_v151r081.json` and `reports_v151r081/beetle_quality.csv`
 separate `raw_missing_frames_recovered_by_pscp` (pile locations) from
 `raw_missing_frames_recovered_by_reidentification` (retrospective unlabeled
 path). `raw_missing_frames_recovered_by_model` is their broader total plus

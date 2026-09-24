@@ -27,7 +27,7 @@ PYTHON = '/home/vformic1-swat/miniconda3/envs/idtrackerai_6_0_14/bin/python'
 FFMPEG = '/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffmpeg'
 FFPROBE = '/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffprobe'
 CODE = Path(__file__).resolve().parent
-EXPECTED_PSC_MODEL = '1.5.0'
+EXPECTED_PSC_MODEL = '1.5.1'
 EXPECTED_GROUP_PROCESSOR = '0.8.1-group'
 VARIANTS = {
     'groupagetrial01_062024_Box02_MIX.toml': 'shared_50_400_bkg_on',

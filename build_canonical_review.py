@@ -170,6 +170,10 @@ def build(
         "D.rejected[t][a]?'<br>Raw candidate rejected':''",
         "D.identityConflict[t][a]?'<br>⚠ Raw/PSC identity conflict — review':D.rejected[t][a]?'<br>Raw candidate rejected':''",
     )
+    template = template.replace(
+        'No defensible location means MISSING or UNRESOLVED SPLIT.',
+        'No defensible location means MISSING, UNRESOLVED SPLIT, DEPARTURE UNCERTAIN, or RAW PSC CONFLICT.',
+    )
     template = template.replace("Math.round(v.currentTime*D.fps)", "Math.floor(v.currentTime*D.fps+0.0001)")
     template = template.replace("Math.round(m.mediaTime*D.fps)", "Math.floor(m.mediaTime*D.fps+0.0001)")
     template = _replace_once(

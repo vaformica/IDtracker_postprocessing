@@ -48,3 +48,4 @@ class DyadicQualityTests(unittest.TestCase):
             self.assertEqual(animal['retrospective_reidentification_frames'], 1)
             self.assertEqual(animal['raw_psc_identity_conflict_frames'], 1)
             self.assertEqual(animal['unresolved_raw_psc_conflict_frames'], 1)
+            self.assertEqual(animal['uncertain_departure_frames'], 0)
