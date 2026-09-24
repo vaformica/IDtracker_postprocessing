@@ -24,9 +24,7 @@ def write_rows(path: Path, rows: list[dict]) -> None:
 def collect(root: Path) -> dict:
     plan = json.loads((root/'plan.json').read_text())
     report = root/f'reports_{TAG}'
-    if report.exists():
-        raise FileExistsError(report)
-    report.mkdir()
+    report.mkdir(exist_ok=True)
     statuses, beetles = [], []
     for task in plan['tasks']:
         folder = root/'tasks'/task['id']

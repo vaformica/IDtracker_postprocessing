@@ -31,6 +31,20 @@ def count_frames(path: Path) -> int:
 
 def main(root: Path) -> None:
     plan = json.loads((root/'plan.json').read_text())
+    for task in plan['tasks']:
+        label = Path(task['source_toml']).stem
+        source = root/'tasks'/label
+        state = json.loads((source/'status.json').read_text())
+        manifest = json.loads((source/'analysis/manifest.json').read_text())
+        if (state.get('stage') != 'COMPLETE_UNREVIEWED' or
+                manifest.get('persistent_model_version') != '1.3.0' or
+                manifest.get('script_version') != '0.8.1-group' or
+                manifest.get('qc_status') != 'UNREVIEWED'):
+            raise RuntimeError(f'Incomplete or wrong-version review: {label}')
+        for name in ('window_comparison.csv','region_comparison.csv','fungus_comparison.csv',
+                     'frame_data.csv','OUTPUT_MANIFEST.md'):
+            if not (source/'analysis'/name).is_file():
+                raise FileNotFoundError(source/'analysis'/name)
     destination = root/'portable_v130r081'
     if destination.exists():
         raise FileExistsError(destination)
