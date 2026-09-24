@@ -237,6 +237,8 @@ def run(args) -> Path:
         str(args.gap_radius_cap_px),
         "--max-reacquire-gap-frames",
         str(args.max_reacquire_gap_frames),
+        "--distant-confirmation-frames",
+        str(args.distant_confirmation_frames),
     ]
     subprocess.run(command, check=True)
 
@@ -342,6 +344,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--gap-speed-px", type=float, default=20.0)
     result.add_argument("--gap-radius-cap-px", type=float, default=300.0)
     result.add_argument("--max-reacquire-gap-frames", type=int, default=30)
+    result.add_argument("--distant-confirmation-frames", type=int, default=10)
     result.add_argument("--crop", type=int, nargs=4, metavar=("X", "Y", "WIDTH", "HEIGHT"))
     result.add_argument("--crop-padding", type=int, default=20)
     result.add_argument(

@@ -51,25 +51,62 @@ class PendingSplitTests(unittest.TestCase):
   self.assertEqual(g['xy'][3,1,0],220)
   self.assertFalse(g['masks'][0,1][3])
  def test_far_reappearance_splits_after_confirmation_without_dragging_pile(self):
-  r=np.full((7,2,2),np.nan)
+  r=np.full((17,2,2),np.nan)
   r[0]=[[0,0],[2,0]]
-  r[4:,0]=[[220,0],[230,0],[240,0]]
-  r[4:,1]=[[20,0],[22,0],[24,0]]
-  b={str(t):[blob(10+t)] for t in range(4)}
-  for t in range(4,7):b[str(t)]=[blob(r[t,1,0]),blob(r[t,0,0])]
+  for t in range(4,17):
+   r[t,0]=[220+t-4,0];r[t,1]=[20+t-4,0]
+  b={str(t):[blob(1+t)] for t in range(4)}
+  for t in range(4,17):b[str(t)]=[blob(r[t,1,0],ids=(2,)),blob(r[t,0,0],ids=(1,))]
   g=persistent_groups(r,b)
-  self.assertTrue(g['unresolved_masks'][0,1][4:6].all())
-  self.assertTrue(np.isnan(g['xy'][4:6]).all())
-  self.assertEqual(g['xy'][6,0,0],240)
-  self.assertEqual(g['xy'][6,1,0],24)
-  self.assertFalse(g['masks'][0,1][6])
+  self.assertTrue(np.isnan(g['xy'][11:13,0]).all())
+  self.assertTrue(np.all(g['xy'][4:11,0]<100))
+  self.assertEqual(g['xy'][13,0,0],229)
+  self.assertEqual(g['xy'][13,1,0],29)
+  self.assertTrue(any(e['kind']=='DISTANT_RAW_REACQUIRED' for e in g['events']))
  def test_one_frame_false_raw_identity_does_not_end_pile(self):
   r=np.full((5,2,2),np.nan);r[0]=[[0,0],[2,0]];r[2,0]=[220,0]
   b={'0':[blob(1)],'1':[blob(3)],'2':[blob(5),blob(220)],'3':[blob(7)],'4':[blob(9)]}
   g=persistent_groups(r,b)
-  self.assertTrue(g['ambiguous'][2,0])
-  self.assertTrue(np.isnan(g['xy'][2,0]).all())
+  self.assertEqual(g['source'][2,0],'PSCP_BLOB')
+  self.assertEqual(g['xy'][2,0,0],5)
   self.assertTrue(g['masks'][0,1][3:5].all())
+ def test_far_false_id_on_another_beetle_does_not_steal_pile_member(self):
+  r=np.full((6,3,2),np.nan)
+  r[0]=[[800,0],[0,0],[1,0]]
+  r[1:,:,1]=0
+  for t in range(1,6):
+   r[t,1]=[800+t,0];r[t,2]=[t,0]
+  b={'0':[blob(800,ids=(1,)),blob(0,ids=(2,3))]}
+  for t in range(1,6):b[str(t)]=[blob(800+t,ids=(2,)),blob(t,ids=(3,))]
+  g=persistent_groups(r,b)
+  self.assertTrue((g['group_ids'][1:,1]==g['group_ids'][1:,2]).all())
+  self.assertTrue(np.all(g['xy'][1:,1,0]<100))
+  self.assertTrue(np.all(np.linalg.norm(np.diff(g['xy'][:,1],axis=0),axis=1)<=100))
+ def test_short_false_id_burst_does_not_move_hidden_member(self):
+  r=np.full((9,2,2),np.nan);r[0]=[[0,0],[1,0]]
+  b={'0':[blob(0,ids=(1,2))]}
+  for t in range(1,9):
+   b[str(t)]=[blob(t,ids=(2,))]
+   if 3<=t<=5:
+    r[t,0]=[250+t,0];b[str(t)].append(blob(250+t,ids=(1,)))
+  g=persistent_groups(r,b)
+  self.assertTrue((g['group_ids'][:,0]==g['group_ids'][:,1]).all())
+  self.assertTrue(np.all(g['xy'][:,0,0]<100))
+ def test_unresolved_multiway_member_rejoins_only_former_partner(self):
+  r=np.full((9,4,2),np.nan)
+  r[0]=[[0,0],[1,0],[2,0],[800,0]]
+  b={'0':[blob(1,ids=(1,2,3)),blob(800,ids=(4,))]}
+  for t in range(1,9):
+   r[t,0]=[t,0];r[t,2]=[60+t,0];r[t,3]=[800+t,0]
+   b[str(t)]=[blob(t,ids=(1,)),blob(60+t,ids=(3,)),blob(800+t,ids=(4,))]
+   if t>=4:
+    r[t,1]=[t,0];b[str(t)][0]['identities'].append(2)
+  g=persistent_groups(r,b)
+  self.assertTrue(np.isnan(g['xy'][3,1]).all())
+  self.assertEqual(g['source'][3,1],'UNRESOLVED_SPLIT')
+  self.assertTrue(g['ambiguous'][3,1])
+  self.assertEqual(g['group_ids'][8,0],g['group_ids'][8,1])
+  self.assertNotEqual(g['group_ids'][8,1],g['group_ids'][8,3])
  def test_distant_three_id_blob_is_flagged_instead_of_teleporting(self):
   r=np.full((7,3,2),np.nan)
   r[0]=[[0,0],[2,0],[220,0]]

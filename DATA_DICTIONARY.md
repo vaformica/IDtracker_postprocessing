@@ -2,14 +2,14 @@
 
 Version documented: **0.8.1**
 
-## Shared group processor addendum — PSC model 1.3.0
+## Shared group processor addendum — PSC model 1.4.0
 
 The standalone 0.8.1 schema documented below is historical. New 2024
 six-beetle and 2026 dyadic fight reviews use the shared
-`six_beetle_processor.py` **0.8.1-group** with persistent-group model **1.3.0**.
+`six_beetle_processor.py` **0.8.1-group** with persistent-group model **1.4.0**.
 The name of that script does not restrict it to six animals: it accepts two or
 more animals and an arena plus one or more fungus ROIs. Results from the older
-PSC model 1.2.0 are withdrawn for biological interpretation. Check
+PSC models 1.2.0 and 1.3.0 are withdrawn for biological interpretation. Check
 `analysis/manifest.json` for both `script_version` and
 `persistent_model_version`; a new file date alone is not proof of the model.
 
@@ -29,7 +29,14 @@ limit (100 px per frame by default). A detected moving pile credits each member
 with its own estimated distance and fungus occupancy. No compatible detection
 leaves the position missing and credits neither path distance nor fungus
 occupancy. A three-frame pending split can remain locationless rather than
-force an identity to jump. These estimates are not ground truth.
+force an identity to jump. Model 1.4.0 applies the same spatial gate to
+individual split branches as to whole-pile motion, rejects short distant ID
+bursts, and allows a distant identity to return only after ten consecutive
+smooth, singly labeled frames on an unclaimed blob. If a multiway split leaves
+a member with no supported branch, its position is missing until it can rejoin
+a former pile partner on three consecutive labeled frames or meet the distant
+return rule. These estimates are not ground truth. The `MISSING` state is
+preferable to assigning a hidden beetle to an arbitrary branch.
 The selected trajectory may be an IDtracker validated or gap-processed array;
 check `trajectory_source_kind` and the input hash before interpreting `raw_`
 as unfilled detector output.

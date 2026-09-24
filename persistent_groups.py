@@ -8,20 +8,31 @@ is a hypothesis and raw coordinates must be retained separately.
 import itertools
 import numpy as np
 
-MODEL_VERSION='1.3.0'
+MODEL_VERSION='1.4.0'
 
 
 def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation=3,
-                      gap_speed=20., gap_radius_cap=300., max_reacquire_gap=30):
+                      gap_speed=20., gap_radius_cap=300., max_reacquire_gap=30,
+                      distant_confirmation=10):
     raw=np.asarray(raw,float);nframes,nanimals,_=raw.shape
     if (not np.isfinite([social_radius,max_step,gap_speed,gap_radius_cap]).all() or
             social_radius<=0 or max_step<=0 or confirmation<1 or gap_speed<=0
-            or gap_radius_cap<social_radius or max_reacquire_gap<1):
+            or gap_radius_cap<social_radius or max_reacquire_gap<1
+            or distant_confirmation<confirmation):
         raise ValueError('Invalid model parameters')
     xy=np.full_like(raw,np.nan);group_ids=np.full((nframes,nanimals),-1,int)
     inferred=np.zeros((nframes,nanimals),bool);ambiguous=np.zeros_like(inferred)
     anchors=np.full((nframes,nanimals),-1,int)
     source=np.full((nframes,nanimals),'MISSING',dtype='<U24')
+    # An entity can split or merge, but an animal's last defensible position
+    # cannot be replaced by the new entity's position. Keep this gate across
+    # missing frames, pending splits, and changes of group membership.
+    member_last=np.full((nanimals,2),np.nan)
+    member_last_frame=np.full(nanimals,-1,int)
+    independent_last=np.full((nanimals,2),np.nan)
+    independent_last_frame=np.full(nanimals,-1,int)
+    distant_streak=[None for _ in range(nanimals)]
+    rejoin_streak=[None for _ in range(nanimals)]
     # A live entity owns one or more identities independently of its current location.
     entities=[];initialized=set();next_id=0;events=[]
     def detections(t):return blobs.get(str(t),blobs.get(t,[]))
@@ -34,6 +45,11 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
         matches.sort(key=lambda i:np.linalg.norm(np.asarray(bs[i]['centroid'])-p))
         if len(matches)>1 and abs(np.linalg.norm(np.asarray(bs[matches[0]]['centroid'])-p)-np.linalg.norm(np.asarray(bs[matches[1]]['centroid'])-p))<5:return None
         return matches[0]
+    def reachable(t,a,p):
+        last=member_last[a]
+        if not np.isfinite(last).all():return True
+        elapsed=t-member_last_frame[a]
+        return elapsed>0 and np.linalg.norm(np.asarray(p,float)-last)<=min(gap_radius_cap,max_step*elapsed)
     for t in range(nframes):
         bs=detections(t)
         # Initialize only IDs assigned a finite coordinate near a real detection.
@@ -43,13 +59,14 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
             if j is not None:
                 entities.append(dict(id=next_id,members={a},last=np.array(bs[j]['centroid'],float),last_frame=t,split_key=None,split_count=0))
                 next_id+=1;initialized.add(a)
-        proposals=[]
+        proposals=[];candidate_by_entity={};member_entity={}
         for e in entities:
+            for a in e['members']:member_entity[a]=e
             gap=t-e['last_frame']
             # Group membership persists without detections, but no position is
             # assigned during the gap. Reacquire only over a bounded plausible
             # displacement; the old fixed 60-pixel gate lost moving piles.
-            if gap>max_reacquire_gap:
+            if gap>max_reacquire_gap or e.get('unresolved_identity',False):
                 candidates=[]
             else:
                 radius=(max_step if gap<=1 or e['split_count']>0 else
@@ -57,17 +74,20 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                             social_radius+gap_speed*(gap-1)))
                 candidates=[j for j,b in enumerate(bs) if any(
                     np.linalg.norm(np.asarray(b['centroid'])-p)<=radius
-                    for p in [e['last']]+e.get('pending_positions',[]))]
+                    for p in [e['last']]+e.get('pending_positions',[]))
+                    and all(reachable(t,a,b['centroid']) for a in e['members'])]
+            candidate_by_entity[e['id']]=set(candidates)
             # Identity-guided choice is allowed only inside the spatial gate.
-            votes={raw_blob(t,a,bs) for a in e['members']};votes.discard(None)
-            votes&=set(candidates)
+            votes={j for a in e['members'] if (j:=raw_blob(t,a,bs)) is not None
+                   and j in candidates and reachable(t,a,bs[j]['centroid'])}
             partitions={}
             for a in e['members']:
                 j=raw_blob(t,a,bs)
-                # A member may emerge well away from the pile after being
-                # hidden. The pile's spatial gate must not veto evidence for
-                # a *split*. It still gates movement of the whole pile.
-                if j is not None:partitions.setdefault(j,set()).add(a)
+                # A raw ID beside another beetle is not evidence that this
+                # hidden member teleported out of its previous pile. Apply
+                # the same spatial gate to proposed splits as to pile motion.
+                if j is not None and j in candidates and reachable(t,a,bs[j]['centroid']):
+                    partitions.setdefault(j,set()).add(a)
             # When only a departing member has a raw label, an unlabeled blob
             # continuing the pile is evidence for the other members. Without
             # this partition the distant label could drag the whole pile.
@@ -81,11 +101,11 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                 if remaining and near:
                     near_j=min(near,key=lambda j:np.linalg.norm(np.asarray(bs[j]['centroid'])-e['last']))
                     partitions[near_j]=set(remaining)
-            # A returning subset can separate without requiring every hidden member.
+            # A returning subset can separate, but a hidden member with no
+            # independent blob cannot be assigned to an arbitrary branch of
+            # a multiway split. Its contact location becomes unresolved.
             assigned=set().union(*partitions.values()) if partitions else set()
-            if len(partitions)>1 and assigned != e['members']:
-                nearest=min(partitions,key=lambda j:np.linalg.norm(np.asarray(bs[j]['centroid'])-e['last']))
-                partitions[nearest] |= e['members']-assigned
+            unknown=e['members']-assigned if len(partitions)>1 else set()
             split=len(partitions)>1
             key=tuple(sorted(tuple(sorted(v)) for v in partitions.values())) if split else None
             positions={tuple(sorted(v)):np.asarray(bs[j]['centroid'],float)
@@ -102,6 +122,14 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                 for j,members in partitions.items():
                     child=dict(id=next_id,members=members,last=e['last'].copy(),last_frame=e['last_frame'],split_key=None,split_count=0)
                     next_id+=1;proposals.append((child,j))
+                if unknown:
+                    child=dict(id=next_id,members=unknown,last=e['last'].copy(),
+                               last_frame=e['last_frame'],split_key=None,
+                               split_count=0,unresolved_identity=True,
+                               former_members=set(e['members'])-unknown)
+                    next_id+=1;proposals.append((child,None))
+                    events.append(dict(frame=t,kind='SPLIT_IDENTITY_UNRESOLVED',
+                                       members=sorted(unknown)))
                 continue
             # Unresolved splits: never assign an entire group to one of multiple blobs.
             if split:
@@ -116,6 +144,98 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
                 j=ranked[0] if len(distances)==1 or distances[1]-distances[0]>social_radius/2 else None
             else:j=None
             proposals.append((e,j))
+        # A member hidden in a moving pile may eventually emerge beyond the
+        # pile's one-frame gate. A raw ID at that distant blob is insufficient:
+        # it must be a smooth, sustained, singly labeled track that no other
+        # entity owns. Its displacement from the last *independent* sighting
+        # must also be physically possible over the elapsed frames. If accepted,
+        # retract enough prior inferred locations to leave a real missing gap.
+        claimed={j for _,j in proposals if j is not None}
+        departures=[]
+        for a,e in member_entity.items():
+            j=raw_blob(t,a,bs)
+            eligible=(j is not None and j not in claimed
+                      and j not in candidate_by_entity[e['id']]
+                      and bs[j].get('identities',[])==[a+1]
+                      and independent_last_frame[a]>=0)
+            if eligible:
+                point=np.asarray(bs[j]['centroid'],float)
+                elapsed=t-independent_last_frame[a]
+                eligible=(elapsed>0 and
+                          np.linalg.norm(point-independent_last[a])<=max_step*elapsed)
+            if not eligible:
+                distant_streak[a]=None;continue
+            previous=distant_streak[a]
+            count=(previous['count']+1 if previous is not None and
+                   previous['frame']==t-1 and
+                   np.linalg.norm(point-previous['point'])<=max_step else 1)
+            distant_streak[a]=dict(frame=t,point=point,count=count)
+            if count>=distant_confirmation:departures.append((a,e,j,point))
+        for a,e,j,point in departures:
+            # A later independent sighting never justifies retaining an
+            # impossible inferred jump in the preceding canonical path.
+            erased=[]
+            while member_last_frame[a]>=0 and np.linalg.norm(point-member_last[a])>max_step*(t-member_last_frame[a]):
+                prior=member_last_frame[a]
+                if source[prior,a]=='ASSIGNED':break
+                erased.append(prior)
+                member_last_frame[a]=-1
+                for earlier in range(prior-1,-1,-1):
+                    if np.isfinite(xy[earlier,a]).all():
+                        member_last[a]=xy[earlier,a];member_last_frame[a]=earlier
+                        break
+            if (member_last_frame[a]>=0 and
+                    np.linalg.norm(point-member_last[a])>max_step*(t-member_last_frame[a])):
+                distant_streak[a]=None;continue
+            for prior in erased:
+                xy[prior,a]=np.nan;inferred[prior,a]=False;ambiguous[prior,a]=True
+                anchors[prior,a]=-1;source[prior,a]='MISSING'
+            e['members'].remove(a)
+            e['split_key']=None;e['split_count']=0
+            e.pop('pending_positions',None)
+            child=dict(id=next_id,members={a},last=point.copy(),last_frame=t,
+                       split_key=None,split_count=0,verified_distant=True)
+            next_id+=1
+            proposals=[(entity,choice) for entity,choice in proposals if entity is not e or e['members']]
+            proposals.append((child,j));claimed.add(j)
+            events.append(dict(frame=t,kind='DISTANT_RAW_REACQUIRED',
+                               members=[a],retracted_frames=sorted(erased)))
+            distant_streak[a]=None
+        # A multiway split can leave an unseen identity without a defensible
+        # branch. Rejoin it only when its own raw label repeatedly appears on
+        # the *same detected blob* as a former pile member, close to its last
+        # canonical position. An arbitrary nearby or distant pile is never a
+        # substitute for this identity and continuity evidence.
+        owners={}
+        for owner,j in proposals:
+            if j is not None:owners.setdefault(j,[]).append(owner)
+        for unresolved,j0 in list(proposals):
+            if j0 is not None or not unresolved.get('unresolved_identity'):
+                continue
+            for a in list(unresolved['members']):
+                j=raw_blob(t,a,bs)
+                matches=owners.get(j,[]) if j is not None else []
+                eligible=(len(matches)==1 and
+                          bool(matches[0]['members'] & unresolved['former_members']) and
+                          reachable(t,a,bs[j]['centroid']) and
+                          a+1 in bs[j].get('identities',[]))
+                if not eligible:
+                    rejoin_streak[a]=None;continue
+                owner=matches[0]
+                partner=min(owner['members'] & unresolved['former_members'])
+                prior=rejoin_streak[a]
+                count=(prior['count']+1 if prior is not None and
+                       prior['frame']==t-1 and prior['partner']==partner else 1)
+                rejoin_streak[a]=dict(frame=t,partner=partner,count=count)
+                if count<confirmation:continue
+                unresolved['members'].remove(a)
+                owner['members'].add(a)
+                events.append(dict(frame=t,kind='REJOIN_FORMER_PARTNER',
+                                   members=[a,partner]))
+                rejoin_streak[a]=None
+            if not unresolved['members']:
+                proposals=[(entity,choice) for entity,choice in proposals
+                           if entity is not unresolved]
         # Many old entities converging on the same actual blob form a pile.
         by_blob={};unseen=[]
         for e,j in proposals:
@@ -139,22 +259,36 @@ def persistent_groups(raw, blobs, social_radius=60., max_step=100., confirmation
             for a in members:
                 assigned=a==visible
                 other=raw_blob(t,a,bs)
-                disputed=is_pile and other is not None and other!=j and not assigned
+                disputed=(is_pile and other is not None and other!=j and not assigned
+                          and reachable(t,a,bs[other]['centroid']))
                 if disputed:
                     # A conflicting raw label is not yet a trusted departure,
                     # but the pile location is no longer defensible either.
                     group_ids[t,a]=e['id'];ambiguous[t,a]=True
                     source[t,a]='SPLIT_PENDING'
                     continue
-                xy[t,a]=p if is_pile else (raw[t,a] if assigned else p)
+                position=p if is_pile else (raw[t,a] if assigned else p)
+                long_gap_reacquired=(e.get('verified_distant',False) and
+                    member_last_frame[a]>=0 and
+                    np.linalg.norm(position-member_last[a])<=max_step*(t-member_last_frame[a]))
+                if not reachable(t,a,position) and not long_gap_reacquired:
+                    group_ids[t,a]=e['id'];ambiguous[t,a]=True
+                    continue
+                xy[t,a]=position
                 group_ids[t,a]=e['id'];inferred[t,a]=not assigned
                 anchors[t,a]=visible if visible is not None else members[0]
                 source[t,a]='ASSIGNED' if assigned else 'PSCP_BLOB' if is_pile else 'BLOB_CONTINUITY'
+                member_last[a]=position;member_last_frame[a]=t
+                if assigned:
+                    independent_last[a]=position;independent_last_frame[a]=t
+            e.pop('verified_distant',None)
         for e in unseen:
             active.append(e)
             for a in e['members']:
-                group_ids[t,a]=e['id'];ambiguous[t,a]=len(bs)>0
+                group_ids[t,a]=e['id'];ambiguous[t,a]=bool(bs) or e.get('unresolved_identity',False)
                 # No position: preserve identity membership only.
+                if e.get('unresolved_identity',False):
+                    source[t,a]='UNRESOLVED_SPLIT'
         entities=active
     shared={(a,b):(group_ids[:,a]>=0)&(group_ids[:,a]==group_ids[:,b])
             for a,b in itertools.combinations(range(nanimals),2)}

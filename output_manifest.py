@@ -77,7 +77,7 @@ COLUMNS = {
     'latency_to_threshold_frames': 'Frames from the exact analysis start to the first reliable movement-threshold crossing; blank if unavailable.',
     'legacy_disappearance_candidate_events': 'Count from the older pairwise disappearance rule, retained only as a comparison.',
     'location_known': '1 when x and y are available in the current working path; otherwise 0.',
-    'location_source': 'ASSIGNED = independent accepted position; PSCP_BLOB = presumed position at a detected group blob; MISSING = no defensible position.',
+    'location_source': 'ASSIGNED = independent accepted position; PSCP_BLOB = presumed position at a detected group blob; BLOB_CONTINUITY = inferred singleton position; SPLIT_PENDING = unresolved candidate separation; UNRESOLVED_SPLIT = hidden member has no defensible branch after a multiway split; MISSING = no defensible position.',
     'missing_animal': 'Beetle ID that disappeared in a legacy candidate event; blank when not applicable.',
     'missing_coordinate_frames': 'Frames with no usable position under this table’s coordinate source.',
     'missing_coordinate_proportion': 'Missing-coordinate frames divided by all frame observations in the window (0 to 1).',

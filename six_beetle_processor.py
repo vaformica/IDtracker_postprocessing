@@ -231,12 +231,14 @@ def summarize_window(xy, animal, lo, hi, label, start, rois, settings, turtling,
 def analyze_six(trajectory, session, start, window=7200, threshold=30.,
                 wall_buffer_px=30., fungus_buffer_px=30., social_distance_threshold_px=60.,
                 jump_threshold_px=200., reconstruction_speed_px=100., blob_evidence=None,
-                split_confirmation_frames=3, gap_speed_px=20., gap_radius_cap_px=300., max_reacquire_gap_frames=30):
+                split_confirmation_frames=3, gap_speed_px=20., gap_radius_cap_px=300.,
+                max_reacquire_gap_frames=30, distant_confirmation_frames=10):
     numeric = [threshold, social_distance_threshold_px, jump_threshold_px, reconstruction_speed_px,
                gap_speed_px, gap_radius_cap_px]
     if start <= 0 or window <= 0 or not all(np.isfinite(v) and v > 0 for v in numeric):
         raise ValueError('Positive start, window, and finite positive thresholds are required')
     if (split_confirmation_frames < 1 or max_reacquire_gap_frames < 1 or
+            distant_confirmation_frames < split_confirmation_frames or
             gap_radius_cap_px < social_distance_threshold_px):
         raise ValueError('Invalid persistent-group confirmation or gap settings')
     if not all(np.isfinite(v) and v >= 0 for v in [wall_buffer_px, fungus_buffer_px]):
@@ -299,7 +301,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     blob_data=json.loads(blob_path.read_text())
     history = persistent_groups(data[:start+window+1],blob_data['frames'],social_distance_threshold_px,
         reconstruction_speed_px,confirmation=split_confirmation_frames,gap_speed=gap_speed_px,
-        gap_radius_cap=gap_radius_cap_px,max_reacquire_gap=max_reacquire_gap_frames)
+        gap_radius_cap=gap_radius_cap_px,max_reacquire_gap=max_reacquire_gap_frames,
+        distant_confirmation=distant_confirmation_frames)
     group = {key: value[start:] for key,value in history.items() if key not in ('masks','unresolved_masks','events')}
     group['masks'] = {pair: mask[start:] for pair,mask in history['masks'].items()}
     group['unresolved_masks'] = {pair: mask[start:] for pair,mask in history['unresolved_masks'].items()}
@@ -385,11 +388,13 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         frame_state_definition='Presumed social disappearance takes precedence: membership in a detection-supported group with at least one inferred identity. One detected blob supports at most one independently visible identity, even if IDtracker supplies coordinates for several IDs. Observed proximity alone does not change the individual display state. Missing canonical coordinates remain missing. Ambiguity is flagged separately.',
         rois=[p.tolist() for p in rois], fixed_anchor_rule='ALL_SIX_WAKE_LATEST_CROSSING',
         qc_status='UNREVIEWED', coordinate_substitution=True, raw_coordinates_preserved=True,
-        presumed_group_rule='Persistent groups survive identity loss and true detection gaps. A single detected blob supports at most one assigned identity; other group members are PSCP estimates even when IDtracker emits multiple coordinates near that blob. No detection means missing position and unresolved contact membership. Short-gap reacquisition uses a bounded elapsed-frame radius. Separate assigned detections require repeated confirmation to split. No frame-specific automatic overrides.',
+        presumed_group_rule='Persistent groups survive identity loss and true detection gaps. One blob supports at most one assigned identity. All pile movement and split branches obey the per-member speed gate. Short-gap reacquisition is bounded; distant independent return requires a sustained smooth singly labeled track on an unclaimed blob. A multiway split with no defensible branch for a hidden member leaves its position missing until former-partner rejoin or sustained independent return. No frame-specific automatic overrides.',
         persistent_group_settings=dict(social_radius_px=social_distance_threshold_px,
             max_step_px_per_frame=reconstruction_speed_px,split_confirmation_frames=split_confirmation_frames,
             gap_speed_px_per_frame=gap_speed_px,gap_radius_cap_px=gap_radius_cap_px,
-            max_reacquire_gap_frames=max_reacquire_gap_frames),
+            max_reacquire_gap_frames=max_reacquire_gap_frames,
+            distant_confirmation_frames=distant_confirmation_frames,
+            unresolved_multiway_split_policy='MISSING_UNTIL_FORMER_PARTNER_OR_SUSTAINED_RAW_RETURN'),
         persistent_model_version=MODEL_VERSION,blob_evidence_sha256=sha256(blob_path),blob_evidence_file=str(blob_path.resolve()),
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
@@ -492,7 +497,7 @@ def write_pdf(result, destination, video, cell):
         table=ax.table(cellText=rows,colLabels=['Beetle','Raw missing N (%)','PSC missing N (%)','Raw distance px',
                                                'PSC distance px','Raw rejected','PSC rejected','Raw wake frame'],loc='center',cellLoc='center')
         table.auto_set_font_size(False); table.set_fontsize(8.5); table.scale(1,1.8)
-        fig.text(.06,.29,fill('Raw uses original IDtracker coordinates and its configured jump cutoff. PSC uses model 1.3.0 detection-supported positions and its one-frame speed limit. Neither path fills unsupported detection gaps. Compare the two columns; differences are model assumptions, not confirmed beetle identity.',120),fontsize=11)
+        fig.text(.06,.29,fill(f'Raw uses original IDtracker coordinates and its configured jump cutoff. PSC uses model {MODEL_VERSION} detection-supported positions and its one-frame speed limit. Neither path fills unsupported detection gaps. Compare the two columns; differences are model assumptions, not confirmed beetle identity.',120),fontsize=11)
         fig.text(.06,.20,fill(f"Source: {meta['trajectory_source_kind']}. Social radius: {settings['social_distance_threshold_px']:g} px. Jump cutoff: {settings['jump_threshold_px']:g} px. Fixed comparison: 3600 intervals after the latest reliable wake of all {animal_count} animals.",120),fontsize=10)
         footer(fig,1); pdf.savefig(fig); plt.close(fig)
         for page, ids in enumerate([range(animal_count)]+[[i] for i in range(animal_count)],2):
@@ -727,6 +732,7 @@ def main():
     parser.add_argument('--gap-speed-px',type=float,default=20.)
     parser.add_argument('--gap-radius-cap-px',type=float,default=300.)
     parser.add_argument('--max-reacquire-gap-frames',type=int,default=30)
+    parser.add_argument('--distant-confirmation-frames',type=int,default=10)
     for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',200.)]:
         parser.add_argument('--'+name,type=float,default=value)
     args=vars(parser.parse_args())
