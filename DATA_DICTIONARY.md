@@ -54,6 +54,17 @@ The selected trajectory may be an IDtracker validated or gap-processed array;
 check `trajectory_source_kind` and the input hash before interpreting `raw_`
 as unfilled detector output.
 
+Dyadic `quality_v150r081.json` and `reports_v150r081/beetle_quality.csv`
+separate `raw_missing_frames_recovered_by_pscp` (pile locations) from
+`raw_missing_frames_recovered_by_reidentification` (retrospective unlabeled
+path). `raw_missing_frames_recovered_by_model` is their broader total plus
+any other supported continuity positions. `screened_without_pscp` excludes
+both pile borrowing and retrospective reidentification; `after_pscp` includes
+all supported model positions. Review the accompanying
+`raw_psc_identity_conflict_frames` and
+`unresolved_raw_psc_conflict_frames` before interpreting lower missingness as
+better identity tracking.
+
 `frame_data.csv` retains raw and canonical x/y side by side. It also has
 `raw_location_known`, `raw_in_arena`, `raw_any_fungus`, `identity_conflict`,
 `raw_fungus_N`, `raw_step_from_previous_accepted`,

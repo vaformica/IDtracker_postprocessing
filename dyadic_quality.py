@@ -45,7 +45,7 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
             probabilities = list(csv.DictReader(stream))
     manifest = json.loads((analysis/'manifest.json').read_text())
     fungus_count = len(manifest['roi_order'])-1
-    result = dict(schema='dyadic-tracking-quality-v2', source_toml=source_toml,
+    result = dict(schema='dyadic-tracking-quality-v3', source_toml=source_toml,
                   source_toml_sha256=source_hash, analysis_bundle=str(analysis),
                   session=str(session), model_version=manifest.get('persistent_model_version'),
                   group_processor_version=manifest.get('script_version'),
@@ -59,7 +59,7 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
         total = len(animal_rows)
         raw = [present(row, 'raw_') for row in animal_rows]
         canonical = [present(row, '') for row in animal_rows]
-        without_pscp = [known and row['location_source'] != 'PSCP_BLOB'
+        without_pscp = [known and row['location_source'] not in ('PSCP_BLOB','RETRO_REID_BLOB')
                         for known, row in zip(canonical, animal_rows)]
         pscp = [bool(row['pscp_partners']) for row in animal_rows]
         unresolved = [bool(row['unresolved_contact_partners']) for row in animal_rows]
@@ -86,6 +86,10 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
         canonical_missing = total - sum(canonical)
         screened_missing = total - sum(without_pscp)
         recovered = sum(not original and corrected for original, corrected in zip(raw, canonical))
+        recovered_pile = sum(not original and row['location_source']=='PSCP_BLOB'
+                             for original,row in zip(raw,animal_rows))
+        recovered_backtrace = sum(not original and row['location_source']=='RETRO_REID_BLOB'
+                                  for original,row in zip(raw,animal_rows))
         fungus_comparison = {}
         for fungus in range(1,fungus_count+1):
             fungus_comparison[f'fungus_{fungus}'] = dict(
@@ -103,7 +107,12 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
             after_pscp_missing_frames=canonical_missing,
             after_pscp_missing_percent=100*canonical_missing/total,
             pscp_missingness_reduction_percentage_points=100*(screened_missing-canonical_missing)/total,
-            raw_missing_frames_recovered_by_pscp=recovered,
+            raw_missing_frames_recovered_by_pscp=recovered_pile,
+            raw_missing_frames_recovered_by_reidentification=recovered_backtrace,
+            raw_missing_frames_recovered_by_model=recovered,
+            retrospective_reidentification_frames=sum(row['location_source']=='RETRO_REID_BLOB' for row in animal_rows),
+            raw_psc_identity_conflict_frames=sum(row.get('identity_conflict')=='1' for row in animal_rows),
+            unresolved_raw_psc_conflict_frames=sum(row['location_source']=='RAW_PSC_CONFLICT' for row in animal_rows),
             pscp_frames=sum(pscp), pscp_percent=100*sum(pscp)/total,
             unresolved_pile_frames=sum(unresolved),
             independently_assigned_frames=sum(assigned),
