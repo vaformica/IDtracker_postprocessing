@@ -12,7 +12,7 @@ copy for task `01d390290e38aced` was deleted, as were its superseded local
 quality-summary CSV/JSON. The local tracking-status and TOML-geometry reports
 were retained because they do not depend on PSC rules.
 
-The replacement release gate is **PSC model 1.3.0 plus group processor
+The historical, now superseded replacement gate was **PSC model 1.3.0 plus group processor
 0.8.1-group** (code commit `d7e14ab`). Every released dyadic task must have a
 manifest declaring both versions, `COMPLETE_UNREVIEWED` status, raw and PSC
 window/region/fungus comparison CSVs, paired PDF tables, a frame-by-frame file
@@ -27,3 +27,24 @@ structurally incompatible TOMLs were explicitly excluded by Vince. The other
 99 distinct trackable configurations require versioned reruns. None of these
 reviews is ground truth until a person checks its identities and pile events
 against the video.
+
+## Further invalidation: shared PSC model 1.3.0
+
+The six-beetle Box01_MIX review exposed an additional defect in the same
+shared `persistent_groups.py` engine: its split-confirmation branch could
+attach a hidden member to a raw identity hundreds of pixels from its previous
+pile, bypassing the normal speed gate. Consequently, every dyadic
+model-1.3.0/processor-0.8.1-group postprocessing output is also **WITHDRAWN**
+for biological interpretation, including the two high-conflict validations.
+Slurm array `899144` was canceled. IDtracker tracking sessions, source TOMLs,
+logs, and immutable receipts were retained.
+
+The next candidate is shared PSC model 1.4.0 at commit `0e61a75`, paired with
+group processor 0.8.1-group. The same rule is used for two and six beetles;
+it rejects impossible split jumps and brief distant raw-ID bursts. When
+identity cannot be assigned at a multiway split it records unknown location,
+not an invented contact path. Only new `v140r081` analyses can be considered
+for a replacement release, and they remain unreviewed until compared with
+video. The 99 trackable configurations and one documented no-blob exclusion
+are the intended batch scope; four incompatible TOMLs remain excluded by
+Vince.

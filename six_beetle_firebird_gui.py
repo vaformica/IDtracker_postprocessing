@@ -207,7 +207,7 @@ def validated_parameters(values: dict) -> dict:
     parsed = dict(values)
     for key in ("start", "end"):
         parsed[key] = int(values[key])
-    for key, default in (("split_confirmation", 3), ("gap_frames", 30)):
+    for key, default in (("split_confirmation", 3), ("gap_frames", 30), ("distant_confirmation", 10)):
         parsed[key] = int(values.get(key, default))
     for key in ("fps", "movement", "wall", "fungus", "proximity", "jump", "reconstruction"):
         parsed[key] = float(values[key])
@@ -223,6 +223,7 @@ def validated_parameters(values: dict) -> dict:
     if parsed["wall"] < 0 or parsed["fungus"] < 0:
         raise ValueError("ROI buffers cannot be negative")
     if (parsed['split_confirmation'] < 1 or parsed['gap_frames'] < 1 or
+            parsed['distant_confirmation'] < parsed['split_confirmation'] or
             parsed['gap_speed'] <= 0 or parsed['gap_cap'] < parsed['proximity']):
         raise ValueError('Persistent-group gap and split settings are invalid')
     for key in ("session", "video", "label"):
@@ -255,6 +256,7 @@ def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_py
         "--gap-speed-px", str(parameters.get('gap_speed', 20)),
         "--gap-radius-cap-px", str(parameters.get('gap_cap', 300)),
         "--max-reacquire-gap-frames", str(parameters.get('gap_frames', 30)),
+        "--distant-confirmation-frames", str(parameters.get('distant_confirmation', 10)),
         "--idtracker-python", idtracker_python,
         "--ffmpeg", ffmpeg,
         "--ffprobe", ffprobe,
@@ -335,7 +337,8 @@ class App(tk.Tk):
         settings.pack(fill="x", padx=10, pady=4)
         defaults = dict(session="", trajectory="", video="", label="", start="422", end="7622", fps="30",
                         movement="30", wall="30", fungus="30", proximity="60", jump="200", reconstruction="100",
-                        split_confirmation="3", gap_speed="20", gap_cap="300", gap_frames="30")
+                        split_confirmation="3", gap_speed="20", gap_cap="300", gap_frames="30",
+                        distant_confirmation="10")
         self.variables = {key: tk.StringVar(value=value) for key, value in defaults.items()}
         labels = [
             ("session", "Remote session"), ("trajectory", "Remote trajectory (optional)"), ("video", "Remote source video"),
@@ -344,6 +347,7 @@ class App(tk.Tk):
             ("proximity", "Proximity px"), ("jump", "Analysis jump px"), ("reconstruction", "One-frame identity speed px"),
             ("split_confirmation", "Split confirmation frames"), ("gap_speed", "Gap search growth px/frame"),
             ("gap_cap", "Gap search radius cap px"), ("gap_frames", "Maximum automatic gap frames"),
+            ("distant_confirmation", "Distant ID return confirmation frames"),
         ]
         for index, (key, label) in enumerate(labels):
             row, pair = divmod(index, 2)

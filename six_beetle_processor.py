@@ -637,6 +637,27 @@ def write_pdf(result, destination, video, cell):
         table.scale(1,1.45 if len(rows)>10 else 2)
         fig.text(.08,.10,fill('Raw near uses two original IDtracker coordinates. Assigned near requires two independent accepted assignments. PSC requires a detection-supported shared pile with at least one inferred member. Unresolved preserves pile membership but gives no location. Categories describe different evidence; do not add them without checking overlap.',120),fontsize=9)
         footer(fig,animal_count+6+fungus_count);pdf.savefig(fig);plt.close(fig)
+        fig=plt.figure(figsize=(11.7,8.3))
+        fig.suptitle('Appendix A: Reading the pair-contact frame counts',fontsize=19,y=.94)
+        definitions=[
+            ['Raw near frames',
+             'Both beetles have coordinates in the selected IDtracker input, and those coordinates are within the proximity radius. A wrong ID can count here.'],
+            ['Assigned near frames',
+             'Both beetles are independently assigned to detections within the radius after PSC screening. Neither position is borrowed from a pile partner.'],
+            ['PSC frames',
+             'Both beetles have positions at the same detected pile, and at least one position is inferred from that pile. This is a presumed shared location, not proof of fighting.'],
+            ['Unresolved frames',
+             'The pair still belongs to the same presumed pile, but at least one position is unknown. No movement or fungus location is credited for the missing position.'],
+        ]
+        for y,(label,description) in zip((.80,.68,.56,.44),definitions):
+            fig.add_artist(plt.Line2D([.08,.92],[y+.04,y+.04],transform=fig.transFigure,
+                                      color='#cbd8dd',lw=.8))
+            fig.text(.08,y,label,fontsize=11,weight='bold',va='top')
+            fig.text(.32,y,fill(description,76),fontsize=10,va='top')
+        fig.text(.08,.29,fill(f'"Near" means within the configured proximity radius ({settings["social_distance_threshold_px"]:g} pixels here). "Raw" means the selected IDtracker trajectory input before PSC processing; its ID labels can be wrong.',115),fontsize=10)
+        fig.text(.08,.20,fill('Do not sum these four columns. Raw near can overlap the screened categories. Assigned near and PSC describe different evidence for a pair at a frame.',115),fontsize=10)
+        fig.text(.08,.11,fill('If a pile of three or more splits and the model cannot tell which branch contains a hidden beetle, that beetle is marked UNRESOLVED_SPLIT with no location. It may count in neither pair\'s unresolved total because even its partner is uncertain. Check frame_data.csv for the frame-level location_source and ambiguity flag.',115),fontsize=10)
+        footer(fig,animal_count+7+fungus_count);pdf.savefig(fig);plt.close(fig)
 
 
 

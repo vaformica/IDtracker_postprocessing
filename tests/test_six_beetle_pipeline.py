@@ -165,6 +165,7 @@ class PipelineHelpersTests(unittest.TestCase):
             gap_speed="25",
             gap_cap="280",
             gap_frames="20",
+            distant_confirmation="12",
         )
         parameters = validated_parameters(values)
         command = pipeline_command("/code", "/run", "/post/python", "/id/python", "/ffmpeg", "/ffprobe", parameters)
@@ -176,6 +177,7 @@ class PipelineHelpersTests(unittest.TestCase):
         self.assertIn("--gap-speed-px 25.0", joined)
         self.assertIn("--gap-radius-cap-px 280.0", joined)
         self.assertIn("--max-reacquire-gap-frames 20", joined)
+        self.assertIn("--distant-confirmation-frames 12", joined)
         self.assertIn("--trajectory /remote/session/trajectories/validated.npy", joined)
         self.assertIn("--analysis-output /run/analysis", joined)
         self.assertIn("--review-output /run/review", joined)

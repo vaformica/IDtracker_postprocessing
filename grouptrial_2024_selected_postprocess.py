@@ -18,6 +18,8 @@ from pathlib import Path
 
 import numpy as np
 
+from psc_release_validation import validate_bundle
+
 SOURCE_ROOT = Path('/data/labs/vformic1-swat-lab/2024_Videos/Groupagetrial_2024')
 MANAGED = SOURCE_ROOT / 'managed_idtracker_runs'
 PAIRED = MANAGED / 'paired_20260922_004953_utc'
@@ -185,6 +187,7 @@ def process(root: Path) -> None:
         if (manifest.get('persistent_model_version') != EXPECTED_PSC_MODEL or
                 manifest.get('script_version') != EXPECTED_GROUP_PROCESSOR):
             raise RuntimeError('Pipeline used an outdated PSC model or group processor')
+        validate_bundle(folder/'analysis', EXPECTED_PSC_MODEL, EXPECTED_GROUP_PROCESSOR)
         for name in ('window_comparison.csv','region_comparison.csv','fungus_comparison.csv'):
             if not (folder/'analysis'/name).is_file():
                 raise RuntimeError(f'Missing paired raw/PSC summary: {name}')

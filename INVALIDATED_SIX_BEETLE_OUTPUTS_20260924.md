@@ -30,7 +30,30 @@ pass frame-level and video review before the remaining 2024 analyses are
 released. The 2026 dyadic outputs using the shared older engine also require
 an impact audit and, if affected, a separately versioned rerun.
 
-## Replacement in progress
+## Further invalidation: PSC 1.3.0
+
+Vince's review of `groupagetrial04_062124_Box01_MIX` found that model 1.3.0
+still allowed an unseen identity to leave a pile for a distant raw label. At
+frame 994, beetle 1 was pulled about 890 pixels from its pile with beetle 2
+to a blob near beetle 0. Similar false transfers occurred for beetle 0 near
+frame 2710 and beetle 5 near frame 9172. The split-confirmation branch had
+bypassed the 100-pixel-per-frame gate. The model-1.3.0/processor-0.8.1-group
+11-review ZIP and all its derived movement/fungus/contact outputs are therefore
+**WITHDRAWN**. The old ZIP and local extracted folder have been moved under
+`outputs/WITHDRAWN_grouptrial_2024_psc_v130r081/`; the Firebird ZIP has a
+`WITHDRAWN_` prefix and its root has a do-not-use marker. Source tracking,
+TOMLs, and videos remain unchanged.
+
+PSC model 1.4.0 at commit `0e61a75` is a validation candidate. It applies a
+per-beetle speed gate to split branches and changes of pile, rejects brief
+distant raw-ID bursts, and records a hidden member as `UNRESOLVED_SPLIT` when a
+multiway split cannot be assigned to one branch. The model deliberately
+reports more unknown-location frames rather than fabricate a supported path.
+It must pass independent six-beetle and dyadic validation before any new batch
+is released. The zero-conflict screen used for 1.3.0 was insufficient to catch
+these errors and must not be cited as identity validation.
+
+## Historical 1.3.0 replacement attempt — superseded
 
 The two selected stress tests, `groupagetrial01_062024_Box01_OLD_TEst`
 and `groupagetrial04_062124_Box02_OLD`, completed with PSC model 1.3.0.
