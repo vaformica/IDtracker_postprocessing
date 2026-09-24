@@ -74,7 +74,8 @@ def run(root: Path, index: int) -> None:
         config = json.loads((session / 'session.json').read_text())
         label = submitted.get('name') or config.get('name') or Path(task['source_path']).stem
         command = [sys.executable, str(CODE / 'run_group_pipeline.py'),
-                   '--session', str(session), '--source-video', submitted['video_paths'][0],
+                   '--session', str(session), '--source-toml', task['source_path'],
+                   '--source-video', submitted['video_paths'][0],
                    '--analysis-output', str(analysis), '--review-output', str(review),
                    '--start', str(start), '--end', str(end_inclusive),
                    '--fps', str(config.get('frames_per_second', 30)),
