@@ -8,6 +8,7 @@ with frame count and frame rate preserved for the synchronized HTML viewer.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import hashlib
 import json
 import shutil
@@ -55,11 +56,21 @@ def package(root: Path, destination: Path) -> dict:
             if source.is_file():
                 shutil.copy2(source, stage / 'reports' / source.name)
         shutil.copy2(root / 'plan.json', stage / 'plan.json')
-        for name in ('SIX_BEETLE_METHODS.html','DATA_DICTIONARY.md'):
+        for name in ('SIX_BEETLE_METHODS.html','DATA_DICTIONARY.md',
+                     'INVALIDATED_DYADIC_OUTPUTS_20260924.md'):
             source = CODE/name
             if not source.is_file():
                 raise FileNotFoundError(source)
             shutil.copy2(source,stage/name)
+        code_files=('persistent_groups.py','six_beetle_processor.py','frame_data.py',
+                    'output_manifest.py','dyadic_quality.py','dyadic_batch_refinalize_v130r081.py')
+        version=dict(schema='dyadic-psc-release-v1',
+                     created_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
+                     psc_model_version='1.3.0',group_processor_version='0.8.1-group',
+                     code_commits=['3d95261','d7e14ab','46fdf34','a5e6dea'],qc_status='UNREVIEWED',
+                     plan_sha256=sha256(root/'plan.json'),source_tomls_untouched=True,
+                     code_sha256={name:sha256(CODE/name) for name in code_files})
+        (stage/'VERSION_CONTROL.json').write_text(json.dumps(version,indent=2)+'\n')
         readme = ('2026 dyadic fight IDtracker and presumed social contact reviews\n'
                   'PSC model 1.3.0; group processor 0.8.1-group. Older PSC outputs are withdrawn.\n\n'
                   'Open each tasks/<id>/review/interaction_review.html next to its review_video.mp4.\n'

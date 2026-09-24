@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import datetime as dt
 import hashlib
 import json
 import shutil
@@ -108,9 +109,20 @@ def main(root: Path) -> None:
         'Start frame is preserved; end_frame_inclusive is TOML end minus one.\n'
         'Source and processed trajectory hashes and name mismatches are in selection_manifest.csv.\n'
         'See VERSION_CONTROL.json and SIX_BEETLE_METHODS.html for model provenance and rules.\n')
+    code = root/'code'
+    code_files = ('persistent_groups.py','six_beetle_processor.py','frame_data.py',
+                  'output_manifest.py','run_six_beetle_pipeline.py')
+    version = dict(schema='grouptrial-psc-release-v1',
+                   created_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
+                   psc_model_version='1.3.0',group_processor_version='0.8.1-group',
+                   code_commits=['3d95261','d7e14ab','46fdf34','a5e6dea'],
+                   qc_status='UNREVIEWED',plan_sha256=digest(root/'plan.json'),
+                   source_tomls_untouched=True,
+                   code_sha256={name:digest(code/name) for name in code_files})
+    (destination/'VERSION_CONTROL.json').write_text(json.dumps(version,indent=2)+'\n')
     for name in ('SIX_BEETLE_METHODS.html', 'DATA_DICTIONARY.md',
                  'INVALIDATED_SIX_BEETLE_OUTPUTS_20260924.md',
-                 'VERSION_CONTROL.json'):
+                 ):
         source = root/name
         if not source.is_file():
             raise FileNotFoundError(source)

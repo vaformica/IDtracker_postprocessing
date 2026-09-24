@@ -21,7 +21,8 @@ The group processor writes three preferred paired summary files:
 | `region_comparison.csv` | beetle, window, and region | Raw and PSC-model location frames, accepted steps, and midpoint-allocated distance. |
 | `fungus_comparison.csv` | beetle | Raw and PSC-model frames and movement distance for every fungus ROI. |
 
-Columns beginning `raw_` use original IDtracker identity coordinates and the
+Columns beginning `raw_` use the selected IDtracker trajectory coordinates
+before PSC processing and the
 configured raw jump cutoff (200 px by default). Columns beginning `pscp_`
 use the detection-supported canonical path and the group-continuity speed
 limit (100 px per frame by default). A detected moving pile credits each member
@@ -29,6 +30,9 @@ with its own estimated distance and fungus occupancy. No compatible detection
 leaves the position missing and credits neither path distance nor fungus
 occupancy. A three-frame pending split can remain locationless rather than
 force an identity to jump. These estimates are not ground truth.
+The selected trajectory may be an IDtracker validated or gap-processed array;
+check `trajectory_source_kind` and the input hash before interpreting `raw_`
+as unfilled detector output.
 
 `frame_data.csv` retains raw and canonical x/y side by side. It also has
 `raw_location_known`, `raw_in_arena`, `raw_any_fungus`,
