@@ -16,9 +16,11 @@ import processor as legacy
 
 BASE_FIELDS = [
     'global_frame', 'animal_id', 'raw_x', 'raw_y', 'x', 'y',
+    'raw_location_known', 'raw_in_arena', 'raw_any_fungus',
     'location_source', 'inferred', 'group_id', 'ambiguous', 'human_intervention', 'location_known',
     'in_arena', 'any_fungus',
-    'observed_proximity_partners', 'pscp_partners', 'unresolved_contact_partners',
+    'raw_proximity_partners', 'observed_proximity_partners', 'pscp_partners', 'unresolved_contact_partners',
+    'raw_step_from_previous_accepted', 'raw_step_distance_px',
     'step_from_previous_accepted', 'step_distance_px',
 ]
 
@@ -26,7 +28,9 @@ BASE_FIELDS = [
 def fields_for_fungi(count):
     if count < 1:
         raise ValueError('At least one fungus ROI is required')
-    return (BASE_FIELDS + [f'fungus_{i}' for i in range(1, count+1)]
+    return (BASE_FIELDS + [f'raw_fungus_{i}' for i in range(1, count+1)]
+            + [f'raw_step_midpoint_fungus_{i}' for i in range(1, count+1)]
+            + [f'fungus_{i}' for i in range(1, count+1)]
             + [f'step_midpoint_fungus_{i}' for i in range(1, count+1)])
 
 
@@ -55,15 +59,29 @@ def write_frame_data(result, destination):
         raise ValueError('Invalid canonical step limit')
     membership = np.stack([_inside(xy[:, a], polygon) for a in range(animals)
                            for polygon in rois]).reshape(animals, len(rois), nframes).transpose(2, 0, 1)
+    raw_membership = np.stack([_inside(raw[:, a], polygon) for a in range(animals)
+                               for polygon in rois]).reshape(animals, len(rois), nframes).transpose(2, 0, 1)
     midpoints = (xy[:-1] + xy[1:]) / 2
+    raw_midpoints = (raw[:-1] + raw[1:]) / 2
     mid_fungus = np.stack([_inside(midpoints[:, a], polygon) for a in range(animals)
                            for polygon in rois[1:]]).reshape(animals, fungi, nframes-1).transpose(2, 0, 1)
+    raw_mid_fungus = np.stack([_inside(raw_midpoints[:, a], polygon) for a in range(animals)
+                               for polygon in rois[1:]]).reshape(animals, fungi, nframes-1).transpose(2, 0, 1)
     lengths = np.linalg.norm(np.diff(xy, axis=0), axis=2)
+    raw_lengths = np.linalg.norm(np.diff(raw, axis=0), axis=2)
     accepted = np.isfinite(xy[:-1]).all(axis=2) & np.isfinite(xy[1:]).all(axis=2) & (lengths <= speed)
+    raw_cutoff = float(result['metadata']['settings'].get('jump_threshold_px',speed))
+    raw_accepted = np.isfinite(raw[:-1]).all(axis=2) & np.isfinite(raw[1:]).all(axis=2) & (raw_lengths <= raw_cutoff)
     observed = [[[] for _ in range(animals)] for _ in range(nframes)]
+    raw_near = [[[] for _ in range(animals)] for _ in range(nframes)]
     pscp = [[[] for _ in range(animals)] for _ in range(nframes)]
     unresolved = [[[] for _ in range(animals)] for _ in range(nframes)]
+    social_radius = float(result['metadata']['settings'].get('social_distance_threshold_px',60.))
     for a, b in itertools.combinations(range(animals), 2):
+        raw_distance = np.linalg.norm(raw[:,a]-raw[:,b],axis=1)
+        for t in np.flatnonzero(np.isfinite(raw[:,a]).all(axis=1) & np.isfinite(raw[:,b]).all(axis=1)
+                                    & (raw_distance <= social_radius)):
+            raw_near[t][a].append(b); raw_near[t][b].append(a)
         for t in np.flatnonzero(result['masks'][a, b]):
             observed[t][a].append(b); observed[t][b].append(a)
         for t in np.flatnonzero(group['masks'][a, b]):
@@ -79,18 +97,26 @@ def write_frame_data(result, destination):
                 known = bool(np.isfinite(xy[t, a]).all())
                 row = dict(global_frame=start+t, animal_id=a,
                            raw_x=raw[t,a,0], raw_y=raw[t,a,1], x=xy[t,a,0], y=xy[t,a,1],
+                           raw_location_known=int(np.isfinite(raw[t,a]).all()),
+                           raw_in_arena=int(raw_membership[t,a,0]),
+                           raw_any_fungus=int(raw_membership[t,a,1:].any()),
                            location_source=group['source'][t,a], inferred=int(group['inferred'][t,a]),
                            group_id=int(group['group_ids'][t,a]), ambiguous=int(group['ambiguous'][t,a]),
                            human_intervention=int(human[t,a]),
                            location_known=int(known), in_arena=int(membership[t,a,0]),
                            any_fungus=int(membership[t,a,1:].any()),
+                           raw_proximity_partners=';'.join(map(str, raw_near[t][a])),
                            observed_proximity_partners=';'.join(map(str, observed[t][a])),
                            pscp_partners=';'.join(map(str, pscp[t][a])),
                            unresolved_contact_partners=';'.join(map(str, unresolved[t][a])),
+                           raw_step_from_previous_accepted=int(t > 0 and raw_accepted[t-1,a]),
                            step_from_previous_accepted=int(t > 0 and accepted[t-1,a]))
                 for fungus in range(1, fungi+1):
+                    row[f'raw_fungus_{fungus}'] = int(raw_membership[t,a,fungus])
+                    row[f'raw_step_midpoint_fungus_{fungus}'] = int(t > 0 and raw_mid_fungus[t-1,a,fungus-1])
                     row[f'fungus_{fungus}'] = int(membership[t,a,fungus])
                     row[f'step_midpoint_fungus_{fungus}'] = int(t > 0 and mid_fungus[t-1,a,fungus-1])
+                row['raw_step_distance_px'] = float(raw_lengths[t-1,a]) if t > 0 and raw_accepted[t-1,a] else ''
                 row['step_distance_px'] = float(lengths[t-1,a]) if t > 0 and accepted[t-1,a] else ''
                 writer.writerow({key: '' if isinstance(value, (float, np.floating)) and not math.isfinite(value)
                                  else value for key, value in row.items()})
@@ -113,6 +139,10 @@ def aggregate(frame_csv, start, end):
         # a locationless pile from ordinary missingness in the frame CSV.
         missing.discard('unresolved_contact_partners')
         missing.discard('human_intervention')
+        raw_fields = {name for name in fields_for_fungi(len(fungus_ids))
+                      if name.startswith('raw_') and name not in ('raw_x','raw_y')}
+        has_raw_metrics = raw_fields <= set(header)
+        missing -= raw_fields
         if missing:
             raise ValueError(f'Missing frame-data columns: {sorted(missing)}')
         for row in reader:
@@ -142,6 +172,20 @@ def aggregate(frame_csv, start, end):
                     any_fungus_percent_all_frames=100*sum(int(r['any_fungus']) for r in rows)/frames,
                     any_fungus_percent_known_frames=(100*sum(int(r['any_fungus']) for r in rows)/known if known else ''),
                     distance_px=sum(float(r['step_distance_px']) for r in rows[1:] if r['step_distance_px']!=''))
+        item['pscp_known_location_frames'] = known
+        item['pscp_missing_location_frames'] = frames-known
+        item['pscp_any_fungus_frames'] = item['any_fungus_frames']
+        item['pscp_distance_px'] = item['distance_px']
+        if has_raw_metrics:
+            raw_known = sum(int(r['raw_location_known']) for r in rows)
+            item.update(raw_known_location_frames=raw_known,
+                        raw_missing_location_frames=frames-raw_known,
+                        raw_any_fungus_frames=sum(int(r['raw_any_fungus']) for r in rows),
+                        raw_distance_px=sum(float(r['raw_step_distance_px']) for r in rows[1:]
+                                            if r['raw_step_distance_px']!=''))
+        else:
+            item.update(raw_known_location_frames='',raw_missing_location_frames='',
+                        raw_any_fungus_frames='',raw_distance_px='')
         for fungus in fungus_ids:
             count = sum(int(r[f'fungus_{fungus}']) for r in rows)
             item[f'fungus_{fungus}_frames'] = count
@@ -149,6 +193,13 @@ def aggregate(frame_csv, start, end):
             item[f'fungus_{fungus}_percent_known_frames'] = 100*count/known if known else ''
             item[f'fungus_{fungus}_distance_px'] = sum(float(r['step_distance_px']) for r in rows[1:]
                 if r['step_distance_px']!='' and int(r[f'step_midpoint_fungus_{fungus}']))
+            item[f'pscp_fungus_{fungus}_frames'] = count
+            item[f'pscp_fungus_{fungus}_distance_px'] = item[f'fungus_{fungus}_distance_px']
+            item[f'raw_fungus_{fungus}_frames'] = (sum(int(r[f'raw_fungus_{fungus}']) for r in rows)
+                                                  if has_raw_metrics else '')
+            item[f'raw_fungus_{fungus}_distance_px'] = (sum(float(r['raw_step_distance_px']) for r in rows[1:]
+                if r['raw_step_distance_px']!='' and int(r[f'raw_step_midpoint_fungus_{fungus}']))
+                if has_raw_metrics else '')
         beetles.append(item)
     pairs = []
     for a, b in itertools.combinations(sorted(animals), 2):
@@ -157,6 +208,8 @@ def aggregate(frame_csv, start, end):
         unresolved_frames = sum(str(b) in by_frame[t][a].get('unresolved_contact_partners', '').split(';') for t in expected)
         pairs.append(dict(animal_a=a, animal_b=b, start_global_frame=start,
                           end_global_frame_inclusive=end, frame_observations=frames,
+                          raw_proximity_frames=(sum(str(b) in by_frame[t][a]['raw_proximity_partners'].split(';')
+                                                    for t in expected) if has_raw_metrics else ''),
                           observed_proximity_frames=observed, pscp_frames=presumed,
                           unresolved_contact_frames=unresolved_frames))
     return beetles, pairs

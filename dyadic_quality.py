@@ -43,9 +43,12 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
     if probability_path.is_file():
         with probability_path.open(newline='') as stream:
             probabilities = list(csv.DictReader(stream))
-    result = dict(schema='dyadic-tracking-quality-v1', source_toml=source_toml,
+    manifest = json.loads((analysis/'manifest.json').read_text())
+    fungus_count = len(manifest['roi_order'])-1
+    result = dict(schema='dyadic-tracking-quality-v2', source_toml=source_toml,
                   source_toml_sha256=source_hash, analysis_bundle=str(analysis),
-                  session=str(session), model_version=json.loads((analysis/'manifest.json').read_text()).get('persistent_model_version'),
+                  session=str(session), model_version=manifest.get('persistent_model_version'),
+                  group_processor_version=manifest.get('script_version'),
                   idtracker_version=config.get('version'), idtracker_estimated_accuracy=config.get('estimated_accuracy'),
                   idtracker_silhouette_score=config.get('silhouette_score'),
                   idtracker_ratio_accumulated_images=config.get('ratio_accumulated_images'),
@@ -83,6 +86,15 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
         canonical_missing = total - sum(canonical)
         screened_missing = total - sum(without_pscp)
         recovered = sum(not original and corrected for original, corrected in zip(raw, canonical))
+        fungus_comparison = {}
+        for fungus in range(1,fungus_count+1):
+            fungus_comparison[f'fungus_{fungus}'] = dict(
+                raw_frames=sum(int(row[f'raw_fungus_{fungus}']) for row in animal_rows),
+                pscp_frames=sum(int(row[f'fungus_{fungus}']) for row in animal_rows),
+                raw_distance_px=sum(float(row['raw_step_distance_px']) for row in animal_rows
+                    if row['raw_step_distance_px']!='' and int(row[f'raw_step_midpoint_fungus_{fungus}'])),
+                pscp_distance_px=sum(float(row['step_distance_px']) for row in animal_rows
+                    if row['step_distance_px']!='' and int(row[f'step_midpoint_fungus_{fungus}'])))
         result['animals'].append(dict(
             animal_id=animal, analyzed_frames=total, raw_missing_frames=raw_missing,
             raw_missing_percent=100*raw_missing/total,
@@ -99,6 +111,11 @@ def summary(analysis: Path, session: Path, source_toml: str, source_hash: str) -
             longest_raw_missing_run_frames=longest_run([not value for value in raw]),
             longest_after_pscp_missing_run_frames=longest_run([not value for value in canonical]),
             raw_adjacent_jumps_over_100px=raw_jumps,
+            raw_total_distance_px=sum(float(row['raw_step_distance_px']) for row in animal_rows
+                                      if row['raw_step_distance_px']!=''),
+            pscp_total_distance_px=sum(float(row['step_distance_px']) for row in animal_rows
+                                       if row['step_distance_px']!=''),
+            fungus_comparison=fungus_comparison,
             identity_score_n=len(probs),
             identity_score_mean=statistics.fmean(probs) if probs else None,
             identity_score_median=statistics.median(probs) if probs else None,

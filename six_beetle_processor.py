@@ -21,7 +21,7 @@ from trajectory_reconstruction import reconstruct
 from persistent_groups import persistent_groups,MODEL_VERSION
 from frame_data import write_frame_data
 
-SCRIPT_VERSION = '0.8.0-group'
+SCRIPT_VERSION = '0.8.1-group'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -327,6 +327,10 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
                 frames=event['frames'],candidate_partner_count=1,attribution='GROUP_MEMBERSHIP_WITHOUT_DETECTION'))
     for row in pairs:
         pair=row['animal_a'],row['animal_b']
+        row['raw_proximity_frames'] = row['proximity_frames']
+        row['raw_proximity_bouts'] = row['proximity_bouts']
+        row['raw_jointly_present_frames'] = row['jointly_visible_frames']
+        row['raw_proximity_proportion_jointly_present'] = row['proximity_proportion_jointly_visible']
         pscp_mask=group['masks'][pair]
         unresolved_mask=group['unresolved_masks'][pair]
         proximity_mask=visible_masks[pair]
@@ -351,10 +355,14 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     timeline['states'][:]=1
     timeline['states'][np.isfinite(group['xy']).all(axis=2)]=0
     timeline['states'][group['inferred']]=2
-    estimated_windows, estimated_regions = [], []
+    estimated_windows, estimated_regions, estimated_turtling_masks = [], [], []
     # Preserve two evidence classes: visible assigned proximity is an
     # interaction; co-location with at least one inferred identity is PSCP.
     adjusted_masks={pair: masks[pair] | group['masks'][pair] for pair in masks}
+    for animal in range(animal_count):
+        estimated_turtle = legacy.compute_turtling_candidates(group['xy'][:,animal])['mask']
+        estimated_on_fungus = regions(group['xy'][:,animal],rois,wall_buffer_px,fungus_buffer_px)['any_fungus']
+        estimated_turtling_masks.append(estimated_turtle & ~estimated_on_fungus)
     timeline['coordinate_present']=np.isfinite(group['xy']).all(axis=2)
     timeline['proximity_partner_count'][:]=0
     for (a,b),mask in masks.items():
@@ -366,7 +374,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         animal=row['animal_id']
         wr,rr=summarize_window(group['xy'],animal,row['start_global_frame']-start,
             row['end_global_frame_inclusive']-start,row['window'],start,rois,dict(settings,jump_threshold_px=reconstruction_speed_px),
-            turtling_masks[animal],adjusted_masks)
+            estimated_turtling_masks[animal],adjusted_masks)
         estimated_windows.append(wr);estimated_regions.extend(rr)
 
     metadata = dict(script_version=SCRIPT_VERSION, base_processor_version=legacy.SCRIPT_VERSION,
@@ -394,7 +402,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         metrics='Raw tables remain explicit controls; estimated tables and canonical exports use persistent detection-supported positions. Legacy hold/bridge arrays are not used in scientific outputs.')
     return dict(animals=animals, windows=windows, regions=region_rows, pairs=pairs, events=events,
                 metadata=metadata, xy=xy, turtling_masks=turtling_masks, masks=masks,
-                frame_timeline=timeline, group=group, estimated_windows=estimated_windows,
+                frame_timeline=timeline, group=group, estimated_turtling_masks=estimated_turtling_masks,
+                estimated_windows=estimated_windows,
                 estimated_regions=estimated_regions, legacy_events=legacy_events, reconstruction=reconstruction)
 
 
@@ -426,6 +435,22 @@ def fungus_summary(result):
     return rows
 
 
+def paired_rows(raw_rows, psc_rows, keys):
+    """Align original-IDtracker and PSC-model statistics without hiding either."""
+    key = lambda row: tuple(row[name] for name in keys)
+    psc_by_key = {key(row): row for row in psc_rows}
+    if len(psc_by_key) != len(psc_rows) or {key(row) for row in raw_rows} != set(psc_by_key):
+        raise ValueError('Raw and PSC summaries do not have matching rows')
+    output = []
+    for raw in raw_rows:
+        psc = psc_by_key[key(raw)]
+        row = {name: raw[name] for name in keys}
+        for prefix, source in (('raw_', raw), ('pscp_', psc)):
+            row.update({prefix + name: value for name, value in source.items() if name not in keys})
+        output.append(row)
+    return output
+
+
 def write_pdf(result, destination, video, cell):
     import matplotlib
     matplotlib.use('Agg')
@@ -454,11 +479,20 @@ def write_pdf(result, destination, video, cell):
         fig.text(.06,.845,fill(f'{video} | Cell {cell}',105),fontsize=11)
         fig.text(.06,.78,f"Global frames {settings['start']}–{settings['start']+settings['window']} inclusive | {settings['window']+1} observations",fontsize=11)
         ax=fig.add_axes([.06,.37,.88,.34]); ax.axis('off')
-        full=[r for r in result['windows'] if r['window']=='full']
-        rows=[[r['animal_id'],r['missing_coordinate_frames'],f"{100*r['missing_coordinate_proportion']:.1f}%",r['rejected_jump_steps'],f"{r['distance_px']:.1f}" if r['distance_px']!='' else 'NA',result['animals'][r['animal_id']]['threshold_crossing_global_frame'] or 'NA'] for r in full]
-        table=ax.table(cellText=rows,colLabels=['Beetle ID','Missing frames','Missing %','Rejected steps','Distance (px)','Wake frame'],loc='center',cellLoc='center')
-        table.auto_set_font_size(False); table.set_fontsize(10); table.scale(1,1.8)
-        fig.text(.06,.29,fill('Review required: proximity and disappearance are candidate social contact, not proof of attack. Raw coordinates remain unchanged. Estimated positions follow detected blobs. Identity membership can remain uncertain; review required. The table above uses original coordinates.',120),fontsize=11)
+        full=paired_rows([r for r in result['windows'] if r['window']=='full'],
+                         [r for r in result['estimated_windows'] if r['window']=='full'],
+                         ('animal_id','window'))
+        fmt=lambda value: f'{value:.1f}' if value!='' else 'NA'
+        rows=[[r['animal_id'],
+               f"{r['raw_missing_coordinate_frames']} ({100*r['raw_missing_coordinate_proportion']:.1f}%)",
+               f"{r['pscp_missing_coordinate_frames']} ({100*r['pscp_missing_coordinate_proportion']:.1f}%)",
+               fmt(r['raw_distance_px']),fmt(r['pscp_distance_px']),
+               r['raw_rejected_jump_steps'],r['pscp_rejected_jump_steps'],
+               result['animals'][r['animal_id']]['threshold_crossing_global_frame'] or 'NA'] for r in full]
+        table=ax.table(cellText=rows,colLabels=['Beetle','Raw missing N (%)','PSC missing N (%)','Raw distance px',
+                                               'PSC distance px','Raw rejected','PSC rejected','Raw wake frame'],loc='center',cellLoc='center')
+        table.auto_set_font_size(False); table.set_fontsize(8.5); table.scale(1,1.8)
+        fig.text(.06,.29,fill('Raw uses original IDtracker coordinates and its configured jump cutoff. PSC uses model 1.3.0 detection-supported positions and its one-frame speed limit. Neither path fills unsupported detection gaps. Compare the two columns; differences are model assumptions, not confirmed beetle identity.',120),fontsize=11)
         fig.text(.06,.20,fill(f"Source: {meta['trajectory_source_kind']}. Social radius: {settings['social_distance_threshold_px']:g} px. Jump cutoff: {settings['jump_threshold_px']:g} px. Fixed comparison: 3600 intervals after the latest reliable wake of all {animal_count} animals.",120),fontsize=10)
         footer(fig,1); pdf.savefig(fig); plt.close(fig)
         for page, ids in enumerate([range(animal_count)]+[[i] for i in range(animal_count)],2):
@@ -569,39 +603,35 @@ def write_pdf(result, destination, video, cell):
         fig.suptitle('3D trajectories including presumed social disappearance positions',fontsize=17)
         fig.text(.08,.085,'Solid paths: supported positions, including PSCP estimates. Orange X: last raw position before disappearance. Gaps omitted.',fontsize=10)
         fig.subplots_adjust(bottom=.14,top=.92);footer(fig,animal_count+5);pdf.savefig(fig);plt.close(fig)
-        fig=plt.figure(figsize=(11.7,8.3));fig.suptitle('Observed time and distance on each fungus',fontsize=20,y=.94)
-        ax=fig.add_axes([.05,.33,.90,.44]);ax.axis('off')
-        rows=[]
-        for row in fungus_summary(result):
-            values=[row['animal_id']]
-            for i in range(1,fungus_count+1):
-                time=row[f'fungus_{i}_frames']
-                distance=row[f'fungus_{i}_distance_px']
-                values += [str(time),f'{distance:.1f}' if distance!='' else 'NA']
-            rows.append(values)
-        cols=['Beetle ID']
-        for i in range(1,fungus_count+1):cols += [f'F{i} time (frames)',f'F{i} distance (px)']
-        table=ax.table(cellText=rows,colLabels=cols,loc='center',cellLoc='center')
-        table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.2)
-        note='Full analysis window. Occupancy counts assigned-coordinate frames inside each fungus polygon'
-        note += '; occupancy time is reported as frame counts.'
-        note += ' Distance sums accepted adjacent steps whose midpoint lies inside the polygon. Missing coordinates add neither time nor distance. Fungus numbering follows input order, left to right.'
-        fig.text(.07,.20,fill(note,125),fontsize=11)
-        footer(fig,animal_count+6);pdf.savefig(fig);plt.close(fig)
-        fig=plt.figure(figsize=(11.7,8.3));fig.suptitle('Fungus occupancy including presumed social disappearance positions',fontsize=19,y=.94)
-        ax=fig.add_axes([.05,.33,.90,.44]);ax.axis('off');rows=[]
-        adjusted=dict(result,regions=result['estimated_regions'])
-        for row in fungus_summary(adjusted):
-            values=[row['animal_id']]
-            for i in range(1,fungus_count+1):
-                time=row[f'fungus_{i}_frames']
-                distance=row[f'fungus_{i}_distance_px']
-                values += [str(time),f'{distance:.1f}' if distance!='' else 'NA']
-            rows.append(values)
-        table=ax.table(cellText=rows,colLabels=cols,loc='center',cellLoc='center')
-        table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.2)
-        fig.text(.07,.20,fill('Estimated totals use the canonical detected-blob positions, including inferred group membership. No detection means a missing location; separate assignments require confirmation before a split. A group can grow beyond two beetles. Distances and occupancy during inferred periods are assumptions, not observations. Original-coordinate totals are on the preceding page.',125),fontsize=11)
-        footer(fig,animal_count+7);pdf.savefig(fig);plt.close(fig)
+        raw_fungus={row['animal_id']:row for row in fungus_summary(result)}
+        psc_fungus={row['animal_id']:row for row in fungus_summary(dict(result,regions=result['estimated_regions']))}
+        for fungus in range(1,fungus_count+1):
+            fig=plt.figure(figsize=(11.7,8.3))
+            fig.suptitle(f'Fungus {fungus}: raw and PSC-model estimates',fontsize=20,y=.94)
+            ax=fig.add_axes([.07,.33,.86,.46]);ax.axis('off')
+            rows=[]
+            for animal in range(animal_count):
+                raw=raw_fungus[animal];psc=psc_fungus[animal]
+                rows.append([animal,raw[f'fungus_{fungus}_frames'],psc[f'fungus_{fungus}_frames'],
+                             fmt(raw[f'fungus_{fungus}_distance_px']),fmt(psc[f'fungus_{fungus}_distance_px'])])
+            table=ax.table(cellText=rows,colLabels=['Beetle','Raw frames','PSC frames',
+                                                   'Raw distance px','PSC distance px'],loc='center',cellLoc='center')
+            table.auto_set_font_size(False);table.set_fontsize(11);table.scale(1,2.1)
+            fig.text(.08,.19,fill('Full inclusive window. Frame counts use positions inside the fungus polygon; distance sums accepted adjacent steps with a midpoint inside it. Raw uses original IDtracker coordinates. PSC uses detection-supported group positions; pile movement is assigned to each member. Missing positions contribute neither frames nor distance. The two paths have their separately documented jump cutoffs.',120),fontsize=10)
+            footer(fig,animal_count+5+fungus);pdf.savefig(fig);plt.close(fig)
+        fig=plt.figure(figsize=(11.7,8.3))
+        fig.suptitle('Pair contact: raw, visible, and presumed',fontsize=20,y=.94)
+        ax=fig.add_axes([.09,.18,.82,.68]);ax.axis('off')
+        full_pairs=[row for row in result['pairs'] if row['window']=='full']
+        rows=[[f"{row['animal_a']}–{row['animal_b']}",row['raw_proximity_frames'],
+               row['proximity_frames'],row['presumed_group_frames'],row['unresolved_group_frames']]
+              for row in full_pairs]
+        table=ax.table(cellText=rows,colLabels=['Pair','Raw near frames','Assigned near frames',
+                                               'PSC frames','Unresolved frames'],loc='center',cellLoc='center')
+        table.auto_set_font_size(False);table.set_fontsize(8.5 if len(rows)>10 else 11)
+        table.scale(1,1.45 if len(rows)>10 else 2)
+        fig.text(.08,.10,fill('Raw near uses two original IDtracker coordinates. Assigned near requires two independent accepted assignments. PSC requires a detection-supported shared pile with at least one inferred member. Unresolved preserves pile membership but gives no location. Categories describe different evidence; do not add them without checking overlap.',120),fontsize=9)
+        footer(fig,animal_count+6+fungus_count);pdf.savefig(fig);plt.close(fig)
 
 
 
@@ -623,7 +653,12 @@ def write_bundle(result, output, video, cell, pdf_name=None):
         meta=result['metadata']; meta.update(video=video,cell_label=cell)
         result['fungus_summary'] = fungus_summary(result)
         result['estimated_fungus_summary'] = fungus_summary(dict(result,regions=result['estimated_regions']))
-        for name in ['estimated_fungus_summary','estimated_windows','estimated_regions','legacy_events','fungus_summary','animals','windows','regions','pairs','events']:
+        result['window_comparison'] = paired_rows(result['windows'],result['estimated_windows'],('animal_id','window'))
+        result['region_comparison'] = paired_rows(result['regions'],result['estimated_regions'],('animal_id','window','region'))
+        result['fungus_comparison'] = paired_rows(result['fungus_summary'],result['estimated_fungus_summary'],('animal_id',))
+        for name in ['window_comparison','region_comparison','fungus_comparison',
+                     'estimated_fungus_summary','estimated_windows','estimated_regions','legacy_events',
+                     'fungus_summary','animals','windows','regions','pairs','events']:
             rows=result[name]
             fields=list(dict.fromkeys(key for row in rows for key in row))
             if not fields: fields=['window','kind','animal_a','animal_b','missing_animal','start_global_frame','end_global_frame_inclusive','frames','candidate_partner_count','attribution']

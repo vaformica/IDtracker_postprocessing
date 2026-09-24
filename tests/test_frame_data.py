@@ -97,6 +97,12 @@ class FrameDataTests(unittest.TestCase):
                 self.assertEqual(row['distance_px'],12)
                 self.assertEqual(row['fungus_2_distance_px'],12)
             self.assertEqual(beetles[1]['inferred_location_frames'],2)
+            self.assertEqual(beetles[1]['raw_missing_location_frames'],2)
+            self.assertEqual(beetles[1]['pscp_missing_location_frames'],0)
+            self.assertEqual(beetles[1]['raw_fungus_2_frames'],0)
+            self.assertEqual(beetles[1]['pscp_fungus_2_frames'],1)
+            self.assertEqual(beetles[1]['raw_distance_px'],0)
+            self.assertEqual(beetles[1]['pscp_distance_px'],12)
             self.assertEqual(next(p for p in pairs if (p['animal_a'],p['animal_b'])==(0,1))['pscp_frames'],2)
             self.assertEqual(next(p for p in pairs if (p['animal_a'],p['animal_b'])==(2,3))['observed_proximity_frames'],1)
             with self.assertRaisesRegex(ValueError, 'complete'):

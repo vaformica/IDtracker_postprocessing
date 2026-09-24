@@ -126,6 +126,20 @@ class SixBeetleTests(unittest.TestCase):
         six.write_bundle(result, output, 'synthetic.mp4', 'D1')
         self.assertTrue((output/'frame_data.csv').is_file())
         self.assertTrue((output/'synthetic_D1.pdf').is_file())
+        from output_manifest import CSV_FILES, column_description
+        import csv
+        for name in CSV_FILES:
+            with (output/name).open(newline='') as stream:
+                header=next(csv.reader(stream))
+            self.assertTrue(all(column_description(column,name) for column in header),name)
+        with (output/'window_comparison.csv').open(newline='') as stream:
+            window_header=next(csv.reader(stream))
+        self.assertIn('raw_missing_coordinate_frames',window_header)
+        self.assertIn('pscp_missing_coordinate_frames',window_header)
+        with (output/'fungus_comparison.csv').open(newline='') as stream:
+            fungus_header=next(csv.reader(stream))
+        self.assertIn('raw_fungus_1_distance_px',fungus_header)
+        self.assertIn('pscp_fungus_1_distance_px',fungus_header)
 
     def test_seven_animals_four_fungi(self):
         seventh = np.tile(np.array([850., 800.]), (len(self.xy), 1, 1))
