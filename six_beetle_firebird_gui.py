@@ -38,6 +38,7 @@ DEPLOY_FILES = (
     "review_editor.js",
     "apply_review_decisions.py",
     "run_six_beetle_pipeline.py",
+    "output_manifest.py",
     "run_group_pipeline.py",
 )
 

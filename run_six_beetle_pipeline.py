@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from build_canonical_review import build as build_review
+from output_manifest import write_output_manifest
 from processor import load_rois as load_session_rois
 
 
@@ -307,6 +308,12 @@ def run(args) -> Path:
     receipt_path = analysis_output.parent / f"{analysis_output.name}.pipeline_receipt.json"
     if receipt_path.exists():
         raise FileExistsError(receipt_path)
+    write_output_manifest(
+        analysis_output,
+        review_output,
+        receipt=receipt_path,
+        source_toml=Path(args.source_toml) if getattr(args, 'source_toml', None) else None,
+    )
     receipt_path.write_text(json.dumps(receipt, indent=2) + "\n")
     return receipt_path
 
@@ -314,6 +321,7 @@ def run(args) -> Path:
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("--session", required=True)
+    result.add_argument("--source-toml", help="Original tracking TOML for the student-facing output manifest")
     result.add_argument("--trajectory")
     result.add_argument("--source-video", required=True)
     result.add_argument("--prepared-review-video", help="Already clipped/cropped MP4 for local rebuilding; requires --crop")

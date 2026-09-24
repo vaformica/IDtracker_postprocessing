@@ -740,3 +740,19 @@ For Charlotte's six-beetle GroupTrial TOMLs, run:
 ```
 
 See [FIREBIRD_TOML_GUI.md](FIREBIRD_TOML_GUI.md) for the read-only search, editable TOML, Slurm submission, and persistent job-tracking workflow.
+
+## Per-run student guide
+
+The group post-processing pipeline writes `analysis/OUTPUT_MANIFEST.md` with each
+completed run. It has a clickable table of contents, a plain-English file map,
+and definitions for every column in that run's CSV outputs. It distinguishes
+original IDtracker positions from presumed social contact positions and
+explains which table to use when recalculating a shorter analysis window.
+The Markdown uses short lines of text and lists so it can be printed to PDF
+from a Markdown viewer without wide tables.
+
+[`output_manifest.py`](output_manifest.py) is the maintained dictionary.
+When the pipeline adds a CSV or JSON field, update its definition there in the
+same code change. The generator checks actual output headers and refuses to
+mark a run documented if a field lacks a definition. The Firebird GUI deploys
+this generator with the processor, so future remote runs receive the guide.
