@@ -388,7 +388,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         frame_state_definition='Presumed social disappearance takes precedence: membership in a detection-supported group with at least one inferred identity. One detected blob supports at most one independently visible identity, even if IDtracker supplies coordinates for several IDs. Observed proximity alone does not change the individual display state. Missing canonical coordinates remain missing. Ambiguity is flagged separately.',
         rois=[p.tolist() for p in rois], fixed_anchor_rule='ALL_SIX_WAKE_LATEST_CROSSING',
         qc_status='UNREVIEWED', coordinate_substitution=True, raw_coordinates_preserved=True,
-        presumed_group_rule='Persistent groups survive identity loss and true detection gaps. One blob supports at most one assigned identity. All pile movement and split branches obey the per-member speed gate. Short-gap reacquisition is bounded; distant independent return requires a sustained smooth singly labeled track on an unclaimed blob. A multiway split with no defensible branch for a hidden member leaves its position missing until former-partner rejoin or sustained independent return. No frame-specific automatic overrides.',
+        presumed_group_rule='Persistent groups survive identity loss and true detection gaps. One blob supports at most one assigned identity. All pile movement and split branches obey the per-member speed gate. Short-gap reacquisition is bounded; distant independent return requires a sustained smooth singly labeled track. A separate entity claiming that blob causes an explicit review conflict, not identity theft. A confirmed return may retrospectively follow a unique smooth unclaimed unlabeled blob path back to its former pile; such positions remain inferred and ambiguous. A multiway split with no defensible branch for a hidden member leaves its position missing until former-partner rejoin or sustained independent return. No frame-specific automatic overrides.',
         persistent_group_settings=dict(social_radius_px=social_distance_threshold_px,
             max_step_px_per_frame=reconstruction_speed_px,split_confirmation_frames=split_confirmation_frames,
             gap_speed_px_per_frame=gap_speed_px,gap_radius_cap_px=gap_radius_cap_px,
@@ -708,7 +708,7 @@ def write_bundle(result, output, video, cell, pdf_name=None):
         pdf_name = pdf_name or f'{Path(video).stem}_{cell}.pdf'
         if Path(pdf_name).name != pdf_name or not pdf_name.endswith('.pdf'): raise ValueError('PDF name must be a plain .pdf filename')
         meta['pdf_filename'] = pdf_name
-        np.savez_compressed(staging/'canonical_states.npz',raw=result['xy'],xy=result['group']['xy'],inferred=result['group']['inferred'],group_ids=result['group']['group_ids'],source=result['group']['source'],ambiguous=result['group']['ambiguous'])
+        np.savez_compressed(staging/'canonical_states.npz',raw=result['xy'],xy=result['group']['xy'],inferred=result['group']['inferred'],group_ids=result['group']['group_ids'],source=result['group']['source'],ambiguous=result['group']['ambiguous'],identity_conflict=result['group']['identity_conflict'])
         with (staging/'canonical_positions.csv').open('w',newline='') as stream:
             writer=csv.writer(stream);writer.writerow(['global_frame','animal_id','x','y','state','group_id'])
             for t in range(len(result['xy'])):

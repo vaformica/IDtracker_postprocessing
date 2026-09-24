@@ -48,3 +48,15 @@ for a replacement release, and they remain unreviewed until compared with
 video. The 99 trackable configurations and one documented no-blob exclusion
 are the intended batch scope; four incompatible TOMLs remain excluded by
 Vince.
+
+## Further invalidation: shared PSC model 1.4.0
+
+The shared model also failed to revise a long false pile assignment after
+beetle 0 later reappeared on a smooth raw IDtracker track in six-beetle
+`groupagetrial01_062024_Box02_MIX` (frames 14012–14565). Because dyadic
+postprocessing calls the same shared code, all derived model-1.4.0 dyadic
+outputs are withdrawn pending validation under a new model. Array 899414 was
+canceled; original tracking sessions, TOMLs, logs, and exclusion receipts are
+preserved. PSC model 1.5.0 is a candidate, not yet a released dataset. It
+adds conservative retrospective tracing of unique unlabeled blobs and an
+explicit raw/PSC identity-conflict flag for video review.

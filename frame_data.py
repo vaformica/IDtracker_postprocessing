@@ -17,7 +17,8 @@ import processor as legacy
 BASE_FIELDS = [
     'global_frame', 'animal_id', 'raw_x', 'raw_y', 'x', 'y',
     'raw_location_known', 'raw_in_arena', 'raw_any_fungus',
-    'location_source', 'inferred', 'group_id', 'ambiguous', 'human_intervention', 'location_known',
+    'location_source', 'inferred', 'group_id', 'ambiguous', 'identity_conflict',
+    'human_intervention', 'location_known',
     'in_arena', 'any_fungus',
     'raw_proximity_partners', 'observed_proximity_partners', 'pscp_partners', 'unresolved_contact_partners',
     'raw_step_from_previous_accepted', 'raw_step_distance_px',
@@ -45,6 +46,7 @@ def write_frame_data(result, destination):
     """Export one row per animal and global frame from the canonical analysis."""
     raw = result['xy']
     group = result['group']
+    identity_conflict = group.get('identity_conflict', np.zeros_like(group['ambiguous']))
     xy = group['xy']
     nframes, animals, _ = xy.shape
     human = group.get('human')
@@ -102,6 +104,7 @@ def write_frame_data(result, destination):
                            raw_any_fungus=int(raw_membership[t,a,1:].any()),
                            location_source=group['source'][t,a], inferred=int(group['inferred'][t,a]),
                            group_id=int(group['group_ids'][t,a]), ambiguous=int(group['ambiguous'][t,a]),
+                           identity_conflict=int(identity_conflict[t,a]),
                            human_intervention=int(human[t,a]),
                            location_known=int(known), in_arena=int(membership[t,a,0]),
                            any_fungus=int(membership[t,a,1:].any()),

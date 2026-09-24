@@ -2,14 +2,14 @@
 
 Version documented: **0.8.1**
 
-## Shared group processor addendum — PSC model 1.4.0
+## Shared group processor addendum — PSC model 1.5.0
 
 The standalone 0.8.1 schema documented below is historical. New 2024
 six-beetle and 2026 dyadic fight reviews use the shared
-`six_beetle_processor.py` **0.8.1-group** with persistent-group model **1.4.0**.
+`six_beetle_processor.py` **0.8.1-group** with persistent-group model **1.5.0**.
 The name of that script does not restrict it to six animals: it accepts two or
 more animals and an arena plus one or more fungus ROIs. Results from the older
-PSC models 1.2.0 and 1.3.0 are withdrawn for biological interpretation. Check
+PSC models 1.2.0, 1.3.0, and 1.4.0 are withdrawn for biological interpretation. Check
 `analysis/manifest.json` for both `script_version` and
 `persistent_model_version`; a new file date alone is not proof of the model.
 
@@ -29,10 +29,23 @@ limit (100 px per frame by default). A detected moving pile credits each member
 with its own estimated distance and fungus occupancy. No compatible detection
 leaves the position missing and credits neither path distance nor fungus
 occupancy. A three-frame pending split can remain locationless rather than
-force an identity to jump. Model 1.4.0 applies the same spatial gate to
+force an identity to jump. Model 1.5.0 applies the same spatial gate to
 individual split branches as to whole-pile motion, rejects short distant ID
 bursts, and allows a distant identity to return only after ten consecutive
-smooth, singly labeled frames on an unclaimed blob. If a multiway split leaves
+smooth, singly labeled frames. If another entity owns that blob, the model
+flags `identity_conflict=1` and `location_source=RAW_PSC_CONFLICT` with no
+canonical location for review instead of silently assigning it to two
+independent identities. If the confirmed raw identity sits on an unclaimed
+blob, the model searches backward through a unique sequence of unlabeled,
+unclaimed blobs moving no more than 100 pixels per frame. It accepts that
+backtrace only if it reaches the identity's former pile within the social
+radius. Those retrospectively attributed frames have
+`location_source=RETRO_REID_BLOB`, `inferred=1`, and `ambiguous=1`: the path is
+a reviewable estimate, not independent IDtracker identification. A later
+raw-PSC contradiction has `identity_conflict=1` even when the backtrace
+resolves it; the event log records `RETRO_REID_BACKTRACE`. If no unique path
+exists, the model retains missing or unresolved positions and logs
+`REID_BACKTRACE_UNRESOLVED`. If a multiway split leaves
 a member with no supported branch, its position is missing until it can rejoin
 a former pile partner on three consecutive labeled frames or meet the distant
 return rule. These estimates are not ground truth. The `MISSING` state is
@@ -42,7 +55,7 @@ check `trajectory_source_kind` and the input hash before interpreting `raw_`
 as unfilled detector output.
 
 `frame_data.csv` retains raw and canonical x/y side by side. It also has
-`raw_location_known`, `raw_in_arena`, `raw_any_fungus`,
+`raw_location_known`, `raw_in_arena`, `raw_any_fungus`, `identity_conflict`,
 `raw_fungus_N`, `raw_step_from_previous_accepted`,
 `raw_step_distance_px`, and `raw_step_midpoint_fungus_N`; the unprefixed
 equivalents describe the PSC-model path. The first frame of a new analysis

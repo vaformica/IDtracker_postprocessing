@@ -117,4 +117,35 @@ class PendingSplitTests(unittest.TestCase):
   self.assertTrue(g['ambiguous'][6,2])
   self.assertTrue(np.isnan(g['xy'][6,2]).all())
   self.assertFalse(g['masks'][0,2][6])
+ def test_confirmed_raw_id_backtraces_unique_unlabeled_departure(self):
+  r=np.full((25,2,2),np.nan)
+  r[0]=[[0,0],[1,0]]
+  for t in range(1,25):r[t,1]=[0,0]
+  for t in range(14,25):r[t,0]=[20+10*(t-4),0]
+  b={'0':[blob(0,ids=(1,2))]}
+  for t in range(1,25):
+   b[str(t)]=[blob(0,ids=(2,))]
+   if t>=4:b[str(t)].append(blob(20+10*(t-4),ids=(1,) if t>=14 else (None,)))
+  g=persistent_groups(r,b)
+  self.assertEqual(g['source'][4,0],'RETRO_REID_BLOB')
+  self.assertTrue(g['ambiguous'][4,0])
+  self.assertEqual(g['xy'][10,0,0],80)
+  self.assertFalse(g['masks'][0,1][10])
+  self.assertEqual(g['source'][14,0],'ASSIGNED')
+  self.assertTrue(g['identity_conflict'][14,0])
+  self.assertTrue(any(e['kind']=='RETRO_REID_BACKTRACE' and e['first_frame']==4
+                      for e in g['events']))
+ def test_sustained_raw_id_on_another_entity_is_review_conflict(self):
+  r=np.full((16,3,2),np.nan)
+  r[0]=[[0,0],[1,0],[300,0]]
+  for t in range(1,16):
+   r[t,0]=[300+t,0];r[t,1]=[0,0]
+  b={'0':[blob(0,ids=(1,2)),blob(300,ids=(3,))]}
+  for t in range(1,16):b[str(t)]=[blob(0,ids=(2,)),blob(300+t,ids=(1,))]
+  g=persistent_groups(r,b)
+  self.assertTrue(g['identity_conflict'][10,0])
+  self.assertTrue(any(e['kind']=='RAW_ID_OWNERSHIP_CONFLICT' for e in g['events']))
+  self.assertEqual(g['source'][14,0],'RAW_PSC_CONFLICT')
+  self.assertTrue(np.isnan(g['xy'][14,0]).all())
+  self.assertTrue(np.all(g['xy'][1:13,0,0]<100))
 if __name__=='__main__':unittest.main()

@@ -77,3 +77,23 @@ was canceled. Its outputs must not be released as corrected results. Two
 stress-test dyadic reruns using model 1.3.0 were submitted as array `898766`;
 the remaining 97 trackable configurations await their validation. Original
 dyadic TOMLs, IDtracker trajectories, and immutable receipts are retained.
+
+## Further invalidation: shared PSC model 1.4.0
+
+Vince found that in `groupagetrial01_062024_Box02_MIX`, beetle 0 visibly
+leaves a pile with beetle 5 near frame 14012. IDtracker has no coordinate for
+beetle 0 through frame 14561, but the exported blob evidence contains a
+continuous unlabeled moving detection from frame 14021 to 14561. It joins a
+smooth, singly labeled beetle-0 detection at frame 14562. Model 1.4.0
+confirmed the late raw identity after ten frames but left the preceding
+moving detection assigned to the old pile. This wrongly credited beetle 0
+with pile movement and fungus occupancy. The preview and full 1.4.0
+GroupTrial and dyadic outputs are **WITHDRAWN**. Arrays 899408 and 899414
+were canceled. Their original tracking, TOMLs, and logs remain unchanged.
+
+The next candidate, PSC model 1.5.0, adds a conservative backward trace from
+a sustained raw reidentification through a unique unclaimed unlabeled blob
+path back to the former pile. It marks that path as inferred and ambiguous,
+and flags raw-versus-PSC identity conflicts explicitly. This is a hypothesis
+for video review, not ground truth. Only new, fully validated 1.5.0 bundles
+may replace the withdrawn outputs.

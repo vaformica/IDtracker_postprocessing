@@ -136,6 +136,8 @@ def build(
         reviewPartners=(zero - 1).tolist(),
         annotations=[],
         pileStatus=data["source"].tolist(),
+        identityConflict=(data["identity_conflict"] if "identity_conflict" in data.files
+                          else np.zeros(xy.shape[:2], bool)).astype(int).tolist(),
         accepted=accepted.astype(int).tolist(),
         rejected=(np.isfinite(raw).all(axis=2) & ~accepted).astype(int).tolist(),
         bridge=clean(xy),
@@ -162,6 +164,11 @@ def build(
         template,
         "(p[0]-1600)*1280/1366,(p[1]-192)*920/982",
         f"(p[0]-{x})*1280/{width},(p[1]-{y})*920/{height}",
+    )
+    template = _replace_once(
+        template,
+        "D.rejected[t][a]?'<br>Raw candidate rejected':''",
+        "D.identityConflict[t][a]?'<br>⚠ Raw/PSC identity conflict — review':D.rejected[t][a]?'<br>Raw candidate rejected':''",
     )
     template = template.replace("Math.round(v.currentTime*D.fps)", "Math.floor(v.currentTime*D.fps+0.0001)")
     template = template.replace("Math.round(m.mediaTime*D.fps)", "Math.floor(m.mediaTime*D.fps+0.0001)")

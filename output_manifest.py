@@ -14,7 +14,7 @@ import json
 import re
 from pathlib import Path
 
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 CSV_FILES = {
     'animals.csv': 'One row per beetle: where its raw track began and when it first met the movement (wake) threshold.',
@@ -70,6 +70,7 @@ COLUMNS = {
     'held_x': 'Last accepted x position carried forward as a diagnostic hold; not counted as observed movement.',
     'held_y': 'Last accepted y position carried forward as a diagnostic hold; not counted as observed movement.',
     'human_intervention': '1 if a human review edit was applied to this frame; 0 means no human edit in this export.',
+    'identity_conflict': '1 when the raw IDtracker identity points to a different detected blob than its current PSC entity, including disagreements later resolved by retrospective reidentification; review the raw video.',
     'in_arena': '1 when the working position is inside the arena ROI; otherwise 0.',
     'inferred': '1 when the working position is inferred from a detected social group rather than independently assigned.',
     'jointly_visible_frames': 'Frames when both members of this pair have independent accepted assignments.',
@@ -77,7 +78,7 @@ COLUMNS = {
     'latency_to_threshold_frames': 'Frames from the exact analysis start to the first reliable movement-threshold crossing; blank if unavailable.',
     'legacy_disappearance_candidate_events': 'Count from the older pairwise disappearance rule, retained only as a comparison.',
     'location_known': '1 when x and y are available in the current working path; otherwise 0.',
-    'location_source': 'ASSIGNED = independent accepted position; PSCP_BLOB = presumed position at a detected group blob; BLOB_CONTINUITY = inferred singleton position; SPLIT_PENDING = unresolved candidate separation; UNRESOLVED_SPLIT = hidden member has no defensible branch after a multiway split; MISSING = no defensible position.',
+    'location_source': 'ASSIGNED = independent accepted position; PSCP_BLOB = presumed position at a detected group blob; BLOB_CONTINUITY = inferred singleton position; RETRO_REID_BLOB = a retrospectively linked unlabeled blob after sustained raw reidentification, still inferred and ambiguous; RAW_PSC_CONFLICT = sustained raw ID belongs to a blob already owned by another entity, so canonical location is unknown pending review; SPLIT_PENDING = unresolved candidate separation; UNRESOLVED_SPLIT = hidden member has no defensible branch after a multiway split; MISSING = no defensible position.',
     'missing_animal': 'Beetle ID that disappeared in a legacy candidate event; blank when not applicable.',
     'missing_coordinate_frames': 'Frames with no usable position under this table’s coordinate source.',
     'missing_coordinate_proportion': 'Missing-coordinate frames divided by all frame observations in the window (0 to 1).',

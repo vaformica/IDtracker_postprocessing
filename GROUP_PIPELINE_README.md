@@ -31,11 +31,15 @@ radius cap, maximum gap frames, split confirmation, and distant-return
 confirmation). Their defaults are 20 px/frame, 300 px, 30 frames, three
 frames, and ten frames, respectively. Change them
 by making a new automatic run; frame review decisions do not alter the model.
-PSC model 1.4.0 also gates every member of a split or merged pile by its own
+PSC model 1.5.0 also gates every member of a split or merged pile by its own
 last defensible position. A short distant IDtracker label cannot pull a
 hidden beetle to another beetle. An unseen member of an ambiguous multiway
 split is marked `UNRESOLVED_SPLIT` with no location until the evidence
-supports a return. The same rule applies to dyadic and larger groups.
+supports a return. When sustained raw IDtracker reidentification supports a
+unique smooth path back through unlabeled, unclaimed blobs, the processor can
+revise the prior pile assignment. Those frames stay inferred and ambiguous;
+conflicting blob ownership is flagged for review. The same rule applies to
+dyadic and larger groups.
 
 The analysis bundle contains its PDF, canonical and raw coordinate tables,
 `frame_data.csv`, pair and fungus summaries, and a hashed manifest. The review
