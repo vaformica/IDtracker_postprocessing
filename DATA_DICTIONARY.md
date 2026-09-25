@@ -107,6 +107,14 @@ the source orientation is retained and the reason is recorded in
 legacy prepared clips. Neither the original tracking coordinates nor the
 analysis's fungus numbering, distances, or frame-level values are rotated.
 
+Track PDF style `outlined-psc-v1` uses each animal's color for assigned
+movement, a dark outline around segments involving a `PSCP_BLOB` location,
+and a dotted line for other detection-inferred movement. The same distinction
+appears on overview, individual, and 3D track pages. This is a display style:
+raw and PSC coordinates, frame counts, and distance/fungus summaries remain
+unchanged. New PDFs record `pdf_track_style_version` in their manifest or
+sidecar, alongside processor `0.8.1-group` and PSC model `1.5.1`.
+
 This document defines every column written by the standalone IDtracker
 post-processing prototype. It covers:
 

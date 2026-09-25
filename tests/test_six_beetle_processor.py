@@ -229,6 +229,17 @@ class SixBeetleTests(unittest.TestCase):
 if __name__=='__main__': unittest.main()
 
 class ReportAdditionsTests(unittest.TestCase):
+    def test_pdf_edges_distinguish_psc_from_other_inference(self):
+        xy=np.array([[0.,0.],[5.,0.],[10.,0.],[15.,0.],[20.,0.],[25.,0.],
+                     [200.,0.],[np.nan,np.nan]])
+        source=np.array(['ASSIGNED','ASSIGNED','PSCP_BLOB','PSCP_BLOB',
+                         'BLOB_CONTINUITY','ASSIGNED','ASSIGNED','MISSING'])
+        edges,assigned,psc,other=six.trajectory_edges_by_evidence(xy,source,100.)
+        self.assertEqual(edges.shape,(7,2,2))
+        np.testing.assert_array_equal(assigned,[True,False,False,False,False,False,False])
+        np.testing.assert_array_equal(psc,[False,True,True,True,False,False,False])
+        np.testing.assert_array_equal(other,[False,False,False,False,True,False,False])
+
     def test_disappearance_marks_last_valid_before_gap_only(self):
         track=np.array([[np.nan,np.nan],[1,2],[3,4],[np.nan,np.nan],[8,9],[np.nan,np.nan]])
         np.testing.assert_array_equal(six.disappearance_offsets(track),[2,4])

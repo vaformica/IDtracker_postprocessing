@@ -22,6 +22,7 @@ from persistent_groups import persistent_groups,MODEL_VERSION
 from frame_data import write_frame_data
 
 SCRIPT_VERSION = '0.8.1-group'
+PDF_TRACK_STYLE_VERSION = 'outlined-psc-v1'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
 FRAME_STATE_COLORS = ('#0072B2', '#D55E00', '#E6AB02')
@@ -456,20 +457,39 @@ def paired_rows(raw_rows, psc_rows, keys):
     return output
 
 
+def trajectory_edges_by_evidence(positions, source, max_step_px):
+    """Partition supported movement edges without treating all inference as PSC."""
+    positions = np.asarray(positions, dtype=float)
+    source = np.asarray(source)
+    if positions.ndim != 2 or positions.shape[1] != 2 or source.shape != (len(positions),):
+        raise ValueError('Positions and evidence labels must describe the same trajectory')
+    edges = np.stack((positions[:-1], positions[1:]), axis=1)
+    finite = np.isfinite(edges).all(axis=(1, 2))
+    step = np.linalg.norm(positions[1:] - positions[:-1], axis=1)
+    accepted = finite & (step <= max_step_px)
+    psc = accepted & ((source[:-1] == 'PSCP_BLOB') | (source[1:] == 'PSCP_BLOB'))
+    assigned = accepted & (source[:-1] == 'ASSIGNED') & (source[1:] == 'ASSIGNED')
+    other_inferred = accepted & ~psc & ~assigned
+    return edges, assigned, psc, other_inferred
+
+
 def write_pdf(result, destination, video, cell):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_pdf import PdfPages
     from matplotlib.collections import LineCollection
+    from matplotlib.lines import Line2D
+    from matplotlib.patheffects import withStroke
     from textwrap import fill
     meta = result['metadata']; settings = meta['settings']; xy = result['xy']
+    meta['pdf_track_style_version'] = PDF_TRACK_STYLE_VERSION
     animal_count = xy.shape[1]; fungus_count = len(meta['rois'])-1
     pair_count = len(result['masks'])
     rois = [np.asarray(p) for p in meta['rois']]
     colors = plt.get_cmap('tab10').colors
     def footer(fig, page):
-        fig.text(.06,.025,f'{SCRIPT_VERSION}  |  UNREVIEWED  |  {page}',fontsize=8,color='#555555')
+        fig.text(.06,.025,f'{SCRIPT_VERSION}  |  {PDF_TRACK_STYLE_VERSION}  |  UNREVIEWED  |  {page}',fontsize=8,color='#555555')
         fig.text(.06,.048,fill(f'{video} | Cell {cell}',135),fontsize=7,color='#555555')
     def geometry(ax):
         for i, poly in enumerate(rois):
@@ -504,29 +524,44 @@ def write_pdf(result, destination, video, cell):
             overview=page==2
             fig, axes=plt.subplots(1,1,figsize=(11.7,8.3),squeeze=False)
             fig.suptitle(f'All {animal_count} trajectories' if overview else f'Beetle {ids[0]}: trajectory and disappearances',fontsize=17)
+            psc_legend_added=False
             for idx,animal in enumerate(ids):
                 ax=axes[0,0]
                 if not overview or idx==0: geometry(ax)
-                track=np.where((result['group']['source'][:,animal]=='ASSIGNED')[:,None],result['group']['xy'][:,animal],np.nan)
-                segments=legacy.continuous_path_segments(track,meta['reconstruction']['max_speed_px_per_frame'])
-                ax.add_collection(LineCollection([s[1] for s in segments],colors=[colors[animal % len(colors)]],linewidths=1.1 if not overview else .7,alpha=.85))
+                evidence=result['group']['source'][:,animal]
+                est=result['group']['xy'][:,animal]
+                track=np.where((evidence=='ASSIGNED')[:,None],est,np.nan)
+                edges, assigned_edges, psc_edges, other_edges = trajectory_edges_by_evidence(
+                    est, evidence, meta['reconstruction']['max_speed_px_per_frame'])
+                color=colors[animal % len(colors)]
+                if assigned_edges.any():
+                    ax.add_collection(LineCollection(edges[assigned_edges],colors=[color],
+                        linewidths=1.1 if not overview else .7,alpha=.85))
+                if other_edges.any():
+                    ax.add_collection(LineCollection(edges[other_edges],colors=[color],
+                        linewidths=1.1 if not overview else .7,linestyles='dotted',alpha=.7))
+                if psc_edges.any():
+                    ax.add_collection(LineCollection(edges[psc_edges],colors=['#24313b'],
+                        linewidths=3.6 if not overview else 2.5,alpha=.95,zorder=3))
+                    ax.add_collection(LineCollection(edges[psc_edges],colors=[color],
+                        linewidths=1.7 if not overview else 1.15,alpha=1,zorder=4))
                 good=np.isfinite(track).all(axis=1)
                 if good.any():
-                    ax.scatter(track[good,0][0],track[good,1][0],color=colors[animal % len(colors)],marker='o',s=25,label=f'Beetle {animal}')
+                    ax.scatter(track[good,0][0],track[good,1][0],color=color,marker='o',s=25,label=f'Beetle {animal}')
                 if not overview:
                     mask=result['turtling_masks'][animal]
                     ax.scatter(track[mask,0],track[mask,1],s=8,color='darkred',label='Candidate turtling')
-                    est=result['group']['xy'][:,animal]
-                    is_inferred=result['group']['inferred'][:,animal]
-                    edges=np.stack([est[:-1],est[1:]],axis=1)
-                    accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=meta['reconstruction']['max_speed_px_per_frame'])
-                    inferred_edges=accepted & (is_inferred[:-1] | is_inferred[1:])
-                    ax.add_collection(LineCollection(edges[inferred_edges],colors=[colors[animal % len(colors)]],linewidths=1.5,linestyles='solid',alpha=.8))
-                    ax.plot([],[],color=colors[animal % len(colors)],ls='-',label='Detection-supported estimate')
-                    gone=disappearance_offsets(track)
-                    ax.scatter(track[gone,0],track[gone,1],s=65,marker='x',color='#D55E00',linewidths=1.7,
+                    gone=disappearance_offsets(xy[:,animal])
+                    ax.scatter(xy[gone,animal,0],xy[gone,animal,1],s=65,marker='x',color='#D55E00',linewidths=1.7,
                                label='Last raw coordinate before disappearance',zorder=5)
-                    fig.text(.08,.085,'Paths use detection-supported positions; thicker segments are PSCP estimates. No interpolation across missing detections.',fontsize=10)
+                    fig.text(.08,.085,fill('Solid: independently assigned. Dark outline: presumed PSC path. Dotted: other inferred detection path. No connection across missing frames or jumps over the speed limit.',120),fontsize=9)
+                if psc_edges.any() and (not overview or not psc_legend_added):
+                    ax.add_line(Line2D([],[],color=color,lw=1.7,
+                        path_effects=[withStroke(linewidth=3.6,foreground='#24313b')],
+                        label='Presumed PSC path (outlined)'))
+                    psc_legend_added=True
+                if other_edges.any() and not overview:
+                    ax.plot([],[],color=color,ls=':',label='Other inferred detection path')
                 ax.autoscale_view(); ax.legend(loc='upper right',fontsize=8)
             fig.tight_layout(rect=[.03,.10,.97,.94]); footer(fig,page); pdf.savefig(fig); plt.close(fig)
         fig,ax=plt.subplots(figsize=(11.7,8.3))
@@ -585,13 +620,19 @@ def write_pdf(result, destination, video, cell):
         from mpl_toolkits.mplot3d.art3d import Line3DCollection
         for animal in range(animal_count):
             est=result['group']['xy'][:,animal]
-            inferred=result['group']['inferred'][:,animal]
+            evidence=result['group']['source'][:,animal]
             z=np.arange(len(est))+settings['start']
             positions=np.column_stack([est,z]);edges=np.stack([positions[:-1],positions[1:]],axis=1)
-            accepted=np.isfinite(edges).all(axis=(1,2)) & (np.linalg.norm(est[1:]-est[:-1],axis=1)<=meta['reconstruction']['max_speed_px_per_frame'])
-            presumed=inferred[:-1] | inferred[1:]
-            for mask,style in [(accepted & ~presumed,'solid'),(accepted & presumed,'solid')]:
-                if mask.any(): ax.add_collection3d(Line3DCollection(edges[mask],colors=[colors[animal % len(colors)]],linewidths=1,linestyles=style))
+            _, assigned, psc, other = trajectory_edges_by_evidence(
+                est,evidence,meta['reconstruction']['max_speed_px_per_frame'])
+            color=colors[animal % len(colors)]
+            if assigned.any():
+                ax.add_collection3d(Line3DCollection(edges[assigned],colors=[color],linewidths=1))
+            if other.any():
+                ax.add_collection3d(Line3DCollection(edges[other],colors=[color],linewidths=1,linestyles='dotted'))
+            if psc.any():
+                ax.add_collection3d(Line3DCollection(edges[psc],colors=['#24313b'],linewidths=3.2))
+                ax.add_collection3d(Line3DCollection(edges[psc],colors=[color],linewidths=1.25))
             ax.plot([],[],[],color=colors[animal % len(colors)],label=f'Beetle {animal}')
             gone=disappearance_offsets(xy[:,animal])
             ax.scatter(xy[gone,animal,0],xy[gone,animal,1],gone+settings['start'],marker='x',color='#D55E00',s=20)
@@ -606,7 +647,7 @@ def write_pdf(result, destination, video, cell):
         ax.set_zlabel('Global frame')
         ax.view_init(elev=26,azim=-60);ax.legend(loc='upper left',fontsize=9)
         fig.suptitle('3D trajectories including presumed social disappearance positions',fontsize=17)
-        fig.text(.08,.085,'Solid paths: supported positions, including PSCP estimates. Orange X: last raw position before disappearance. Gaps omitted.',fontsize=10)
+        fig.text(.08,.085,fill('Solid: independently assigned. Dark-outlined color: presumed PSC path. Dotted: other inferred detection path. Orange X: last raw position before disappearance. Gaps and oversized jumps omitted.',120),fontsize=9)
         fig.subplots_adjust(bottom=.14,top=.92);footer(fig,animal_count+5);pdf.savefig(fig);plt.close(fig)
         raw_fungus={row['animal_id']:row for row in fungus_summary(result)}
         psc_fungus={row['animal_id']:row for row in fungus_summary(dict(result,regions=result['estimated_regions']))}
