@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 
 from build_canonical_review import build
-from rebuild_raw_psc_compare_reviews import analyzed_frame_bounds
+from rebuild_raw_psc_compare_reviews import analyzed_frame_bounds, rebuild_task
 from review_geometry import (legacy_review_geometry, plan_review_geometry,
                              review_filter, transform_point)
 from run_six_beetle_pipeline import arena_crop, find_trajectory
@@ -29,6 +29,17 @@ class FrameBoundsTests(unittest.TestCase):
     def test_interval_window_includes_both_endpoint_frames(self):
         self.assertEqual(analyzed_frame_bounds({'start': 220, 'window': 16777}),
                          (220, 16997, 16778))
+
+    def test_documented_no_blob_dyadic_task_has_no_viewer(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            task = root / 'tasks' / 'excluded-cell'
+            task.mkdir(parents=True)
+            (task / 'final_status.json').write_text(
+                json.dumps({'stage': 'EXCLUDED_TRACKING_NO_BLOBS'}))
+            self.assertEqual(
+                rebuild_task(root, 'dyadic', {'id': 'excluded-cell'}, 'ffmpeg'),
+                'EXCLUDED excluded-cell: EXCLUDED_TRACKING_NO_BLOBS')
 
 
 class PortableReviewTests(unittest.TestCase):

@@ -45,6 +45,11 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
     else:
         label = task["id"]
         folder = root / "tasks" / label
+        exclusion = folder / "final_status.json"
+        if exclusion.is_file():
+            exclusion_state = json.loads(exclusion.read_text())
+            if exclusion_state.get("stage") == "EXCLUDED_TRACKING_NO_BLOBS":
+                return f"EXCLUDED {label}: EXCLUDED_TRACKING_NO_BLOBS"
         status = folder / "status_v151r081.json"
         analysis = folder / "analysis_v151r081"
         review = folder / "review_v151r081"
