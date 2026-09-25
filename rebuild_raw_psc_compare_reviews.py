@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import tempfile
 import tomllib
 from pathlib import Path
@@ -18,9 +19,18 @@ from build_canonical_review import build, sha256
 from review_geometry import plan_review_geometry, review_filter
 from run_six_beetle_pipeline import make_review_video
 
-VIEW_VERSION = "raw-psc-compare-v2"
+VIEW_VERSION = "raw-psc-compare-v3"
 MODEL_VERSION = "1.5.1"
 PROCESSOR_VERSION = "0.8.1-group"
+
+
+def analyzed_frame_bounds(settings: dict) -> tuple[int, int, int]:
+    """The stored window is movement intervals, with both endpoint frames."""
+    start = int(settings['start'])
+    count = int(settings['window']) + 1
+    if count <= 0:
+        raise ValueError('Analysis frame count must be positive')
+    return start, start + count - 1, count
 
 
 def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
@@ -30,7 +40,7 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
         status = folder / "status.json"
         analysis = folder / "analysis"
         review = folder / "review"
-        output = folder / "review_compare"
+        output = folder / "review_compare_v3"
         original_video = Path(task['video'])
     else:
         label = task["id"]
@@ -38,7 +48,7 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
         status = folder / "status_v151r081.json"
         analysis = folder / "analysis_v151r081"
         review = folder / "review_v151r081"
-        output = folder / "review_compare_v151r081"
+        output = folder / "review_compare_v151r081_v3"
         submitted = tomllib.loads((folder / 'input' / 'submitted.toml').read_text())
         original_video = Path(submitted['video_paths'][0])
 
@@ -70,12 +80,18 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
 
     if not original_video.is_file():
         raise FileNotFoundError(f'Original video required for unstretched review: {original_video}')
-    start = int(analysis_meta['settings']['start'])
-    end = start + int(analysis_meta['settings']['window']) - 1
+    start, end, expected_frames = analyzed_frame_bounds(analysis_meta['settings'])
     with tempfile.TemporaryDirectory(prefix='.oriented-review-', dir=folder) as temporary:
         oriented_video = Path(temporary) / 'review_video.mp4'
         make_review_video(original_video, oriented_video, start, end,
                           tuple(int(v) for v in source['crop']), ffmpeg, geometry)
+        probe = Path(ffmpeg).with_name('ffprobe')
+        stream = json.loads(subprocess.check_output([
+            str(probe), '-v', 'error', '-select_streams', 'v:0',
+            '-show_entries', 'stream=nb_frames', '-of', 'json', str(oriented_video)
+        ]))['streams'][0]
+        if int(stream['nb_frames']) != expected_frames:
+            raise RuntimeError(f'Review video has {stream["nb_frames"]} frames; analysis has {expected_frames}: {label}')
         build(analysis, oriented_video, output, source["crop"], source["fps"],
               label=source["label"], video_geometry=geometry,
               source_video=original_video,

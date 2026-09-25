@@ -118,15 +118,20 @@ def package(root: Path, destination: Path) -> dict:
             for source in (folder / 'analysis_v151r081').iterdir():
                 if source.is_file():
                     shutil.copy2(source, out / 'analysis' / source.name)
-            review = folder / 'review_compare_v151r081'
+            review = folder / 'review_compare_v151r081_v3'
             review_meta = json.loads((review / 'source_manifest.json').read_text())
+            analysis_meta = json.loads((folder / 'analysis_v151r081' / 'manifest.json').read_text())
+            expected_frames = int(analysis_meta['settings']['window']) + 1
             if (review_meta.get('review_view_version') != VIEW_VERSION or
                     review_meta.get('analysis_manifest_sha256') != sha256(folder / 'analysis_v151r081' / 'manifest.json') or
+                    review_meta.get('analysis_frame_count') != expected_frames or
                     not review_meta.get('video_geometry', {}).get('aspect_preserved') or
                     review_meta.get('status') != 'UNREVIEWED'):
                 raise RuntimeError(f'Comparison viewer is missing or bound to a different analysis: {task["id"]}')
             shutil.copy2(review / 'interaction_review.html', out / 'review' / 'interaction_review.html')
             original = review / 'review_video.mp4'
+            if int(video_frames(original)[0]) != expected_frames:
+                raise RuntimeError(f'Incomplete review video: {task["id"]}')
             compact = out / 'review' / 'review_video.mp4'
             command = [FFMPEG, '-hide_banner', '-loglevel', 'error', '-y', '-i', str(original),
                        '-an', '-vf', 'scale=960:-2', '-c:v', 'libx264', '-preset', 'veryfast',

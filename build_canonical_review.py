@@ -150,7 +150,7 @@ def build(
         modelSettings=meta.get('persistent_group_settings',{}),
         pscModelVersion=meta.get('persistent_model_version', 'unknown'),
         processorVersion=meta.get('script_version', 'unknown'),
-        reviewViewVersion='raw-psc-compare-v2',
+        reviewViewVersion='raw-psc-compare-v3',
         videoGeometry=video_geometry,
         analysisManifestSha256=sha256(manifest_path),
         canonicalSha256=expected,
@@ -229,7 +229,8 @@ def build(
                 shutil.copy2(video, destination_video)
         source_manifest = dict(
             schema="six-beetle-interaction-review-v2" if animal_count == 6 else "group-interaction-review-v2",
-            review_view_version='raw-psc-compare-v2',
+            review_view_version='raw-psc-compare-v3',
+            analysis_frame_count=frames,
             psc_model_version=meta.get('persistent_model_version', 'unknown'),
             processor_version=meta.get('script_version', 'unknown'),
             status="HUMAN_REVIEWED_UNVERIFIED" if initial_decisions else "UNREVIEWED",

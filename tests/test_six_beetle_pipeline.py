@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 
 from build_canonical_review import build
+from rebuild_raw_psc_compare_reviews import analyzed_frame_bounds
 from review_geometry import (legacy_review_geometry, plan_review_geometry,
                              review_filter, transform_point)
 from run_six_beetle_pipeline import arena_crop, find_trajectory
@@ -22,6 +23,12 @@ from six_beetle_firebird_gui import (
     pipeline_command,
     validated_parameters,
 )
+
+
+class FrameBoundsTests(unittest.TestCase):
+    def test_interval_window_includes_both_endpoint_frames(self):
+        self.assertEqual(analyzed_frame_bounds({'start': 220, 'window': 16777}),
+                         (220, 16997, 16778))
 
 
 class PortableReviewTests(unittest.TestCase):
@@ -95,7 +102,8 @@ class PortableReviewTests(unittest.TestCase):
             manifest = json.loads((output / "source_manifest.json").read_text())
             self.assertEqual(manifest["canonical_sha256"], digest)
             self.assertEqual(manifest["status"], "UNREVIEWED")
-            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v2")
+            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v3")
+            self.assertEqual(manifest["analysis_frame_count"], 4)
             self.assertFalse(manifest['video_geometry']['aspect_preserved'])
             oriented_geometry = plan_review_geometry(rois, (0, 0, 800, 600))
             oriented_html = build(bundle, video, root / 'review_oriented',

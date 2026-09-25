@@ -83,7 +83,7 @@ frame counts. See each run's `OUTPUT_MANIFEST.md` for the complete generated
 column dictionary and its exact thresholds.
 
 The portable interactive viewer has a **RAW IDtracker view** switch (viewer
-version `raw-psc-compare-v2`). It displays the selected trajectory input's
+version `raw-psc-compare-v3`). It displays the selected trajectory input's
 original x/y assignments, missing IDs, fungus ROI, and pairwise proximity at
 the same video frame as the PSC view. Raw trails join only consecutive located
 frames; one-frame steps above the PSC speed limit appear as red dashed lines.

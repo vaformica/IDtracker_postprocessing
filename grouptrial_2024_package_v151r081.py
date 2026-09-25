@@ -49,7 +49,7 @@ def main(root: Path) -> None:
                      'frame_data.csv','OUTPUT_MANIFEST.md'):
             if not (source/'analysis'/name).is_file():
                 raise FileNotFoundError(source/'analysis'/name)
-    destination = root/'portable_v151r081'
+    destination = root/'portable_v151r081_view_v3'
     if destination.exists():
         raise FileExistsError(destination)
     destination.mkdir()
@@ -68,8 +68,8 @@ def main(root: Path) -> None:
         if analysis_manifest.get('qc_status') != 'UNREVIEWED':
             raise RuntimeError(f'Unexpected review status: {label}')
         analysis_start = int(analysis_manifest['settings']['start'])
-        analysis_frames = int(analysis_manifest['settings']['window'])
-        if analysis_start != task['start'] or analysis_frames != task['frame_count'] - 1:
+        analysis_frames = int(analysis_manifest['settings']['window']) + 1
+        if analysis_start != task['start'] or analysis_frames != task['frame_count']:
             raise RuntimeError(f'Unexpected tracking window relative to TOML request: {label}')
         target = destination/label
         target.mkdir()
@@ -90,10 +90,11 @@ def main(root: Path) -> None:
             optional = source/name
             if optional.is_file():
                 shutil.copy2(optional, target/name)
-        review = source/'review_compare'
+        review = source/'review_compare_v3'
         review_meta = json.loads((review/'source_manifest.json').read_text())
         if (review_meta.get('review_view_version') != VIEW_VERSION or
                 review_meta.get('analysis_manifest_sha256') != digest(source/'analysis'/'manifest.json') or
+                review_meta.get('analysis_frame_count') != analysis_frames or
                 not review_meta.get('video_geometry', {}).get('aspect_preserved') or
                 review_meta.get('status') != 'UNREVIEWED'):
             raise RuntimeError(f'Comparison viewer is missing or bound to a different analysis: {label}')
@@ -139,7 +140,7 @@ def main(root: Path) -> None:
         'The HTML switch compares source IDtracker coordinates and PSC-model positions at the same frame; display changes do not alter CSV or PDF statistics. Review videos preserve arena proportions and put fungus 1 on the left when ROI geometry supports a clear orientation.\n'
         'Each folder contains original/submitted TOMLs, every analysis file (CSV/PDF/NPZ/JSON), a student-facing OUTPUT_MANIFEST.md, provenance sidecars, and portable HTML plus synchronized MP4.\n'
         'Review MP4 files are aspect-preserving crops of the original videos with every analyzed frame; source and rendered video SHA-256 values are recorded separately in each review/source_manifest.json.\n'
-        'Start frame is preserved. All eleven IDtracker trajectories and review videos contain one fewer frame than the TOML-requested span; selection_manifest.csv records both spans and end_frame_inclusive is the final analyzed frame.\n'
+        'Start frame is preserved. The analysis window counts movement intervals, so each review video contains window + 1 observations through end_frame_inclusive. The TOML-requested and analyzed frame counts are both recorded in selection_manifest.csv.\n'
         'Source and processed trajectory hashes and name mismatches are in selection_manifest.csv.\n'
         'See VERSION_CONTROL.json and SIX_BEETLE_METHODS.html for model provenance and rules.\n')
     code = root/'code'
@@ -173,7 +174,7 @@ def main(root: Path) -> None:
         if path.is_file():
             hashes.append(f'{digest(path)}  {path.relative_to(destination)}')
     (destination/'SHA256SUMS.txt').write_text('\n'.join(hashes)+'\n')
-    archive = root/'GroupTrial_2024_PSC_v1.5.1_processor0.8.1_11_reviews.zip'
+    archive = root/'GroupTrial_2024_PSC_v1.5.1_processor0.8.1_viewer_v3_11_reviews.zip'
     if archive.exists():
         raise FileExistsError(archive)
     with zipfile.ZipFile(archive,'w',allowZip64=True) as stream:
