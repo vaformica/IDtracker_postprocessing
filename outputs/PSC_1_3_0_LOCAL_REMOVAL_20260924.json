@@ -1,0 +1,88 @@
+{
+  "created_utc": "2026-09-25T01:21:45.461442+00:00",
+  "reason": "Vince requested removal of invalid PSC 1.3.0 derived outputs; preserve source videos, TOMLs, IDtracker tracking and version history.",
+  "targets": [
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/output/grouptrial_2024_pscp_v1_3_validation",
+      "kind": "PSC_1.3.0_derived_output_folder",
+      "files": 50,
+      "videos": 2,
+      "bytes": 296936612
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/outputs/WITHDRAWN_grouptrial_2024_psc_v130r081",
+      "kind": "PSC_1.3.0_derived_output_folder",
+      "files": 397,
+      "videos": 12,
+      "bytes": 2805529915
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/video_review_v1_3",
+      "kind": "PSC_1.3.0_derived_preview_folder",
+      "files": 23,
+      "videos": 0,
+      "bytes": 9259716
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/pdf_review_v1_3",
+      "kind": "PSC_1.3.0_derived_preview_folder",
+      "files": 28,
+      "videos": 0,
+      "bytes": 4324790
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/dyadic_v130r081_validation",
+      "kind": "PSC_1.3.0_derived_preview_folder",
+      "files": 4,
+      "videos": 0,
+      "bytes": 2657664
+    }
+  ],
+  "completed_utc": "2026-09-25T01:22:01.125228+00:00",
+  "results": [
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/output/grouptrial_2024_pscp_v1_3_validation",
+      "status": "deleted"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/outputs/WITHDRAWN_grouptrial_2024_psc_v130r081",
+      "status": "deleted"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/video_review_v1_3",
+      "status": "deleted"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/pdf_review_v1_3",
+      "status": "deleted"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/dyadic_v130r081_validation",
+      "status": "deleted"
+    }
+  ],
+  "updated_utc": "2026-09-25T01:26:21.329122+00:00",
+  "resync_cleanup_utc": "2026-09-25T01:44:05.350955+00:00",
+  "resync_cleanup_results": [
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/output/grouptrial_2024_pscp_v1_3_validation",
+      "status": "deleted_again_after_resync"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/outputs/WITHDRAWN_grouptrial_2024_psc_v130r081",
+      "status": "deleted_again_after_resync"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/video_review_v1_3",
+      "status": "still_absent"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/pdf_review_v1_3",
+      "status": "still_absent"
+    },
+    {
+      "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/dyadic_v130r081_validation",
+      "status": "still_absent"
+    }
+  ]
+}

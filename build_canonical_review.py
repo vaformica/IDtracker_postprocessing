@@ -96,14 +96,21 @@ def build(
     max_step_px = float(meta.get('reconstruction', {}).get('max_speed_px_per_frame', 100))
 
     fungus = np.zeros(xy.shape[:2], dtype=int)
+    raw_fungus = np.zeros(raw.shape[:2], dtype=int)
     for animal in range(animal_count):
         masks = regions(xy[:, animal], roi_polygons, 30, 30)
+        raw_masks = regions(raw[:, animal], roi_polygons, 30, 30)
         for fungus_id in range(1, len(roi_polygons)):
             fungus[masks[f"fungus_{fungus_id}"], animal] = fungus_id
+            raw_fungus[raw_masks[f"fungus_{fungus_id}"], animal] = fungus_id
 
     pairs = list(itertools.combinations(range(animal_count), 2))
     pair_states = []
+    raw_pair_states = []
     for animal_a, animal_b in pairs:
+        raw_pair_states.append((np.isfinite(raw[:, [animal_a, animal_b]]).all(axis=(1, 2))
+                                & (np.linalg.norm(raw[:, animal_a] - raw[:, animal_b], axis=1)
+                                   <= proximity_px)).astype(int))
         same_group = (
             (data["group_ids"][:, animal_a] == data["group_ids"][:, animal_b])
             & (data["group_ids"][:, animal_a] >= 0)
@@ -128,6 +135,9 @@ def build(
         maxStep=max_step_px,
         proximityThreshold=proximity_px,
         modelSettings=meta.get('persistent_group_settings',{}),
+        pscModelVersion=meta.get('persistent_model_version', 'unknown'),
+        processorVersion=meta.get('script_version', 'unknown'),
+        reviewViewVersion='raw-psc-compare-v1',
         analysisManifestSha256=sha256(manifest_path),
         canonicalSha256=expected,
         raw=clean(raw),
@@ -144,8 +154,10 @@ def build(
         anchors=np.tile(np.arange(animal_count), (frames, 1)).tolist(),
         inferred=(data["source"] == "PSCP_BLOB").astype(int).tolist(),
         fungus=fungus.tolist(),
+        rawFungus=raw_fungus.tolist(),
         pairs=pairs,
         pairStates=np.asarray(pair_states).tolist(),
+        rawPairStates=np.asarray(raw_pair_states).tolist(),
         rois=clean(roi_polygons),
     )
 
@@ -207,7 +219,10 @@ def build(
             except OSError:
                 shutil.copy2(video, destination_video)
         source_manifest = dict(
-            schema="six-beetle-interaction-review-v1" if animal_count == 6 else "group-interaction-review-v1",
+            schema="six-beetle-interaction-review-v2" if animal_count == 6 else "group-interaction-review-v2",
+            review_view_version='raw-psc-compare-v1',
+            psc_model_version=meta.get('persistent_model_version', 'unknown'),
+            processor_version=meta.get('script_version', 'unknown'),
             status="HUMAN_REVIEWED_UNVERIFIED" if initial_decisions else "UNREVIEWED",
             decision_count=len(initial_decisions or []),
             review_code_sha256={"build_canonical_review.py":sha256(Path(__file__)),

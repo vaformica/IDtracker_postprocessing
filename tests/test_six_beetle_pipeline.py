@@ -31,6 +31,7 @@ class PortableReviewTests(unittest.TestCase):
             raw = np.zeros((frames, 6, 2), dtype=float)
             for animal in range(6):
                 raw[:, animal] = [100 + animal * 100, 200]
+            raw[1, 0] = [100, 400]
             xy = raw.copy()
             xy[2, 5] = xy[2, 4]
             source = np.full((frames, 6), "ASSIGNED", dtype="<U24")
@@ -62,6 +63,8 @@ class PortableReviewTests(unittest.TestCase):
                         rois=rois,
                         cell_label="BoxA",
                         video="source.mp4",
+                        script_version="0.8.1-group",
+                        persistent_model_version="1.5.1",
                         output_sha256={state.name: digest},
                     )
                 )
@@ -80,9 +83,16 @@ class PortableReviewTests(unittest.TestCase):
             payload = json.loads(re.search(r"const D=(.*);\nconst v=", text).group(1))
             pair_index = payload["pairs"].index([4, 5])
             self.assertEqual(payload["pairStates"][pair_index][2], 2)
+            self.assertEqual(payload["rawPairStates"][pair_index][2], 0)
+            self.assertEqual(payload["rawFungus"][1][0], 1)
+            self.assertIn('id="rawMode"', text)
+            self.assertIn('D.raw[t][a]', text)
+            self.assertEqual((payload["pscModelVersion"], payload["processorVersion"]),
+                             ("1.5.1", "0.8.1-group"))
             manifest = json.loads((output / "source_manifest.json").read_text())
             self.assertEqual(manifest["canonical_sha256"], digest)
             self.assertEqual(manifest["status"], "UNREVIEWED")
+            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v1")
             dyad = root / "dyad_analysis"
             dyad.mkdir()
             dyad_state = dyad / "canonical_states.npz"

@@ -82,6 +82,20 @@ location. `pairs.csv` reports corresponding raw, assigned, PSC, and unresolved
 frame counts. See each run's `OUTPUT_MANIFEST.md` for the complete generated
 column dictionary and its exact thresholds.
 
+The portable interactive viewer has a **RAW IDtracker view** switch (viewer
+version `raw-psc-compare-v1`). It displays the selected trajectory input's
+original x/y assignments, missing IDs, fungus ROI, and pairwise proximity at
+the same video frame as the PSC view. Raw trails join only consecutive located
+frames; one-frame steps above the PSC speed limit appear as red dashed lines.
+The PSC view shows the processor's canonical positions, pile states, and
+review corrections. A frame counter reports how many IDs are located in each
+layer, located in only one layer, or differ by more than 10 px. These are
+processing differences, not confirmed identity errors. Changing views never
+changes `frame_data.csv`, any summary, or a PDF. Human review edits apply to
+the PSC layer; the raw coordinates remain unchanged. Check
+`trajectory_source_kind` because the selected IDtracker array can itself be
+validated or gap-processed.
+
 This document defines every column written by the standalone IDtracker
 post-processing prototype. It covers:
 

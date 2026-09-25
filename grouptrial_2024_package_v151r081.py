@@ -13,6 +13,7 @@ import zipfile
 from pathlib import Path
 
 from psc_release_validation import validate_bundle
+from rebuild_raw_psc_compare_reviews import VIEW_VERSION
 
 FFPROBE = '/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffprobe'
 
@@ -85,7 +86,12 @@ def main(root: Path) -> None:
             optional = source/name
             if optional.is_file():
                 shutil.copy2(optional, target/name)
-        review = source/'review'
+        review = source/'review_compare'
+        review_meta = json.loads((review/'source_manifest.json').read_text())
+        if (review_meta.get('review_view_version') != VIEW_VERSION or
+                review_meta.get('analysis_manifest_sha256') != digest(source/'analysis'/'manifest.json') or
+                review_meta.get('status') != 'UNREVIEWED'):
+            raise RuntimeError(f'Comparison viewer is missing or bound to a different analysis: {label}')
         shutil.copy2(review/'interaction_review.html', target/'review'/'interaction_review.html')
         copied_video = target/'review'/'review_video.mp4'
         shutil.copy2(review/'review_video.mp4', copied_video)
@@ -100,6 +106,7 @@ def main(root: Path) -> None:
         (target/'review'/'source_manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
         rows.append(dict(source_toml=task['source_toml'], selected_run=task['run_dir'],
                          psc_model_version='1.5.1', group_processor_version='0.8.1-group',
+                         review_view_version=VIEW_VERSION,
                          review_status='UNREVIEWED',
                          choice_reason=task['choice_reason'], source_sha256=task['source_sha256'],
                          submitted_toml_sha256=task['submitted_toml_sha256'],
@@ -121,6 +128,7 @@ def main(root: Path) -> None:
         'These outputs supersede the withdrawn model-1.2.0, model-1.3.0, model-1.4.0, and preliminary model-1.5.0 batches. Do not mix versions.\n'
         '13 original GUI submissions represented 11 distinct source TOMLs; original IDtracker tracking sessions remain on Firebird.\n'
         'Selections and PSC identity assignments remain UNREVIEWED for biological interpretation.\n'
+        'The HTML switch compares source IDtracker coordinates and PSC-model positions at the same frame; display changes do not alter CSV or PDF statistics.\n'
         'Each folder contains original/submitted TOMLs, every analysis file (CSV/PDF/NPZ/JSON), a student-facing OUTPUT_MANIFEST.md, provenance sidecars, and portable HTML plus synchronized MP4.\n'
         'MP4 files are full-resolution copies with every frame and the original SHA-256 preserved.\n'
         'Start frame is preserved; end_frame_inclusive is TOML end minus one.\n'
@@ -136,6 +144,7 @@ def main(root: Path) -> None:
     version = dict(schema='grouptrial-psc-release-v1',
                    created_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
                    psc_model_version='1.5.1',group_processor_version='0.8.1-group',
+                   review_view_version=VIEW_VERSION,
                    code_commit=snapshot['git_commit'],
                    qc_status='UNREVIEWED',plan_sha256=digest(root/'plan.json'),
                    source_tomls_untouched=True,

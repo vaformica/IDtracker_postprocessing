@@ -19,6 +19,7 @@ from pathlib import Path
 
 from dyadic_batch_collect_v151r081 import collect
 from dyadic_batch_worker import FFMPEG, FFPROBE
+from rebuild_raw_psc_compare_reviews import VIEW_VERSION
 
 CODE = Path(__file__).resolve().parent
 
@@ -71,6 +72,7 @@ def package(root: Path, destination: Path) -> dict:
         version=dict(schema='dyadic-psc-release-v1',
                      created_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
                      psc_model_version='1.5.1',group_processor_version='0.8.1-group',
+                     review_view_version=VIEW_VERSION,
                      code_commit=snapshot['git_commit'],qc_status='UNREVIEWED',
                      plan_sha256=sha256(root/'plan.json'),source_tomls_untouched=True,
                      code_sha256={name:sha256(CODE/name) for name in code_files})
@@ -78,6 +80,7 @@ def package(root: Path, destination: Path) -> dict:
         readme = ('2026 dyadic fight IDtracker and presumed social contact reviews\n'
                   'PSC model 1.5.1; group processor 0.8.1-group. Older PSC outputs are withdrawn.\n\n'
                   'Open each tasks/<id>/review/interaction_review.html next to its review_video.mp4.\n'
+                  'Use the RAW IDtracker switch to compare source assignments with PSC positions at the same frame; the switch does not alter CSV or PDF statistics.\n'
                   'The MP4 is a compact derivative of the full-resolution Firebird review; '
                   'frame count and frame rate match the original. Source TOMLs are unchanged.\n'
                   'submitted.toml is the exact immutable tracking input with background subtraction on.\n'
@@ -112,7 +115,12 @@ def package(root: Path, destination: Path) -> dict:
             for source in (folder / 'analysis_v151r081').iterdir():
                 if source.is_file():
                     shutil.copy2(source, out / 'analysis' / source.name)
-            review = folder / 'review_v151r081'
+            review = folder / 'review_compare_v151r081'
+            review_meta = json.loads((review / 'source_manifest.json').read_text())
+            if (review_meta.get('review_view_version') != VIEW_VERSION or
+                    review_meta.get('analysis_manifest_sha256') != sha256(folder / 'analysis_v151r081' / 'manifest.json') or
+                    review_meta.get('status') != 'UNREVIEWED'):
+                raise RuntimeError(f'Comparison viewer is missing or bound to a different analysis: {task["id"]}')
             shutil.copy2(review / 'interaction_review.html', out / 'review' / 'interaction_review.html')
             original = review / 'review_video.mp4'
             compact = out / 'review' / 'review_video.mp4'
