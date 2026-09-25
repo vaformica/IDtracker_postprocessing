@@ -67,6 +67,10 @@ def main(root: Path) -> None:
             raise RuntimeError(f'Wrong group processor version: {label}')
         if analysis_manifest.get('qc_status') != 'UNREVIEWED':
             raise RuntimeError(f'Unexpected review status: {label}')
+        analysis_start = int(analysis_manifest['settings']['start'])
+        analysis_frames = int(analysis_manifest['settings']['window'])
+        if analysis_start != task['start'] or analysis_frames != task['frame_count'] - 1:
+            raise RuntimeError(f'Unexpected tracking window relative to TOML request: {label}')
         target = destination/label
         target.mkdir()
         (target/'analysis').mkdir()
@@ -98,8 +102,8 @@ def main(root: Path) -> None:
         shutil.copy2(review/'review_video.mp4', copied_video)
         original_frames = count_frames(review/'review_video.mp4')
         copied_frames = count_frames(copied_video)
-        if original_frames != copied_frames or original_frames != task['frame_count']:
-            raise ValueError(f'Frame mismatch for {label}: {original_frames}, {copied_frames}, {task["frame_count"]}')
+        if original_frames != copied_frames or original_frames != analysis_frames:
+            raise ValueError(f'Frame mismatch for {label}: video {original_frames}, copy {copied_frames}, analyzed {analysis_frames}')
         manifest = json.loads((review/'source_manifest.json').read_text())
         if manifest['copied_video_sha256'] != digest(copied_video):
             raise ValueError(f'Video hash mismatch: {label}')
@@ -111,7 +115,11 @@ def main(root: Path) -> None:
                          choice_reason=task['choice_reason'], source_sha256=task['source_sha256'],
                          submitted_toml_sha256=task['submitted_toml_sha256'],
                          trajectory_sha256=task['trajectory_sha256'],
-                         start_frame=task['start'], end_frame_inclusive=task['end_exclusive']-1,
+                         start_frame=analysis_start,
+                         end_frame_inclusive=analysis_start+analysis_frames-1,
+                         analyzed_frame_count=analysis_frames,
+                         toml_requested_frame_count=task['frame_count'],
+                         toml_requested_end_frame_inclusive=task['end_exclusive']-1,
                          raw_missing_percent=task['raw_missing_percent'],
                          run_folder_label_mismatch=task['run_folder_label_mismatch'],
                          session_label_mismatch=task['session_label_mismatch'],
@@ -131,7 +139,7 @@ def main(root: Path) -> None:
         'The HTML switch compares source IDtracker coordinates and PSC-model positions at the same frame; display changes do not alter CSV or PDF statistics. Review videos preserve arena proportions and put fungus 1 on the left when ROI geometry supports a clear orientation.\n'
         'Each folder contains original/submitted TOMLs, every analysis file (CSV/PDF/NPZ/JSON), a student-facing OUTPUT_MANIFEST.md, provenance sidecars, and portable HTML plus synchronized MP4.\n'
         'Review MP4 files are aspect-preserving crops of the original videos with every analyzed frame; source and rendered video SHA-256 values are recorded separately in each review/source_manifest.json.\n'
-        'Start frame is preserved; end_frame_inclusive is TOML end minus one.\n'
+        'Start frame is preserved. All eleven IDtracker trajectories and review videos contain one fewer frame than the TOML-requested span; selection_manifest.csv records both spans and end_frame_inclusive is the final analyzed frame.\n'
         'Source and processed trajectory hashes and name mismatches are in selection_manifest.csv.\n'
         'See VERSION_CONTROL.json and SIX_BEETLE_METHODS.html for model provenance and rules.\n')
     code = root/'code'
