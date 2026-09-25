@@ -130,7 +130,7 @@ def main(root: Path) -> None:
         'Selections and PSC identity assignments remain UNREVIEWED for biological interpretation.\n'
         'The HTML switch compares source IDtracker coordinates and PSC-model positions at the same frame; display changes do not alter CSV or PDF statistics. Review videos preserve arena proportions and put fungus 1 on the left when ROI geometry supports a clear orientation.\n'
         'Each folder contains original/submitted TOMLs, every analysis file (CSV/PDF/NPZ/JSON), a student-facing OUTPUT_MANIFEST.md, provenance sidecars, and portable HTML plus synchronized MP4.\n'
-        'MP4 files are full-resolution copies with every frame and the original SHA-256 preserved.\n'
+        'Review MP4 files are aspect-preserving crops of the original videos with every analyzed frame; source and rendered video SHA-256 values are recorded separately in each review/source_manifest.json.\n'
         'Start frame is preserved; end_frame_inclusive is TOML end minus one.\n'
         'Source and processed trajectory hashes and name mismatches are in selection_manifest.csv.\n'
         'See VERSION_CONTROL.json and SIX_BEETLE_METHODS.html for model provenance and rules.\n')
