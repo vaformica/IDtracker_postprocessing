@@ -136,7 +136,7 @@ def main(root: Path) -> None:
         'See VERSION_CONTROL.json and SIX_BEETLE_METHODS.html for model provenance and rules.\n')
     code = root/'code'
     snapshot = json.loads((code/'RELEASE_VERSION.json').read_text())
-    if snapshot.get('psc_model_version') != '1.5.1':
+    if snapshot.get('psc_model_version', snapshot.get('psc_model')) != '1.5.1':
         raise RuntimeError('Code snapshot is not PSC 1.5.1')
     code_files = ('persistent_groups.py','six_beetle_processor.py','frame_data.py',
                   'psc_release_validation.py',
