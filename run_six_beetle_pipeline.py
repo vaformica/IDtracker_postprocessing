@@ -171,6 +171,15 @@ def make_review_video(
         ],
         check=True,
     )
+    probe = Path(ffmpeg).with_name('ffprobe')
+    raw = subprocess.check_output([
+        str(probe), '-v', 'error', '-select_streams', 'v:0',
+        '-show_entries', 'stream=nb_frames', '-of', 'json', str(destination),
+    ])
+    encoded = int(json.loads(raw)['streams'][0]['nb_frames'])
+    expected = end - start + 1
+    if encoded != expected:
+        raise RuntimeError(f'Review video has {encoded} encoded frames; expected {expected} for global frames {start}–{end}')
 
 
 def run(args) -> Path:
