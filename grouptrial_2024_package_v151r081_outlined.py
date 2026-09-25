@@ -178,6 +178,7 @@ def main(root: Path) -> None:
                    review_view_version=VIEW_VERSION,
                    pdf_track_style_version=PDF_STYLE_VERSION,
                    pdf_style_commit=snapshot['pdf_style_commit'],
+                   packager_code_sha256=digest(Path(__file__)),
                    pdf_style_code_sha256={name:digest(code/name) for name in
                        ('six_beetle_processor.py','render_psc_outlined_pdf.py')},
                    code_commit=snapshot['git_commit'],
