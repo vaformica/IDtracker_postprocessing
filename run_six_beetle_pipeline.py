@@ -19,6 +19,7 @@ import numpy as np
 from build_canonical_review import build as build_review
 from output_manifest import write_output_manifest
 from processor import load_rois as load_session_rois
+from review_geometry import legacy_review_geometry, plan_review_geometry, review_filter
 
 
 BASE = Path(__file__).resolve().parent
@@ -139,12 +140,12 @@ def make_review_video(
     end: int,
     crop: tuple[int, int, int, int],
     ffmpeg: str,
+    geometry: dict | None = None,
 ):
-    x, y, width, height = crop
-    filter_graph = (
-        f"trim=start_frame={start}:end_frame={end + 1},setpts=PTS-STARTPTS,"
-        f"crop={width}:{height}:{x}:{y},scale=1280:920:flags=lanczos"
-    )
+    geometry = geometry or legacy_review_geometry(crop)
+    if list(crop) != geometry['crop']:
+        raise ValueError('Review video geometry does not match the crop')
+    filter_graph = review_filter(start, end, geometry)
     subprocess.run(
         [
             ffmpeg,
@@ -249,6 +250,8 @@ def run(args) -> Path:
     else:
         video_width, video_height = probe_video(source_video, args.ffprobe)
         crop = arena_crop(rois, video_width, video_height, args.crop_padding)
+    video_geometry = (legacy_review_geometry(crop) if args.prepared_review_video
+                      else plan_review_geometry(rois, crop))
     temporary = Path(tempfile.mkdtemp(prefix=".six-beetle-video-", dir=review_output.parent))
     try:
         cropped_video = temporary / "review_video.mp4"
@@ -261,7 +264,8 @@ def run(args) -> Path:
             except OSError:
                 shutil.copy2(prepared, cropped_video)
         else:
-            make_review_video(source_video, cropped_video, args.start, args.end, crop, args.ffmpeg)
+            make_review_video(source_video, cropped_video, args.start, args.end, crop, args.ffmpeg,
+                              video_geometry)
         html = build_review(
             analysis_output,
             cropped_video,
@@ -269,6 +273,9 @@ def run(args) -> Path:
             crop,
             args.fps,
             label=args.label,
+            video_geometry=video_geometry,
+            source_video=source_video,
+            video_filter=None if args.prepared_review_video else review_filter(args.start, args.end, video_geometry),
         )
     finally:
         shutil.rmtree(temporary, ignore_errors=True)
@@ -304,6 +311,7 @@ def run(args) -> Path:
             jump_threshold_px=args.jump_threshold_px,
             reconstruction_speed_px=args.reconstruction_speed_px,
             crop=list(crop),
+            video_geometry=video_geometry,
         ),
         command=command,
     )

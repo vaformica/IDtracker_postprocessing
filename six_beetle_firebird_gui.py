@@ -35,6 +35,7 @@ DEPLOY_FILES = (
     "trajectory_reconstruction.py",
     "export_blob_evidence.py",
     "build_canonical_review.py",
+    "review_geometry.py",
     "interaction_review_template.html",
     "review_editor.js",
     "apply_review_decisions.py",

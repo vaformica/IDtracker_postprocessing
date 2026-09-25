@@ -75,12 +75,15 @@ def package(root: Path, destination: Path) -> dict:
                      review_view_version=VIEW_VERSION,
                      code_commit=snapshot['git_commit'],qc_status='UNREVIEWED',
                      plan_sha256=sha256(root/'plan.json'),source_tomls_untouched=True,
-                     code_sha256={name:sha256(CODE/name) for name in code_files})
+                     code_sha256={name:sha256(CODE/name) for name in code_files},
+                     viewer_code_sha256={name:sha256(CODE/name) for name in
+                         ('review_geometry.py','build_canonical_review.py',
+                          'interaction_review_template.html','rebuild_raw_psc_compare_reviews.py')})
         (stage/'VERSION_CONTROL.json').write_text(json.dumps(version,indent=2)+'\n')
         readme = ('2026 dyadic fight IDtracker and presumed social contact reviews\n'
                   'PSC model 1.5.1; group processor 0.8.1-group. Older PSC outputs are withdrawn.\n\n'
                   'Open each tasks/<id>/review/interaction_review.html next to its review_video.mp4.\n'
-                  'Use the RAW IDtracker switch to compare source assignments with PSC positions at the same frame; the switch does not alter CSV or PDF statistics.\n'
+                  'Use the RAW IDtracker switch to compare source assignments with PSC positions at the same frame; the switch does not alter CSV or PDF statistics. Review videos preserve arena proportions and put fungus 1 on the left when ROI geometry supports a clear orientation.\n'
                   'The MP4 is a compact derivative of the full-resolution Firebird review; '
                   'frame count and frame rate match the original. Source TOMLs are unchanged.\n'
                   'submitted.toml is the exact immutable tracking input with background subtraction on.\n'
@@ -119,6 +122,7 @@ def package(root: Path, destination: Path) -> dict:
             review_meta = json.loads((review / 'source_manifest.json').read_text())
             if (review_meta.get('review_view_version') != VIEW_VERSION or
                     review_meta.get('analysis_manifest_sha256') != sha256(folder / 'analysis_v151r081' / 'manifest.json') or
+                    not review_meta.get('video_geometry', {}).get('aspect_preserved') or
                     review_meta.get('status') != 'UNREVIEWED'):
                 raise RuntimeError(f'Comparison viewer is missing or bound to a different analysis: {task["id"]}')
             shutil.copy2(review / 'interaction_review.html', out / 'review' / 'interaction_review.html')

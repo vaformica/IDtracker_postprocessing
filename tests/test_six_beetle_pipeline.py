@@ -10,8 +10,11 @@ from pathlib import Path
 import numpy as np
 
 from build_canonical_review import build
+from review_geometry import (legacy_review_geometry, plan_review_geometry,
+                             review_filter, transform_point)
 from run_six_beetle_pipeline import arena_crop, find_trajectory
 from six_beetle_firebird_gui import (
+    DEPLOY_FILES,
     DEFAULT_SESSION_ROOTS,
     DEFAULT_SSH_HOST,
     REMOTE_DISCOVERY,
@@ -92,7 +95,17 @@ class PortableReviewTests(unittest.TestCase):
             manifest = json.loads((output / "source_manifest.json").read_text())
             self.assertEqual(manifest["canonical_sha256"], digest)
             self.assertEqual(manifest["status"], "UNREVIEWED")
-            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v1")
+            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v2")
+            self.assertFalse(manifest['video_geometry']['aspect_preserved'])
+            oriented_geometry = plan_review_geometry(rois, (0, 0, 800, 600))
+            oriented_html = build(bundle, video, root / 'review_oriented',
+                                  (0, 0, 800, 600), 30,
+                                  video_geometry=oriented_geometry)
+            oriented_payload = json.loads(re.search(
+                r"const D=(.*);\nconst v=", oriented_html.read_text()).group(1))
+            self.assertEqual(oriented_payload['videoGeometry'], oriented_geometry)
+            self.assertTrue(json.loads((root/'review_oriented/source_manifest.json').read_text())
+                            ['video_geometry']['aspect_preserved'])
             dyad = root / "dyad_analysis"
             dyad.mkdir()
             dyad_state = dyad / "canonical_states.npz"
@@ -114,6 +127,40 @@ class PortableReviewTests(unittest.TestCase):
 
 
 class PipelineHelpersTests(unittest.TestCase):
+    def test_firebird_deployment_includes_review_geometry(self):
+        self.assertIn('review_geometry.py', DEPLOY_FILES)
+
+    def test_vertical_fungus_rois_rotate_individually_without_stretch(self):
+        crop = (2740, 546, 860, 1190)
+        arena = [[2740, 546], [3600, 546], [3600, 1736], [2740, 1736]]
+        def fungus(cy):
+            return [[3100, cy-40], [3200, cy-40], [3200, cy+40], [3100, cy+40]]
+        for centers, expected_rotation in (((1460, 1110, 790), 90),
+                                           ((790, 1110, 1460), 270)):
+            rois = [arena] + [fungus(cy) for cy in centers]
+            geometry = plan_review_geometry(rois, crop)
+            self.assertEqual(geometry['rotation_cw'], expected_rotation)
+            points = [transform_point((3150, cy), geometry) for cy in centers]
+            self.assertLess(points[0][0], points[1][0])
+            self.assertLess(points[1][0], points[2][0])
+            self.assertLess(abs(points[0][1]-points[2][1]), 2)
+            self.assertTrue(geometry['aspect_preserved'])
+            self.assertAlmostEqual(geometry['content_width']/crop[3],
+                                   geometry['content_height']/crop[2], delta=0.003)
+            self.assertIn('transpose=clock' if expected_rotation == 90
+                          else 'transpose=cclock', review_filter(0, 9, geometry))
+        self.assertFalse(legacy_review_geometry(crop)['aspect_preserved'])
+        wide_crop = (0, 0, 1200, 800)
+        wide_arena = [[0, 0], [1200, 0], [1200, 800], [0, 800]]
+        def horizontal_fungus(cx):
+            return [[cx-30, 350], [cx+30, 350], [cx+30, 450], [cx-30, 450]]
+        self.assertEqual(plan_review_geometry(
+            [wide_arena] + [horizontal_fungus(x) for x in (200, 600, 1000)],
+            wide_crop)['rotation_cw'], 0)
+        self.assertEqual(plan_review_geometry(
+            [wide_arena] + [horizontal_fungus(x) for x in (1000, 600, 200)],
+            wide_crop)['rotation_cw'], 180)
+
     def test_group_discovery_filters_dyadic_and_six_profiles(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

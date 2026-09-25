@@ -84,5 +84,32 @@
       "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/dyadic_v130r081_validation",
       "status": "still_absent"
     }
+  ],
+  "resync_cleanup_history": [
+    {
+      "utc": "2026-09-25T02:04:58.528843+00:00",
+      "results": [
+        {
+          "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/output/grouptrial_2024_pscp_v1_3_validation",
+          "status": "absent"
+        },
+        {
+          "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/outputs/WITHDRAWN_grouptrial_2024_psc_v130r081",
+          "status": "deleted_after_second_resync"
+        },
+        {
+          "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/video_review_v1_3",
+          "status": "absent"
+        },
+        {
+          "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/pdf_review_v1_3",
+          "status": "absent"
+        },
+        {
+          "path": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tmp/dyadic_v130r081_validation",
+          "status": "absent"
+        }
+      ]
+    }
   ]
 }

@@ -83,7 +83,7 @@ frame counts. See each run's `OUTPUT_MANIFEST.md` for the complete generated
 column dictionary and its exact thresholds.
 
 The portable interactive viewer has a **RAW IDtracker view** switch (viewer
-version `raw-psc-compare-v1`). It displays the selected trajectory input's
+version `raw-psc-compare-v2`). It displays the selected trajectory input's
 original x/y assignments, missing IDs, fungus ROI, and pairwise proximity at
 the same video frame as the PSC view. Raw trails join only consecutive located
 frames; one-frame steps above the PSC speed limit appear as red dashed lines.
@@ -95,6 +95,17 @@ changes `frame_data.csv`, any summary, or a PDF. Human review edits apply to
 the PSC layer; the raw coordinates remain unchanged. Check
 `trajectory_source_kind` because the selected IDtracker array can itself be
 validated or gap-processed.
+
+Review video orientation is display-only. The renderer compares the fungus ROI
+centroids to identify a horizontal or vertical series, rotates a vertical
+arena clockwise or counterclockwise as needed to put fungus 1 on the left,
+and letterboxes the cropped frame without stretching it. The same transform
+maps raw and PSC overlay points and ROI outlines. If ROI order is ambiguous,
+the source orientation is retained and the reason is recorded in
+`review/source_manifest.json` as `video_geometry.orientation_reason`.
+`video_geometry.aspect_preserved=true` distinguishes corrected videos from
+legacy prepared clips. Neither the original tracking coordinates nor the
+analysis's fungus numbering, distances, or frame-level values are rotated.
 
 This document defines every column written by the standalone IDtracker
 post-processing prototype. It covers:

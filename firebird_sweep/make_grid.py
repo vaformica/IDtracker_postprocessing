@@ -17,7 +17,7 @@ def main():
     configs=root/'configs';configs.mkdir();tasks=[]
     repository=Path(__file__).resolve().parent.parent
     for name in ['processor.py','six_beetle_processor.py','persistent_groups.py','trajectory_reconstruction.py',
-                 'frame_data.py','export_blob_evidence.py','build_canonical_review.py','interaction_review_template.html',
+                 'frame_data.py','export_blob_evidence.py','build_canonical_review.py','review_geometry.py','interaction_review_template.html',
                  'review_editor.js','apply_review_decisions.py',
                  'run_six_beetle_pipeline.py']:
         shutil.copy2(repository/name,root/name)

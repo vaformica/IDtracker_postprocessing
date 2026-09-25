@@ -20,6 +20,7 @@ const color=a=>colors[a%colors.length],animalCount=D.held[0].length;
 const rawMode=()=>document.getElementById('rawMode').checked;
 function modeExplanation(){
  document.getElementById('viewExplanation').textContent=rawMode()?`RAW IDtracker view · original IDtracker coordinates, missing IDs, raw proximity and fungus ROI assignment. No PSC position, identity screening or human review correction is applied. Red dashed trail segments exceed ${D.maxStep} px in one frame.`:`PSC analysis view · processor ${D.processorVersion||'unknown'}, PSC model ${D.pscModelVersion||'unknown'}. Inferred positions and unresolved identity are shown; switching views never changes the CSV or report. Review edits below apply only to the PSC layer.`;
+ if(D.videoGeometry){const g=D.videoGeometry;document.getElementById('viewExplanation').textContent+=g.aspect_preserved?` Review video: ${g.rotation_cw}° clockwise, proportions preserved; original analysis coordinates unchanged.`:' This legacy prepared video may stretch the arena; analysis coordinates are unchanged.'}
  if(rawMode()){
   document.getElementById('thresholdNote').textContent=`Teal: proximity of raw IDtracker IDs (≤${D.proximityThreshold} px). No PSC classifications are shown in this view. Cursor and slider use global frames.`;
   document.getElementById('trailNote').textContent=`Filled dots are raw IDtracker locations. Missing IDs have no dot. Trails join consecutive observed frames only; red dashed segments expose raw one-frame steps above ${D.maxStep} px. No position holding or interpolation is displayed.`;
@@ -33,7 +34,16 @@ graph.height=Math.max(100,24+D.pairs.length*17);
 graph.style.height=Math.min(800,graph.height)+'px';
 document.getElementById('thresholdNote').textContent=`Teal: assigned-identity proximity (≤${D.proximityThreshold} px). Gold: automatic PSCP. Gray: pile membership, location unresolved. Pink: human-reviewed PSCP. Cursor and slider use global frames. Proximity/PSCP do not establish fighting.`;
 document.getElementById('trailNote').textContent=`Solid dots: supported assignments. Hollow dots: inferred pile members. No defensible location means MISSING or UNRESOLVED SPLIT. Fading trails show up to 300 frame intervals and break at gaps or steps over ${D.maxStep} px. No linear interpolation or position holding is displayed. Fungus state for inferred coordinates is estimated.`;
-function point(p){return p&&p[0]!=null?[(p[0]-1600)*1280/1366,(p[1]-192)*920/982]:null}
+function point(p){
+ if(!p||p[0]==null)return null;
+ const g=D.videoGeometry;
+ if(!g)return [(p[0]-1600)*1280/1366,(p[1]-192)*920/982];
+ let [x,y,w,h]=g.crop,dx=p[0]-x,dy=p[1]-y;
+ if(g.rotation_cw===90){[dx,dy]=[h-dy,dx];[w,h]=[h,w]}
+ else if(g.rotation_cw===180){[dx,dy]=[w-dx,h-dy]}
+ else if(g.rotation_cw===270){[dx,dy]=[dy,w-dx];[w,h]=[h,w]}
+ return [g.pad_x+dx*g.content_width/w,g.pad_y+dy*g.content_height/h];
+}
 const base=document.createElement('canvas');base.width=graph.width;base.height=graph.height;const bg=base.getContext('2d');
 bg.fillStyle='#17232e';bg.fillRect(0,0,1500,graph.height);bg.font='12px system-ui';
 function paintTimeline(){bg.fillStyle='#17232e';bg.fillRect(0,0,1500,graph.height);D.pairs.forEach((pair,row)=>{const y=18+row*17;bg.fillStyle='#e0e8ee';bg.fillText(pair.join('–'),8,y+10);const states=rawMode()?D.rawPairStates[row]:D.pairStates[row];let begin=0;for(let t=1;t<=states.length;t++){if(t===states.length||states[t]!==states[begin]){if(states[begin]){bg.fillStyle=rawMode()?'#22bcb8':states[begin]===4?'#8293a1':states[begin]===3?'#f18ad4':states[begin]===2?'#ffcc32':'#22bcb8';bg.fillRect(55+begin/states.length*1440,y,Math.max(1,(t-begin)/states.length*1440),12)}begin=t}}});}

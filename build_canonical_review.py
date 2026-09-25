@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 
 from six_beetle_processor import regions
+from review_geometry import CANVAS_HEIGHT, CANVAS_WIDTH, legacy_review_geometry
 
 
 def sha256(path: Path) -> str:
@@ -58,6 +59,9 @@ def build(
     video_name="review_video.mp4",
     link_video=False,
     initial_decisions=None,
+    video_geometry=None,
+    source_video=None,
+    video_filter=None,
 ):
     """Create a self-contained HTML/video review directory without overwriting."""
     bundle = Path(bundle)
@@ -69,11 +73,20 @@ def build(
         raise FileExistsError(f"Refusing existing output: {output}")
     if not video.is_file():
         raise FileNotFoundError(video)
+    source_video = Path(source_video) if source_video is not None else video
+    if not source_video.is_file():
+        raise FileNotFoundError(source_video)
     if not np.isfinite(fps) or fps <= 0:
         raise ValueError("fps must be finite and positive")
     x, y, width, height = map(float, crop)
     if not all(np.isfinite([x, y, width, height])) or width <= 0 or height <= 0:
         raise ValueError("crop must be finite x y width height with positive dimensions")
+    video_geometry = video_geometry or legacy_review_geometry(crop)
+    if (video_geometry.get('crop') != [int(x), int(y), int(width), int(height)] or
+            video_geometry.get('canvas_width') != CANVAS_WIDTH or
+            video_geometry.get('canvas_height') != CANVAS_HEIGHT or
+            video_geometry.get('rotation_cw') not in (0, 90, 180, 270)):
+        raise ValueError('Video geometry does not match the review crop and canvas')
 
     manifest_path = bundle / "manifest.json"
     state_path = bundle / "canonical_states.npz"
@@ -137,7 +150,8 @@ def build(
         modelSettings=meta.get('persistent_group_settings',{}),
         pscModelVersion=meta.get('persistent_model_version', 'unknown'),
         processorVersion=meta.get('script_version', 'unknown'),
-        reviewViewVersion='raw-psc-compare-v1',
+        reviewViewVersion='raw-psc-compare-v2',
+        videoGeometry=video_geometry,
         analysisManifestSha256=sha256(manifest_path),
         canonicalSha256=expected,
         raw=clean(raw),
@@ -172,11 +186,6 @@ def build(
     template = _replace_once(template, "Pink: provisional user-reviewed contact.", "All positions come from the report bundle. UNREVIEWED: identity attribution remains uncertain.")
     template = template.replace("OLD_source_crop.mp4", video_name)
     template = _replace_once(template, "point(D.raw[t][D.anchors[t][a]])", "point(D.held[t][a])")
-    template = _replace_once(
-        template,
-        "(p[0]-1600)*1280/1366,(p[1]-192)*920/982",
-        f"(p[0]-{x})*1280/{width},(p[1]-{y})*920/{height}",
-    )
     template = _replace_once(
         template,
         "D.rejected[t][a]?'<br>Raw candidate rejected':''",
@@ -220,12 +229,13 @@ def build(
                 shutil.copy2(video, destination_video)
         source_manifest = dict(
             schema="six-beetle-interaction-review-v2" if animal_count == 6 else "group-interaction-review-v2",
-            review_view_version='raw-psc-compare-v1',
+            review_view_version='raw-psc-compare-v2',
             psc_model_version=meta.get('persistent_model_version', 'unknown'),
             processor_version=meta.get('script_version', 'unknown'),
             status="HUMAN_REVIEWED_UNVERIFIED" if initial_decisions else "UNREVIEWED",
             decision_count=len(initial_decisions or []),
             review_code_sha256={"build_canonical_review.py":sha256(Path(__file__)),
+                                "review_geometry.py":sha256(Path(__file__).with_name('review_geometry.py')),
                                 "interaction_review_template.html":sha256(template_path),
                                 "review_editor.js":sha256(editor_path)},
             animal_count=animal_count,
@@ -234,10 +244,12 @@ def build(
             analysis_bundle=str(bundle.resolve()),
             analysis_manifest_sha256=sha256(manifest_path),
             canonical_sha256=expected,
-            video_source=str(video.resolve()),
-            video_sha256=sha256(video),
+            video_source=str(source_video.resolve()),
+            video_sha256=sha256(source_video),
             copied_video_sha256=sha256(destination_video),
+            video_generation_filter=video_filter,
             crop=[x, y, width, height],
+            video_geometry=video_geometry,
             fps=float(fps),
             html=html_name,
             video=video_name,

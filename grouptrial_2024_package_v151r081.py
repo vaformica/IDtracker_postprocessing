@@ -90,6 +90,7 @@ def main(root: Path) -> None:
         review_meta = json.loads((review/'source_manifest.json').read_text())
         if (review_meta.get('review_view_version') != VIEW_VERSION or
                 review_meta.get('analysis_manifest_sha256') != digest(source/'analysis'/'manifest.json') or
+                not review_meta.get('video_geometry', {}).get('aspect_preserved') or
                 review_meta.get('status') != 'UNREVIEWED'):
             raise RuntimeError(f'Comparison viewer is missing or bound to a different analysis: {label}')
         shutil.copy2(review/'interaction_review.html', target/'review'/'interaction_review.html')
@@ -102,7 +103,6 @@ def main(root: Path) -> None:
         manifest = json.loads((review/'source_manifest.json').read_text())
         if manifest['copied_video_sha256'] != digest(copied_video):
             raise ValueError(f'Video hash mismatch: {label}')
-        manifest['video_source'] = 'review_video.mp4'
         (target/'review'/'source_manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
         rows.append(dict(source_toml=task['source_toml'], selected_run=task['run_dir'],
                          psc_model_version='1.5.1', group_processor_version='0.8.1-group',
@@ -128,7 +128,7 @@ def main(root: Path) -> None:
         'These outputs supersede the withdrawn model-1.2.0, model-1.3.0, model-1.4.0, and preliminary model-1.5.0 batches. Do not mix versions.\n'
         '13 original GUI submissions represented 11 distinct source TOMLs; original IDtracker tracking sessions remain on Firebird.\n'
         'Selections and PSC identity assignments remain UNREVIEWED for biological interpretation.\n'
-        'The HTML switch compares source IDtracker coordinates and PSC-model positions at the same frame; display changes do not alter CSV or PDF statistics.\n'
+        'The HTML switch compares source IDtracker coordinates and PSC-model positions at the same frame; display changes do not alter CSV or PDF statistics. Review videos preserve arena proportions and put fungus 1 on the left when ROI geometry supports a clear orientation.\n'
         'Each folder contains original/submitted TOMLs, every analysis file (CSV/PDF/NPZ/JSON), a student-facing OUTPUT_MANIFEST.md, provenance sidecars, and portable HTML plus synchronized MP4.\n'
         'MP4 files are full-resolution copies with every frame and the original SHA-256 preserved.\n'
         'Start frame is preserved; end_frame_inclusive is TOML end minus one.\n'
@@ -148,7 +148,10 @@ def main(root: Path) -> None:
                    code_commit=snapshot['git_commit'],
                    qc_status='UNREVIEWED',plan_sha256=digest(root/'plan.json'),
                    source_tomls_untouched=True,
-                   code_sha256={name:digest(code/name) for name in code_files})
+                   code_sha256={name:digest(code/name) for name in code_files},
+                   viewer_code_sha256={name:digest(Path(__file__).with_name(name)) for name in
+                       ('review_geometry.py','build_canonical_review.py',
+                        'interaction_review_template.html','rebuild_raw_psc_compare_reviews.py')})
     (destination/'VERSION_CONTROL.json').write_text(json.dumps(version,indent=2)+'\n')
     for name in ('SIX_BEETLE_METHODS.html', 'DATA_DICTIONARY.md',
                  'INVALIDATED_SIX_BEETLE_OUTPUTS_20260924.md',
