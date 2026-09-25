@@ -12,3 +12,10 @@ The PSC 1.5.1 trajectory, CSV, and PDF analyses are unaffected. The v2
 review videos and its 11-review ZIP are withdrawn; they must not be used for
 frame-complete review. Viewer v3 includes the final source-video frame and
 checks the encoded frame count against the analysis before publishing.
+
+The local v2 ZIP and three Box 3 previews were moved into
+`outputs/WITHDRAWN_INCOMPLETE_grouptrial_2024_psc_v151r081` and
+`outputs/WITHDRAWN_INCOMPLETE_grouptrial_box3_review_v2`. The Firebird v2 ZIP
+and portable folder were likewise renamed with `WITHDRAWN_INCOMPLETE_`.
+Automatic approval review rejected deletion of the exact Dropbox-synced local
+folders, so the quarantined copies remain pending specific deletion approval.
