@@ -91,12 +91,12 @@ with pile movement and fungus occupancy. The preview and full 1.4.0
 GroupTrial and dyadic outputs are **WITHDRAWN**. Arrays 899408 and 899414
 were canceled. Their original tracking, TOMLs, and logs remain unchanged.
 
-The next candidate, PSC model 1.5.0, adds a conservative backward trace from
+The former candidate, PSC model 1.5.0, added a conservative backward trace from
 a sustained raw reidentification through a unique unclaimed unlabeled blob
 path back to the former pile. It marks that path as inferred and ambiguous,
 and flags raw-versus-PSC identity conflicts explicitly. This is a hypothesis
-for video review, not ground truth. Only new, fully validated 1.5.0 bundles
-may replace the withdrawn outputs.
+for video review, not ground truth. That candidate was subsequently withdrawn
+as described below.
 
 ## Preliminary PSC 1.5.0 candidate withdrawn before release
 
@@ -108,3 +108,25 @@ for uncertainty rather than unsupported contact scoring. The preliminary
 withdrawn. Shared model 1.5.1 marks up to ten such immediately preceding
 frames `DEPARTURE_UNCERTAIN`, with no canonical location, movement, fungus
 occupancy, or position-supported PSCP. Raw tracking and TOMLs are untouched.
+
+## PSC 1.3.0 derived-file removal and replacement version
+
+On 24 September 2026, Vince requested removal of all invalid 1.3.0 generated
+results. The two isolated Firebird GroupTrial 1.3.0 roots were deleted after
+checking that neither contained a `trajectories.npy` or `session.json`. The
+local withdrawn GroupTrial bundle and 1.3.0 validation folder were deleted,
+along with three temporary review/validation folders. The Firebird inventory
+and result are in `idtracker_pipeline_runs/PSC_1_3_0_REMOVAL_*_20260924.json`;
+local counts and paths are in `outputs/PSC_1_3_0_LOCAL_REMOVAL_20260924.json`.
+The final Firebird scan found zero remaining model-1.3.0 analysis manifests in
+`idtracker_pipeline_runs`. Original videos, student TOMLs, tracking sessions,
+and these invalidation notes were preserved. Detached old copies remain
+invalid if someone has downloaded them elsewhere.
+
+The replacement runs use **PSC model 1.5.1** and **report processor
+0.8.1-group** (code commit `934b587`). GroupTrial release array `899554`
+started under
+`idtracker_pipeline_runs/grouptrial_2024_pscp_v1_5_1_processor_0_8_1_release_20260924_2130utc`.
+Every released analysis must have both `persistent_model_version=1.5.1` and
+`script_version=0.8.1-group` in `analysis/manifest.json`; the PDF footer also
+names processor 0.8.1-group. Results remain UNREVIEWED until human inspection.

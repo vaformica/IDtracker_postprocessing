@@ -57,7 +57,7 @@ beetle 0 later reappeared on a smooth raw IDtracker track in six-beetle
 postprocessing calls the same shared code, all derived model-1.4.0 dyadic
 outputs are withdrawn pending validation under a new model. Array 899414 was
 canceled; original tracking sessions, TOMLs, logs, and exclusion receipts are
-preserved. PSC model 1.5.0 is a candidate, not yet a released dataset. It
+preserved. PSC model 1.5.0 was a candidate, not a released dataset. It
 adds conservative retrospective tracing of unique unlabeled blobs and an
 explicit raw/PSC identity-conflict flag for video review.
 
@@ -70,3 +70,23 @@ same shared engine, preliminary dyadic array 899462 was canceled and its
 interval as unknown location and excludes it from pile movement and fungus
 tallies. Source TOMLs, IDtracker tracking, and prior exclusion receipts remain
 untouched. Complete dyadic replacement requires new versioned outputs.
+
+## PSC 1.3.0 derived-file removal and replacement version
+
+On 24 September 2026, Vince requested deletion of withdrawn 1.3.0 results.
+Within the mixed dyadic batch root, Codex removed 708 version-suffixed 1.3.0
+derived items while retaining tracking sessions, source TOMLs, receipts, and
+the current pipeline. Together with the two isolated GroupTrial roots, the
+Firebird removal covered 710 targets, 3,950 files, and 119 generated review
+videos. The exact paths and results are recorded in
+`idtracker_pipeline_runs/PSC_1_3_0_REMOVAL_INVENTORY_20260924.json` and
+`PSC_1_3_0_REMOVAL_RESULT_20260924.json`. A post-removal scan found no
+model-1.3.0 analysis manifests remaining under `idtracker_pipeline_runs`.
+
+The dyadic replacement runs use **PSC model 1.5.1** and **report processor
+0.8.1-group** (code commit `934b587`). Two difficult validations completed;
+array `899555` was submitted for the other 97 trackable configurations using
+immutable `code_v151r081_release`. The four structurally incompatible TOMLs
+and one no-blob tracking failure remain excluded. Every usable output must
+record both versions in `analysis_v151r081/manifest.json` and remain marked
+UNREVIEWED until a person checks its identities against video.
