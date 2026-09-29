@@ -1,6 +1,13 @@
-# Beetle tracking post-processing
+# IDtracker post-processing
 
 This repository turns IDtracker.ai tracking into frame-by-frame beetle locations, movement and fungus measurements, review PDFs, and a synchronized video viewer. It supports dyads and larger groups with the **same persistent social contact (PSC) rules**. The original v0.8.1 prototype remains available for comparison; it is not the current PSC pipeline.
+
+## Supported workflows
+
+- **Dyadic:** two-beetle fight processing and review, using `dyadic_firebird_gui.py` or `dyadic_processor.py`.
+- **Six-beetle groups:** group processing with an arena and three fungus regions, using `group_firebird_gui.py` and the shared group processor.
+
+Both workflows use the same PSC model and retain raw tracking alongside inferred positions. This is the maintained post-processing project; “prototype” refers only to the historical standalone implementation. Renaming the project does not change scientific version numbers or the review status of its outputs.
 
 **Read the [visual project handoff](reports/PROJECT_HANDOFF_2026-09-28.html)** for a quick orientation, or the [text version](reports/PROJECT_HANDOFF_2026-09-28.md) for release paths and status. [AGENTS.md](AGENTS.md) is the concise technical handoff for the next development task.
 
