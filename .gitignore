@@ -11,3 +11,11 @@ results/
 pdf_exports/
 *.zip
 
+# Generated review bundles, staging files, and local research annotations.
+# Existing tracked provenance files remain tracked.
+outputs/
+tmp/
+.tmp-notebook-read*/
+derived_videos/
+annotations/
+.pytest_cache/

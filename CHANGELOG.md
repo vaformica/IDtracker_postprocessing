@@ -1,5 +1,22 @@
 # Changelog
 
+## Current shared PSC pipeline checkpoint — 2026-09-28
+
+- The current release pair uses PSC model **1.5.1**, shared group processor
+  **0.8.1-group**, raw/PSC viewer **v3**, and outlined PSC PDF style
+  **outlined-psc-v1**. The 2024 GroupTrial collection has 26 official
+  9,000-frame trials; the 2026 dyadic collection has 99 eligible 7,200-frame
+  runs. Both are automatic **UNREVIEWED** results. Exact locations, exclusions,
+  hashes, and the handoff are in
+  [reports/PROJECT_HANDOFF_2026-09-28.md](reports/PROJECT_HANDOFF_2026-09-28.md).
+- Added release documentation keys for viewer geometry/frame counts and PDF
+  track style, and fixed parent-directory creation in the dyadic outlined-PDF
+  packager. The released model and processor calculations were not changed.
+- Archived the original standalone README at
+  [docs/LEGACY_README_v0.8.1.md](docs/LEGACY_README_v0.8.1.md). The entries below
+  document that earlier standalone processor, whose root `VERSION` remains
+  `0.8.1`; they are not the version history of the PSC model.
+
 All notable changes to this standalone scientific prototype are documented
 here. Versions use semantic versioning while the software remains independent
 from the production IDtracker pipeline.

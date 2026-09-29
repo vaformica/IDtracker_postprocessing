@@ -107,7 +107,7 @@ def package(root: Path, destination: Path) -> dict:
             excluded = old_state.get('stage') == 'EXCLUDED_TRACKING_NO_BLOBS'
             state = old_state if excluded else json.loads((folder/'status_v151r081.json').read_text())
             out = stage / 'tasks' / task['id']
-            (out / 'input').mkdir()
+            (out / 'input').mkdir(parents=True)
             for name in ('source.toml', 'submitted.toml'):
                 shutil.copy2(folder / 'input' / name, out / 'input' / name)
             for name in ('task.json', 'final_status.json', 'status.json', 'status_v151r081.json'):
