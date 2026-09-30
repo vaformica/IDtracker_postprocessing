@@ -1,5 +1,7 @@
 # IDtracker post-processing
 
+> **Historical code checkpoint — 28 September 2026.** This branch preserves the earlier dyadic and six-beetle implementation and its documentation. New PSC contact corrections and BA work are in development locally as of 30 September; this checkpoint is not the latest implementation. Release paths and availability described below are historical and must be reverified, especially following subsequent invalidation and cleanup. Passing software tests does not validate the scientific inferences.
+
 This repository turns IDtracker.ai tracking into frame-by-frame beetle locations, movement and fungus measurements, review PDFs, and a synchronized video viewer. It supports dyads and larger groups with the **same persistent social contact (PSC) rules**. The original v0.8.1 prototype remains available for comparison; it is not the current PSC pipeline.
 
 ## Supported workflows
