@@ -96,3 +96,17 @@ ba_combined_package.py,ba_combined_review.html,ba_combined_qc.js.
 The recovery/interpolation/turtling numerical modules are frozen dependencies.
 Do not rebuild the old active dashboard or overwrite its storage or exports.
 No collaborator messages or access changes are authorized by this handoff.
+
+COMPLETION ADDENDUM
+All221 outputs are COMPLETE_UNREVIEWED; see BA_COMBINED221_RESULTS_2026-10-13.txt.
+The original task100 failed a wrapper-only missingness assertion; retry919350
+passed after matching the existing frozen stationary masking behavior. Original
+failure/preemption logs remain. Strict/turtling and84 alignment samples passed;
+package919192 completed. 983 raw jumps become306 across12 movement-blocked runs;
+1,251 recovered and6,715 interpolated positions. All100 earlier additional-cohort
+raw/recovered/interpolated arrays and labels remain exactly unchanged.
+Downloaded/extracted BA_combined_221_QC; verified4,641 hashes and1,591,200 rows.
+ZIP SHA-256:9022817a86816986c28098b8627b5d49ca62c7ab4e8d2204787ebeaa879fe53b.
+Final local evidence: outputs/ba_combined_recovery_221_20261013/.
+The notebook entry is linked from its BA IDtracker contents. No playback claim
+or biological validation follows from opening the portable viewer.
