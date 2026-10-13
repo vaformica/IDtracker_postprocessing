@@ -14,7 +14,11 @@ def package(root,template):
   if not m.exists():blocked.append(r['id']);continue
   d=json.loads(m.read_text());assert d['encoded_frames']==7200
   for name,h in d['files'].items():assert digest(p/name)==h,(r['id'],name)
-  runs.append(json.loads((p/'QC.json').read_text()))
+  q=json.loads((p/'QC.json').read_text())
+  if r['start']==10 and r['label'].endswith('_C5') and r['excluded_frames']:
+   q['prior_note']+=' Source TOML starts at frame 10, unlike the other light-exclusion cells; inspect initial setup.'
+   q['priority']+=100
+  runs.append(q)
  assert not blocked,blocked
  runs.sort(key=lambda r:(-r['priority'],r['id']));fingerprint=hashlib.sha256(json.dumps([dict(id=r['id'],manifest=digest(root/'runs'/r['id']/'MANIFEST.json')) for r in runs],sort_keys=True).encode()).hexdigest()
  write(root/'QC_INDEX.json',dict(dataset_hash=fingerprint,runs=runs))
