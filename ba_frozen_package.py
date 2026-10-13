@@ -4,7 +4,11 @@ import argparse,json,hashlib,shutil,zipfile,grp,os
 from ba_frozen_batch import digest,write
 
 def package(root,template):
- root=Path(root);plan=json.loads((root/'PLAN.json').read_text());runs=[];blocked=[]
+ root=Path(root);freeze=json.loads((root/'CODE_FREEZE.json').read_text())
+ for name in ['ba_interpolation.py','ba_frozen_batch.py','ba_frozen_package.py','ba_frozen_review.html']:
+  assert digest(root/'code'/name)==freeze['files'][name],('code changed',name)
+ assert (root/'SOURCE_VIDEO_HASHES.json').exists() and (root/'REPRESENTATIVE_ALIGNMENT.json').exists()
+ plan=json.loads((root/'PLAN.json').read_text());runs=[];blocked=[]
  for r in plan['runs']:
   p=root/'runs'/r['id'];m=p/'MANIFEST.json'
   if not m.exists():blocked.append(r['id']);continue
