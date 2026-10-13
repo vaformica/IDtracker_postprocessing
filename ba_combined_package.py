@@ -44,12 +44,12 @@ def package(root,code):
   for k in range(8):
    arrays=[]
    if k&1:arrays.append((z['raw'],'#a4a9ad'))
-   if k&2:arrays.append((z['baseline'],'#9944cc'))
+   if k&2:arrays.append((z['baseline'],'#2583df'))
    if k&4:arrays.append((strict['analysis'],'#008672'))
    (p/f'trace_{k}.svg').write_text(svg(arrays,q['crop'],z['method'],mask))
   shutil.copy2(p/'trace_4.svg',p/'trace.svg')
   d=json.loads((p/'data.js').read_text()[len('window.loadRun('):-2]);d['prior_reviews']=prior.get(r['id'],[])
-  if d['prior_reviews']:d['prior_note']=(d.get('prior_note','')+' Earlier attributed review: '+', '.join(v['reviewer']+' '+v['status'] for v in d['prior_reviews'])+'; applies to the earlier dataset.').strip()
+  if d['prior_reviews']:d['prior_note']=(d.get('prior_note','')+' Earlier attributed review: '+(', '.join(v['reviewer']+' '+v['status'] for v in d['prior_reviews'][:1])+'; '+str(len(d['prior_reviews']))+' earlier records in review notes')+'; applies to the earlier dataset.').strip()
   if r['id']=='ba_030':d['prior_note']=(d.get('prior_note','')+' Known human-scored turtling 1547–8179; earlier frozen detector missed this episode.').strip()
   if r['id']=='ba_060':d['prior_note']=(d.get('prior_note','')+' Known human-scored turtling 3942–7499; earlier frozen detector missed most of this episode.').strip()
   if r['start']==10 and r['label'].endswith('_C5') and r['excluded_frames']:d['prior_note']+=' Source TOML starts at frame10, unlike the other light-exclusion cells; inspect initial setup.'

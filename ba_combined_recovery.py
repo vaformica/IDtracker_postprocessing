@@ -25,7 +25,7 @@ def recover(raw,candidates,forward,backward,statuses,images,origin,start,protect
   if np.isfinite(raw[lo:hi]).all(1).mean()<.95:checks.append(dict(start=start+lo,end=start+hi-1,status='insufficient_original_coverage'));continue
   proposed,check=stationary(out[lo:hi],images[lo:hi],origin,protected=changed[lo:hi]);out[lo:hi]=proposed;checks.append(dict(start=start+lo,end=start+hi-1,audit=check))
  assert np.array_equal(out[changed],episode[changed],equal_nan=True)
- assert np.array_equal(np.isfinite(out).all(1),np.isfinite(raw).all(1))
+ assert not np.any(np.isfinite(out).all(1)&~np.isfinite(raw).all(1))  # Frozen stationary gate may mask unsupported raw positions.
  assert not np.isfinite(out[protected]).any()
  old=np.linalg.norm(np.diff(raw,axis=0),axis=1)>100;new=np.linalg.norm(np.diff(out,axis=0),axis=1)>100
  assert not np.any(new&~old)
