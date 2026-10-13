@@ -1,0 +1,98 @@
+BA combined recovery, interpolation and fast QC
+AI-written handoff by Codex, 13 October 2026.
+
+Purpose and correction to the earlier delivery
+Vince found many jumps in ba_092, Camera_1_40169154_20260627_1614_ACT2_B3.
+The earlier BA_frozen_221_QC package interpolated all221 cells, but its inputs
+were inconsistent: the additional100 retained recovery proposals while the
+older121 used compatible raw tracking. It was not a uniform jump-correction
+release. Preserve that package and its scores as historical results.
+
+The new authorized sequence is identical for all221 compatible BA cells:
+original selected tracking -> frozen image-supported recovery -> frozen BA-only
+interpolation1.0.0 -> separate strict movement gate and human QC. No new
+IDTracker jobs are submitted by this batch. Original sources are immutable.
+The20 light-recording cells retain the verified exclusion rerun, with global
+frames1608–1609 unknown. C5 retains its original start10. All windows remain
+7200 inclusive frames. Dyadic/six-beetle analysis is unchanged.
+
+Frozen recovery is the reviewed major-jump/excursion/stationary algorithm,
+not the earlier broadly applied tracker that often lost the beetle. Candidate
+extraction comes from the protected additional100 engine. The three recovery
+module files match the previous snapshot byte-for-byte. Existing100 candidate
+caches must match original trajectory/blob/media/results hashes; their final
+recovery coordinates must replay exactly. New121 cells get fresh source-image
+candidate extraction. Baseline finite positions may change through recovery;
+interpolation then only fills eligible bounded missing positions.
+
+Pilot results: new_021,new_093,new_015 replay exactly. ba_092 decreases from123
+to71 adjacent jumps>=100px through39 changed positions. Six representative
+corrected frames visually place the proposal on the beetle instead of the wall.
+This does not validate all positions. ba_092 remains blocked for movement.
+
+Current execution
+New Firebird root:
+/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013
+PLAN.json fixes source identity/window/ROI; work/ holds candidate evidence;
+delivery/ holds the portable package. Original and previous releases remain.
+Pilot919116 completed. Remaining217 recovery tasks:919121.
+Strict/turtling array919170 and source alignment array919171 depend on successful
+recovery. Pilot layer checks919172 are separate. Check live state and the final
+RELEASE_RECEIPT.json before describing all221 as complete. No completion is
+asserted by this handoff's creation.
+
+Scientific layers and safeguards
+COORDINATES.npz and FRAMES.csv retain raw, recovered baseline and interpolated
+proposal. Method prior_recovery is the inherited file-format label for this
+uniform recovery pass; it does not mean only the old100 received recovery.
+STRICT_ANALYSIS.npz applies the existing strict gate0.1.0 AFTER interpolation.
+Both endpoints of remaining>=100px steps become unknown. The whole run's
+movement_step_px array is NaN where unresolved jumps remain because supported
+bad-episode boundaries are unknown. This is not automatic animal exclusion.
+Do not calculate movement from the ungated proposal for blocked runs.
+
+TURTLING_SCREENING.json re-applies frozen0.4 development rules to recovered
+positions BEFORE interpolation, with initial-recovery eligibility. Remaining
+jump-blocked runs are not classified. Missing/interpolated/human-excluded frames
+are explicitly unassessed; interpolated movement never supplies posture evidence.
+No candidate is not an upright label. BA060 and BA030 demonstrate substantial
+quiet on-back misses. Do not use these hints as unattended time-turtled results.
+No classifier refit or dyadic extension occurs here.
+
+Dashboard integration
+Read chats Continue BA QC preview work, Review turtling detector next steps,
+and Review turtling detector next steps (2), plus BA_QC_PREVIEW_HANDOFF_2026-10-13.txt.
+The new portable dashboard derives from that trace-first preview and preserves
+its original server/package/storage unchanged. New dataset/key/schema:
+ba-combined-qc-v1. Earlier reviews are not approvals of changed coordinates.
+The backed-up VAF NEW_015 full-video exclusion recommendation is displayed as
+an earlier attributed note, not automatically applied or deleted.
+
+Full-coordinate thumbnails follow layer toggles. Strict traces and video trails
+show by default, with raw/recovery comparisons. All playback controls stay below
+the picture; global frame controls, short excerpts and full video are available.
+Coverage is three visible radio buttons: trace skim, trace+short video,
+trace+full video. Request IDTracker rerun is a separate boolean with source-video
+provenance; it only records a request and NEVER submits a job. Save & next avoids
+mandatory prose when a category or rerun request is sufficient. One JSON export
+retains decisions,drafts,history; CSV summarizes decisions. Pink intervals are
+human possible-turtling flags, not automatically verified posture labels.
+
+Validation
+308 repository tests passed after using the environment with OpenCV and the
+repository dependencies; the initial venv-only attempt lacked cv2/toml.
+Two additional layer tests verify that interpolation is not posture input and
+unresolved jumps block movement/classification. Synthetic UI checks cover radio
+coverage, rerun save/export/restore, source identity, strict block, stepping,
+next navigation and human intervals. These do not establish browser playback.
+Final packaging independently replays interpolation for all221, checks source
+and output hashes, cached100 parity, strict safety, posture-unknown masks,
+encoded7200 counts and84 representative source/video alignment samples.
+Final receipt and package checksum remain authoritative.
+
+Owned implementation
+ba_combined_recovery.py,ba_recovery_candidates.py,ba_combined_layers.py,
+ba_combined_package.py,ba_combined_review.html,ba_combined_qc.js.
+The recovery/interpolation/turtling numerical modules are frozen dependencies.
+Do not rebuild the old active dashboard or overwrite its storage or exports.
+No collaborator messages or access changes are authorized by this handoff.
