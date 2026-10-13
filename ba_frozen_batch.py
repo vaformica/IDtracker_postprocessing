@@ -36,7 +36,7 @@ def run(root,index):
  else:
   roi=np.asarray(r['roi']);x=max(0,int(roi[:,0].min())-20)//2*2;y=max(0,int(roi[:,1].min())-20)//2*2;w=(min(width,int(roi[:,0].max())+22)-x)//2*2;h=(min(height,int(roi[:,1].max())+22)-y)//2*2;crop=[x,y,w,h]
   ff=os.environ.get('BA_FFMPEG','/home/vformic1-swat/miniconda3/envs/ffmpeg_env/bin/ffmpeg');seek=r['start']//30;offset=r['start']%30
-  subprocess.run([ff,'-v','error','-nostdin','-threads','2','-ss',str(seek),'-i',r['video'],'-vf',f'trim=start_frame={offset}:end_frame={offset+7200},setpts=PTS-STARTPTS,crop={w}:{h}:{x}:{y}','-frames:v','7200','-an','-c:v','libx264','-threads','2','-preset','veryfast','-crf','27','-pix_fmt','yuv420p','-movflags','+faststart',str(video)],check=True)
+  if not video.exists():subprocess.run([ff,'-v','error','-nostdin','-threads','2','-ss',str(seek),'-i',r['video'],'-vf',f'trim=start_frame={offset}:end_frame={offset+7200},setpts=PTS-STARTPTS,crop={w}:{h}:{x}:{y}','-frames:v','7200','-an','-c:v','libx264','-threads','2','-preset','veryfast','-crf','27','-pix_fmt','yuv420p','-movflags','+faststart',str(video)],check=True)
  cap=cv2.VideoCapture(str(video));count=0;brightness=[]
  while True:
   ok,im=cap.read()
@@ -47,7 +47,7 @@ def run(root,index):
  missing=~np.isfinite(xy).all(1)&~protected;gaps=spans(missing);jumps=np.flatnonzero(np.linalg.norm(np.diff(xy,axis=0),axis=1)>=100)+1;rawj=np.flatnonzero(np.linalg.norm(np.diff(raw,axis=0),axis=1)>=100)+1
  delta=np.abs(np.diff(brightness));threshold=max(12.,float(np.median(delta)+10*np.median(np.abs(delta-np.median(delta)))));lights=np.flatnonzero(delta>threshold)+1
  outside=[i for i,p in enumerate(xy) if np.isfinite(p).all() and cv2.pointPolygonTest(np.asarray(r['roi'],np.float32),tuple(map(float,p)),False)<0]
- q=dict(id=r['id'],census_id=r['census_id'],label=r['label'],start=r['start'],end=r['end'],crop=crop,baseline_kind=r['baseline_kind'],missing_frames=int(missing.sum()),missing_percent=round(float(missing.sum()/((~protected).sum())*100),3),longest_gap=max([b-a for a,b in gaps] or [0]),interpolated_frames=int((method=='interpolated').sum()),interpolated_gaps=len(events),prior_recovery_frames=int(changed.sum()),excluded_frames=r['excluded_frames'],raw_jumps=len(rawj),remaining_jumps=len(jumps),jump_frames=(jumps+r['start']).tolist(),brightness_frames=(lights+r['start']).tolist(),outside_roi_frames=len(outside),review_status='UNREVIEWED',turtling_status='NOT_ASSESSED',prior_note='VAF marked prior full-run interpolation test needs work' if r['id']=='new_021' else '')
+ q=dict(id=r['id'],census_id=r['census_id'],label=r['label'],start=r['start'],end=r['end'],crop=crop,baseline_kind=r['baseline_kind'],missing_frames=int(missing.sum()),missing_percent=round(float(missing.sum()/((~protected).sum())*100),3),longest_gap=int(max([b-a for a,b in gaps] or [0])),interpolated_frames=int((method=='interpolated').sum()),interpolated_gaps=len(events),prior_recovery_frames=int(changed.sum()),excluded_frames=r['excluded_frames'],raw_jumps=len(rawj),remaining_jumps=len(jumps),jump_frames=(jumps+r['start']).tolist(),brightness_frames=(lights+r['start']).tolist(),outside_roi_frames=len(outside),review_status='UNREVIEWED',turtling_status='NOT_ASSESSED',prior_note='VAF marked prior full-run interpolation test needs work' if r['id']=='new_021' else '')
  q['priority']=int(min(10000,len(jumps)*100)+q['missing_percent']*10+min(100,len(lights)*10)+min(100,len(outside)))
  write(out/'QC.json',q)
  def clean(a):return [p.tolist() if np.isfinite(p).all() else None for p in a]
