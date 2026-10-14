@@ -1,0 +1,60 @@
+[
+  {
+    "test": "tests/test_ba_boundary_review.cjs",
+    "exit_code": 0,
+    "output": "PASS No overlay controls; numeric global-frame entry\nPASS Blind run hides and disables prediction acceptance\nPASS Next does not label an unreviewed run negative\nPASS Explicit negative is saved, including reload\nPASS Guided acceptance keeps exact inclusive bounds\nPASS Pending frame seek supports consecutive one-frame steps\nPASS Global frame clamp covers first and last encoded frames\nPASS Open interval persists without becoming complete\nPASS Start-stop includes both endpoint frames\nPASS Stop before start is rejected without erasing start\nPASS Continues to clip end is explicit and inclusive\nPASS Uncertain is not a biological negative; flailing unassessed\nPASS Last clip saves and downloads without Next\nPASS Intervals outside displayed clip fail atomically\nPASS Normalization merges overlaps and adjacent inclusive intervals\nPASS Editing a previous accepted decision preserves history\nPASS Optional notes persist without labeling a run complete\nPASS Suggested boundaries can be adjusted without remarking the bout\nPASS Frame count and displayed scope are exported explicitly\nPASS Blind full runs hide both colored marks and status predictions\nPASS Marked timeline uses inclusive width and exact frame jump\nPASS Space after a decision plays video without scoring the next clip\nPASS Hidden controls remain hidden despite button layout styling\nPASS Unknown recovery is not displayed as a negative detector finding\n24 checks passed. Browser playback not exercised.\nPASS Short hidden scene is not called a complete run\nIncluding short-scene labeling: 25 checks passed\nPASS same-set import, wrong-set rejection and invalid interval rejection (28 total checks)\n"
+  },
+  {
+    "test": "tests/test_ba_combined_qc.cjs",
+    "exit_code": 0,
+    "output": "PASS: dedicated turtling reject, disabled shortcuts, top actions; keyboard approval with typing/repeat guards; approval with retained flags and filtered/exported concerns; explicit override saved/restored/exported; radio coverage, rerun request save/export/restore, provenance, human usable verdict retains scientific hold, jump navigation, frame stepping, next, turtling intervals\n"
+  },
+  {
+    "test": "tests/test_ba_human_qc.cjs",
+    "exit_code": 0,
+    "output": "10 schema and export checks passed. Empty decisions remain unreviewed; exclusions remain recommendations.\n"
+  },
+  {
+    "test": "tests/test_ba_human_qc_ui.cjs",
+    "exit_code": 0,
+    "output": "9 UI checks passed: save-next, attribution, note restoration, history and scope.\n"
+  },
+  {
+    "test": "tests/test_ba_large_review.cjs",
+    "exit_code": 0,
+    "output": "PASS No overlay controls; numeric global-frame entry\nPASS Blind run hides and disables prediction acceptance\nPASS Next does not label an unreviewed run negative\nPASS Explicit negative is saved, including reload\nPASS Guided acceptance keeps exact inclusive bounds\nPASS Pending frame seek supports consecutive one-frame steps\nPASS Global frame clamp covers first and last encoded frames\nPASS Open interval persists without becoming complete\nPASS Start-stop includes both endpoint frames\nPASS Stop before start is rejected without erasing start\nPASS Continues to clip end is explicit and inclusive\nPASS Uncertain is not a biological negative; flailing unassessed\nPASS Last clip saves and downloads without Next\nPASS Intervals outside displayed clip fail atomically\nPASS Normalization merges overlaps and adjacent inclusive intervals\nPASS Editing a previous accepted decision preserves history\nPASS Optional notes persist without labeling a run complete\nPASS Suggested boundaries can be adjusted without remarking the bout\nPASS Frame count and displayed scope are exported explicitly\nPASS Blind full runs hide both colored marks and status predictions\nPASS Marked timeline uses inclusive width and exact frame jump\nPASS Space after a decision plays video without scoring the next clip\nPASS Hidden controls remain hidden despite button layout styling\nPASS Unknown recovery is not displayed as a negative detector finding\n24 checks passed. Browser playback not exercised.\nPASS same-set import, wrong-set rejection and invalid interval rejection (27 total checks)\n"
+  },
+  {
+    "test": "tests/test_ba_quick_review.cjs",
+    "exit_code": 0,
+    "output": "PASS No overlay controls; numeric global-frame entry\nPASS Blind run hides and disables prediction acceptance\nPASS Next does not label an unreviewed run negative\nPASS Explicit negative is saved, including reload\nPASS Guided acceptance keeps exact inclusive bounds\nPASS Pending frame seek supports consecutive one-frame steps\nPASS Global frame clamp covers first and last encoded frames\nPASS Open interval persists without becoming complete\nPASS Start-stop includes both endpoint frames\nPASS Stop before start is rejected without erasing start\nPASS Continues to clip end is explicit and inclusive\nPASS Uncertain is not a biological negative; flailing unassessed\nPASS Last clip saves and downloads without Next\nPASS Intervals outside displayed clip fail atomically\nPASS Normalization merges overlaps and adjacent inclusive intervals\nPASS Editing a previous accepted decision preserves history\nPASS Optional notes persist without labeling a run complete\nPASS Suggested boundaries can be adjusted without remarking the bout\nPASS Frame count and displayed scope are exported explicitly\n19 checks passed. Browser playback not exercised.\nPASS same-set import, wrong-set rejection and invalid interval rejection (22 total checks)\n"
+  },
+  {
+    "test": "tests/test_ba_review_dashboard.cjs",
+    "exit_code": 0,
+    "output": "Dashboard script checks passed: 121 rows, priority/reason filters, search, manual flag, escaped notes, export and sort. Browser rendering not exercised.\n",
+    "initial_invocation_error": "node:internal/errors:542\n      throw error;\n      ^\n\nTypeError [ERR_INVALID_ARG_TYPE]: The \"path\" argument must be of type string or an instance of Buffer or URL. Received undefined\n    at Object.readFileSync (node:fs:482:14)\n    at Object.<anonymous> (/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/tests/test_ba_review_dashboard.cjs:3:15)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  code: 'ERR_INVALID_ARG_TYPE'\n}\n\nNode.js v24.19.0\n",
+    "artifact": "outputs/ba_science_selection_20261014/historical_dashboard_test.html",
+    "scope": "rebuilt historical dashboard from archived index, no active packet changed"
+  },
+  {
+    "test": "tests/test_ba_review_flags.cjs",
+    "exit_code": 0,
+    "output": "14 manual flag/export/filter checks passed.\n"
+  },
+  {
+    "test": "tests/test_ba_turtling_percent.cjs",
+    "exit_code": 0,
+    "output": "PASS: inclusive bouts, overlap union, full-window denominator, automatic/human separation, cutoff boundary, clear, unavailable predictions\n"
+  },
+  {
+    "test": "tests/test_ba_turtling_scorer.cjs",
+    "exit_code": 0,
+    "output": "PASS: frame marking, per-clip persistence, interval bounds, uncertainty, export, completion counts.\n"
+  },
+  {
+    "test": "tests/test_ba_turtling_start_stop.cjs",
+    "exit_code": 0,
+    "output": "PASS: combined/separate starts, independent stops, repeated bouts, inclusive endpoints, backwards-seek rejection, through-end, cancel, pending export/import/navigation/reload, legacy score migration.\n"
+  }
+]

@@ -1,0 +1,89 @@
+BA review: distinguish human judgment from the automatic movement hold
+AI-written summary by Codex, 13 October 2026. Reviewer UI 1.1.0.
+
+Vince reported apparently good traces with the same alarming whole-run message.
+The strict gate triggers on even one remaining >=100 pixel step. BA_059 has only
+1095–1096 flagged; NEW_088 has only 3244–3245. The default strict trace hides the
+endpoints, which explains why these can look clean. Their appearance alone does
+not establish that the underlying coordinates are correct.
+
+The viewer now shows counts and, for up to four jumps, exact frame pairs. Inspect
+next flagged jump cycles through short excerpts so review can start at the actual
+locations. Broaden inspection if the position stays wrong after a jump. A human
+can save Looks usable without being forced to request closer review or exclusion.
+Coverage still records trace skim, excerpt, or full video; checked unresolved human
+issues and rerun requests still require the closer-review decision.
+
+This fixes the review workflow, not the underlying scientific gate. All 12 automatic
+movement holds and all coordinate/turtling files are unchanged. A usable judgment
+is a screening assessment, not automatic authorization to release statistics.
+New decisions export the machine movement status, jump pairs, and an explicit
+review_does_not_clear_analysis_hold=true in JSON and CSV. Downstream consumers
+must not treat usable_skim alone as permission to use blocked movement metrics.
+
+The active Downloads viewer is patched in place with previous UI files backed up.
+Dataset identity, localStorage key, decisions, drafts and history are unchanged.
+The original release ZIP and remote frozen package remain historical UI 1.0.
+The source template builds the revised UI on subsequent packaging. Synthetic UI
+checks pass for jump cycling, usable-with-hold export, rerun restrictions, score
+restoration, frame stepping and navigation. Browser playback is not tool verified.
+
+Human override added at Vince's explicit request (UI 1.2.0)
+The preceding statement that usable judgments cannot release movement is now
+qualified: Looks usable alone still cannot, but the reviewer can check Human
+override: allow movement analysis despite jump flags, then save Looks usable.
+This explicitly authorizes movement on the strict track, with flagged endpoints
+still missing and no motion across gaps. It does not restore questionable raw
+jumps, clear the historical automatic flag, or approve turtling predictions.
+
+JSON and CSV now carry movement_override, effective_movement_status, reviewer,
+time and actual coverage. Existing scores without the new checkbox remain as
+recorded. Rerun requests and unresolved human issue flags cannot be combined
+with a usable override. Imported drafts and saved overrides restore the checkbox.
+The dataset identity/storage key remain unchanged. No override is preselected.
+
+ba_human_movement_override.apply_override provides a dataset-bound application
+helper for subsequent import/reanalysis, yielding new movement values and an
+attributed receipt without changing frozen arrays. Tests cover explicit consent,
+wrong dataset, conflicting requests, input preservation and no bridging of gaps.
+No human overrides have been applied to released analysis files: export the new
+review JSON for that subsequent step. Original ZIP/remote release remain frozen.
+
+Live turtling percentage (UI 1.3.0)
+Vince requested a percentage that responds to human bouts and supports a cutoff.
+The primary screening estimate is the union of automatic candidate frames and
+completed human-marked inclusive bouts, divided by the full run frame count
+(normally 7200). Overlaps count once. Human-only and automatic-only percentages
+are displayed separately, along with the automatic assessment frame count.
+Missing/excluded/unassessed footage is retained in the denominator; absence of a
+mark is not evidence of upright posture. This is a flagged-time estimate, not a
+validated complete posture duration. Human bouts add evidence; they do not silently
+remove automatic candidates elsewhere. Open bouts await an end before counting.
+
+A blank-by-default cutoff, shared across runs, is saved locally and exported.
+At or above the chosen percentage yields a review flag, not automatic exclusion.
+The current cutoff is applied to saved summary exports without rewriting review
+history. JSON includes frame counts, basis and cutoff; CSV includes percentages,
+denominator and cutoff result. Existing scores without summary fields remain
+valid; opening and saving a run adds its estimate. No historical judgment is
+converted into a posture label. Existing data identity and scores remain intact.
+
+Focused arithmetic and synthetic UI tests verify inclusive endpoints, overlaps,
+union with automatic candidates, missing prediction handling, cutoff equality,
+mark/clear updates and export persistence. Browser rendering is not tool verified.
+
+Approval with retained concerns (UI 1.4.0)
+Vince explicitly requested approval and flags as independent choices, to retain
+analysis numbers while allowing later filtering. Approve for analysis now accepts
+checked concern categories. JSON and CSV expose analysis_approved and possible_flags
+(semicolon-separated categories in CSV). Existing errors/status fields remain for
+compatibility. The Flagged filter includes approved runs with concerns. No existing
+review decision is rewritten. Movement holds still require the explicit human
+override; that helper now permits flagged approvals and carries possible_flags in
+its attribution receipt. Missing endpoints and gaps still contribute no movement.
+Rerun requests retain their existing closer-review workflow.
+
+Tests verify saving an approved flagged run, flag filtering, JSON/CSV fields and
+finite movement output under a flagged human override with original gaps retained.
+This UI change does not itself regenerate numeric analysis files; exported reviewer
+decisions must be imported to produce attributed reviewed outputs.

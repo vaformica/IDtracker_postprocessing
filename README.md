@@ -31,3 +31,7 @@ Use [DATA_DICTIONARY.md](DATA_DICTIONARY.md) for columns and raw-versus-PSC mean
 ## Verify the code
 
 Run `venv-mac/bin/python -m unittest discover -s tests -v` on the Mac. The last local run on 2026-09-28 passed **133 tests**. These software checks do not establish that inferred identities or contacts are biologically correct. Preserve run manifests, version strings, source hashes, and human review status with every downstream table.
+
+## BA scientific extraction checkpoint (14 October 2026)
+
+VAF has selected 180 approved cells, including nine approved Savannah reruns; 41 cells are excluded. Four approved cells retain movement holds, leaving 176 without a movement hold. [Read the scientific data report](reports/BA_SCIENTIFIC_DATA_CHECKPOINT_2026-10-14.md) and [browse the approved versions](provenance/ba_science_selection_20261014/APPROVED_VIDEOS.html). The next outcomes are wall frames, fungus frames, movement latency in frames and total distance in pixels. Definitions and the extraction pilot come next; final outcome data have not yet been generated.

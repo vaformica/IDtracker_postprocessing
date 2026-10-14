@@ -1,0 +1,4 @@
+
+# Preserve archived evidence bytes and treat generated PDFs as binary.
+provenance/** -text -whitespace
+*.pdf binary

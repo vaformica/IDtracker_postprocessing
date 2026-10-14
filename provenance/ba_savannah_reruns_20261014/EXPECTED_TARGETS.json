@@ -1,0 +1,1446 @@
+{
+  "status": "AWAITING_FIREBIRD_ACCESS_NOT_SUBMITTED",
+  "created_at": "2026-10-14T19:34:00.706449+00:00",
+  "purpose": "Reconcile Savannah revised BA TOMLs against 13 unique assigned targets; no new TOMLs verified yet",
+  "assignment_entries": 16,
+  "unique_targets": 13,
+  "prior_snapshot": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/outputs/ba_qc_registry_20261013/scores_02/workflow_reviews.json",
+  "prior_snapshot_sha256": "e8f85f141ffe7456cb2c83d700775ce8d0555c842cfe1386d95a4dc3e9ba03d8",
+  "prior_reviews_are_history_not_approval_of_new_tracking": true,
+  "targets": [
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_015",
+      "target_locator_key": "6f227195d65e40d5727dc042658e3a62f34df29c2da30534d69fb429db948561",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_015/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_015",
+        "census_id": "single_f08060df4867",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_015/full_window.mp4",
+        "end": 8294,
+        "excluded_frames": [
+          1608,
+          1609
+        ],
+        "id": "new_015",
+        "label": "Camera_1_40169154_20260627_1614_ACT2_A3",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_015/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1876.3,
+            357.9
+          ],
+          [
+            1856.6,
+            379.3
+          ],
+          [
+            1858.2,
+            682.8
+          ],
+          [
+            1880.4,
+            708.3
+          ],
+          [
+            2189.9,
+            709.1
+          ],
+          [
+            2212.1,
+            687.8
+          ],
+          [
+            2208.9,
+            380.9
+          ],
+          [
+            2190.7,
+            359.5
+          ],
+          [
+            1879.6,
+            358.7
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_A3/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2",
+        "session_sha256": null,
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_A3.toml",
+        "start": 1095,
+        "toml_sha256": "43023a16a98def6bcd3a1f4925956b2d30c5a08a6b1905482f2b6026f3f49151",
+        "tracking_note": "Verified light-exclusion rerun; IDtracker exited 1 after Success; output independently verified",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_A3/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2/trajectories/trajectories.npy",
+        "trajectory_sha256": "b87a09e4bc676bb5d1022056c891382a3d7df3bc874775fa22e8e400ea6d0764",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4"
+      },
+      "review_status": "RECOMMEND_EXCLUSION",
+      "reviews": [
+        {
+          "review_id": "4ceda283803355258bc1b1e82a5833528d8d49d3ae11a9985ae3d03865758361",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_015",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_A3.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T18:53:29.942Z",
+          "review_scope": "trace_and_full_video",
+          "review_status": "recommend_exclusion",
+          "analysis_approved": false,
+          "possible_flags": "jumps;missing_gaps",
+          "review_comments": "",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[[1095, 2161]]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_020",
+      "target_locator_key": "37a3db5641c4cb7f5e575316aedb05053d76665b7a8ff538de1c582cb024536a",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_020/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_020",
+        "census_id": "single_10e334d3fde4",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_020/full_window.mp4",
+        "end": 7209,
+        "excluded_frames": [
+          1608,
+          1609
+        ],
+        "id": "new_020",
+        "label": "Camera_1_40169154_20260627_1614_ACT2_C5",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_020/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            2630.4,
+            1101.1
+          ],
+          [
+            2617.7,
+            1111.1
+          ],
+          [
+            2610.4,
+            1122.9
+          ],
+          [
+            2609.1,
+            1134.2
+          ],
+          [
+            2609.1,
+            1434.7
+          ],
+          [
+            2614.1,
+            1442.9
+          ],
+          [
+            2625.9,
+            1453.3
+          ],
+          [
+            2934.7,
+            1454.7
+          ],
+          [
+            2946.5,
+            1447.0
+          ],
+          [
+            2953.7,
+            1434.2
+          ],
+          [
+            2959.6,
+            1129.7
+          ],
+          [
+            2956.8,
+            1120.6
+          ],
+          [
+            2952.4,
+            1115.2
+          ],
+          [
+            2942.4,
+            1106.5
+          ],
+          [
+            2941.9,
+            1104.7
+          ],
+          [
+            2633.1,
+            1101.1
+          ],
+          [
+            2630.0,
+            1102.5
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_C5/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2",
+        "session_sha256": null,
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_C5.toml",
+        "start": 10,
+        "toml_sha256": "a8b916f5f03f6fc74276cfa7e3b4a930b87a1c8fc07cb215e0de249b85c6f3f8",
+        "tracking_note": "Verified light-exclusion rerun; IDtracker exited 1 after Success; output independently verified",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_C5/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2/trajectories/trajectories.npy",
+        "trajectory_sha256": "afa3e12ec2600ca91ee8f4d2377ad3cd8ca5cd38b4e5789952bb2c7c9446ffb9",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "eea1641cd46c40a4a685a44baa4f38c3a7d48ba5acfd8605ed9e0e5ef762e5d0",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_020",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_C5.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:27:59.536Z",
+          "review_scope": "trace_skim",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "other",
+          "review_comments": "cup in frame rerun TOML",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_021",
+      "target_locator_key": "d4183fc72a703972e1a5616165c99e7aeeab58f4345f4141a6330b53a7d3b269",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_021/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_021",
+        "census_id": "single_ace7536990a9",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_021/full_window.mp4",
+        "end": 8294,
+        "excluded_frames": [
+          1608,
+          1609
+        ],
+        "id": "new_021",
+        "label": "Camera_1_40169154_20260627_1614_ACT2_D1",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_021/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1137.3,
+            1484.6
+          ],
+          [
+            1115.5,
+            1506.4
+          ],
+          [
+            1120.3,
+            1816.7
+          ],
+          [
+            1140.5,
+            1838.0
+          ],
+          [
+            1448.4,
+            1835.9
+          ],
+          [
+            1459.0,
+            1827.4
+          ],
+          [
+            1471.3,
+            1818.3
+          ],
+          [
+            1472.4,
+            1519.2
+          ],
+          [
+            1470.2,
+            1508.6
+          ],
+          [
+            1466.0,
+            1503.2
+          ],
+          [
+            1463.3,
+            1499.0
+          ],
+          [
+            1461.2,
+            1495.8
+          ],
+          [
+            1457.4,
+            1492.6
+          ],
+          [
+            1446.2,
+            1485.7
+          ],
+          [
+            1443.1,
+            1482.5
+          ],
+          [
+            1137.8,
+            1483.5
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_D1/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2",
+        "session_sha256": null,
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_D1.toml",
+        "start": 1095,
+        "toml_sha256": "298676a731699c7704ab2607253450f3f1f9b1717278413f78ffe3cc43909351",
+        "tracking_note": "Verified light-exclusion rerun; IDtracker exited 1 after Success; output independently verified",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_D1/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2/trajectories/trajectories.npy",
+        "trajectory_sha256": "c36cc211fd21a9b90c6084e81d43b9f54b9807fdc14a4cf189969b3681bf2f36",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "268668bbc4c4cdc260a343cdcc611b2c2f6e75d1d8dcc345fd9cda44c8969e22",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_021",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_D1.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T18:55:26.829Z",
+          "review_scope": "trace_skim",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "",
+          "review_comments": "",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[[1095, 2358]]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_093",
+      "target_locator_key": "dc14c0eacace956923c8304ba3494ee9c8cd3dd745453863d6a70ef630283637",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_093/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_093",
+        "census_id": "single_b04ba7d5299c",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_093/full_window.mp4",
+        "end": 7883,
+        "excluded_frames": [],
+        "id": "new_093",
+        "label": "Camera_3_40629046_20260629_1321_ACT1B1",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_093/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1220.4,
+            741.2
+          ],
+          [
+            1205.7,
+            750.8
+          ],
+          [
+            1200.0,
+            766.1
+          ],
+          [
+            1203.8,
+            1066.1
+          ],
+          [
+            1214.7,
+            1075.7
+          ],
+          [
+            1230.6,
+            1083.4
+          ],
+          [
+            1527.1,
+            1078.2
+          ],
+          [
+            1536.1,
+            1068.0
+          ],
+          [
+            1543.1,
+            1039.9
+          ],
+          [
+            1537.3,
+            753.9
+          ],
+          [
+            1532.9,
+            739.9
+          ],
+          [
+            1524.6,
+            735.4
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_3_40629046_20260629_1321_ACT1_15/unknown_cell/unknown_run/session_Camera_3_40629046_20260629_1321_ACT1_15",
+        "session_sha256": "4d9b04c73c7d673e3a51dee4310668bb2fbf302a13ba4b4d47d5fa3de1e75f66",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_3_40629046_20260629_1321_ACT1/Camera_3_40629046_20260629_1321_ACT1B1.toml",
+        "start": 684,
+        "toml_sha256": "cc89d573a7f5d02c932629e77d0945e77c290bd8f83ce2f780877d02e6f4b719",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_3_40629046_20260629_1321_ACT1_15/unknown_cell/unknown_run/session_Camera_3_40629046_20260629_1321_ACT1_15/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4"
+      },
+      "review_status": "RECOMMEND_EXCLUSION",
+      "reviews": [
+        {
+          "review_id": "90de3184f08c140c97f496851713af4488a1d9099ea2395bd21d4beb9df042e5",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_093",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_3_40629046_20260629_1321_ACT1/Camera_3_40629046_20260629_1321_ACT1B1.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:23:06.356Z",
+          "review_scope": "trace_skim",
+          "review_status": "recommend_exclusion",
+          "analysis_approved": false,
+          "possible_flags": "missing_gaps",
+          "review_comments": "",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "NO_LARGE_JUMP_BLOCK",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "ba_065",
+      "target_locator_key": "6e1d4a5e8c6d375ad38253c1a3ad99fb7b0f2f7de797d5d5ae4b677a95a39b08",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_065/FINAL.npz",
+        "candidate_cache": null,
+        "census_id": "single_d5b0de657554",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_065/full_window.mp4",
+        "end": 8571,
+        "excluded_frames": [],
+        "id": "ba_065",
+        "label": "Camera_1_40169154_20260627_1316_ACT1_B1",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_065/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1125.7,
+            730.9
+          ],
+          [
+            1431.2,
+            729.3
+          ],
+          [
+            1442.9,
+            738.2
+          ],
+          [
+            1456.8,
+            748.7
+          ],
+          [
+            1459.1,
+            1059.4
+          ],
+          [
+            1449.0,
+            1073.5
+          ],
+          [
+            1436.3,
+            1084.9
+          ],
+          [
+            1133.7,
+            1088.3
+          ],
+          [
+            1118.9,
+            1078.9
+          ],
+          [
+            1102.8,
+            1062.7
+          ],
+          [
+            1101.4,
+            868.4
+          ],
+          [
+            1101.4,
+            762.8
+          ],
+          [
+            1110.9,
+            744.7
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_1_40169154_20260627_1316_ACT1_17/unknown_cell/unknown_run/session_Camera_1_40169154_20260627_1316_ACT1_17",
+        "session_sha256": "7a84a131717ffcdbbe560b3df7c698d1fa920f9fefcad67f3770e9f561b17274",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1316_ACT1/Camera_1_40169154_20260627_1316_ACT1_B1.toml",
+        "start": 1372,
+        "toml_sha256": "500c5fc34fa3d7db7a4c187f71b3dea57d9a68d5aa5b5eb423e7870bb7b76772",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_1_40169154_20260627_1316_ACT1_17/unknown_cell/unknown_run/session_Camera_1_40169154_20260627_1316_ACT1_17/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4"
+      },
+      "review_status": "RECOMMEND_EXCLUSION",
+      "reviews": [
+        {
+          "review_id": "b3db11de8a6bd2bf7a9625b6c6f1bded3d608bcb699a8cdf64455abd11f16814",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "ba_065",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1316_ACT1/Camera_1_40169154_20260627_1316_ACT1_B1.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T18:56:29.517Z",
+          "review_scope": "trace_skim",
+          "review_status": "recommend_exclusion",
+          "analysis_approved": false,
+          "possible_flags": "",
+          "review_comments": "Hands in video.  rerun with new start time.",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_022",
+      "target_locator_key": "db8de266e40acb745503dd6327bfc9237b31e5a878d8e1b0262d17900bf8c2b6",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_022/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_022",
+        "census_id": "single_52bccc6dfa96",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_022/full_window.mp4",
+        "end": 8294,
+        "excluded_frames": [
+          1608,
+          1609
+        ],
+        "id": "new_022",
+        "label": "Camera_1_40169154_20260627_1614_ACT2_D2",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_022/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1509.2,
+            1484.6
+          ],
+          [
+            1497.9,
+            1495.5
+          ],
+          [
+            1489.0,
+            1506.3
+          ],
+          [
+            1493.2,
+            1816.1
+          ],
+          [
+            1503.7,
+            1826.2
+          ],
+          [
+            1514.6,
+            1837.1
+          ],
+          [
+            1822.8,
+            1834.1
+          ],
+          [
+            1834.5,
+            1824.8
+          ],
+          [
+            1843.4,
+            1815.9
+          ],
+          [
+            1841.8,
+            1500.7
+          ],
+          [
+            1834.9,
+            1492.5
+          ],
+          [
+            1832.9,
+            1488.7
+          ],
+          [
+            1821.7,
+            1482.8
+          ],
+          [
+            1818.2,
+            1482.1
+          ],
+          [
+            1510.4,
+            1484.4
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_D2/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2",
+        "session_sha256": null,
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_D2.toml",
+        "start": 1095,
+        "toml_sha256": "02c8ee33220a9a054ce8221fe95d0ba2843b04c60161eb1aeec7941b77f48047",
+        "tracking_note": "Verified light-exclusion rerun; IDtracker exited 1 after Success; output independently verified",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_D2/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2/trajectories/trajectories.npy",
+        "trajectory_sha256": "e6d63357ea28c41d5753d9eae4d51b3d5b7594a31b6dd73303adfb47138f7b01",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4"
+      },
+      "review_status": "RECOMMEND_EXCLUSION",
+      "reviews": [
+        {
+          "review_id": "a3218efc61f3f3f8411dab262cf8d473afd4a28de7ad1efb342501860cfdfbb3",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_022",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_D2.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:28:40.404Z",
+          "review_scope": "trace_and_excerpt",
+          "review_status": "recommend_exclusion",
+          "analysis_approved": false,
+          "possible_flags": "missing_gaps",
+          "review_comments": "",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_046",
+      "target_locator_key": "b8c6fbe2ffe52c4a629259027f17bd07f1ed7742ade3e0e0b6fd78dad632f520",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_046/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_046",
+        "census_id": "single_8c3dbb50d600",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_046/full_window.mp4",
+        "end": 7959,
+        "excluded_frames": [],
+        "id": "new_046",
+        "label": "Camera_2_40359705_20260627_1326_ACT1_C2",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_046/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1525.6,
+            1076.5
+          ],
+          [
+            1504.1,
+            1101.0
+          ],
+          [
+            1503.6,
+            1405.5
+          ],
+          [
+            1530.6,
+            1428.0
+          ],
+          [
+            1833.3,
+            1429.0
+          ],
+          [
+            1853.8,
+            1408.0
+          ],
+          [
+            1854.3,
+            1095.0
+          ],
+          [
+            1846.3,
+            1086.5
+          ],
+          [
+            1830.8,
+            1079.0
+          ],
+          [
+            1828.3,
+            1077.0
+          ],
+          [
+            1530.1,
+            1076.5
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_40359705_20260627_1326_ACT1_14/unknown_cell/unknown_run/session_Camera_2_40359705_20260627_1326_ACT1_14",
+        "session_sha256": "0e7b1c82705824d4bc48c3ddadf7955e55a144b74753c319bc267bfa0d3b5c31",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_40359705_20260627_1326_ACT1/Camera_2_40359705_20260627_1326_ACT1_C2.toml",
+        "start": 760,
+        "toml_sha256": "cf25e38edf737fee93bd6ac544acabd713eb042088990b4f60e2a68255236880",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_40359705_20260627_1326_ACT1_14/unknown_cell/unknown_run/session_Camera_2_40359705_20260627_1326_ACT1_14/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4"
+      },
+      "review_status": "RECOMMEND_EXCLUSION",
+      "reviews": [
+        {
+          "review_id": "005f7459ed4744cf0f92ea4ff95f84be985cf4e3fba203679d0f0300272f328a",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_046",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_40359705_20260627_1326_ACT1/Camera_2_40359705_20260627_1326_ACT1_C2.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:29:01.129Z",
+          "review_scope": "trace_skim",
+          "review_status": "recommend_exclusion",
+          "analysis_approved": false,
+          "possible_flags": "missing_gaps",
+          "review_comments": "Not beetle trace!",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_072",
+      "target_locator_key": "ce2e7ea672fab93ee05414d96b47709eb8654af10c2467bea83f0d51f754592c",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_072/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_072",
+        "census_id": "single_d4a16434fa89",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_072/full_window.mp4",
+        "end": 7284,
+        "excluded_frames": [],
+        "id": "new_072",
+        "label": "Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_072/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1482.7,
+            726.4
+          ],
+          [
+            1788.8,
+            722.2
+          ],
+          [
+            1815.6,
+            748.2
+          ],
+          [
+            1820.7,
+            1057.5
+          ],
+          [
+            1794.7,
+            1076.8
+          ],
+          [
+            1495.2,
+            1079.3
+          ],
+          [
+            1459.2,
+            1054.2
+          ],
+          [
+            1459.2,
+            759.1
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_1/unknown_cell/unknown_run/session_Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_1",
+        "session_sha256": "bdeb2403966e45bde8e1ccc07918fa57c9890233f4c6751fbce44382baf94d2d",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2.toml",
+        "start": 85,
+        "toml_sha256": "1339b8333e2d60a1edb4ad342b27c0fc8e26c99c980f2d3bacec21afc0f160e4",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_1/unknown_cell/unknown_run/session_Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_1/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA.avi"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "420b9a1ddbfbeffc33de5f2ea9d82cd337fdfff5363b18a4ac1d22da911ae597",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_072",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA.avi",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:31:53.286Z",
+          "review_scope": "trace_and_excerpt",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "missing_gaps",
+          "review_comments": "",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "NO_LARGE_JUMP_BLOCK",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_059",
+      "target_locator_key": "2e4b6da3caee4fd68ba0bd66dee38c21d1c5f7b25f7d493e9d5f59a041ed9b91",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_059/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_059",
+        "census_id": "single_56dbb2c7bc50",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_059/full_window.mp4",
+        "end": 7995,
+        "excluded_frames": [],
+        "id": "new_059",
+        "label": "Camera_2_40359705_20260628_1604_ACT2_A4",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_059/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            2261.9,
+            329.2
+          ],
+          [
+            2246.2,
+            349.2
+          ],
+          [
+            2246.6,
+            657.5
+          ],
+          [
+            2270.5,
+            676.2
+          ],
+          [
+            2577.8,
+            674.1
+          ],
+          [
+            2597.9,
+            649.0
+          ],
+          [
+            2594.9,
+            350.1
+          ],
+          [
+            2567.2,
+            325.0
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_40359705_20260628_1604_ACT2_2/unknown_cell/unknown_run/session_Camera_2_40359705_20260628_1604_ACT2_2",
+        "session_sha256": "784cfeae033c5fad6a0f0d19a91e6eff172ebb07adc79fa3c419966b60a65d9f",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_40359705_20260628_1604_ACT2/Camera_2_40359705_20260628_1604_ACT2_A4.toml",
+        "start": 796,
+        "toml_sha256": "20c713162c2e69fdf94b73a1ded0fde47e7fa14e5312323ac226be6502f6581b",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_40359705_20260628_1604_ACT2_2/unknown_cell/unknown_run/session_Camera_2_40359705_20260628_1604_ACT2_2/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260628_1604_ACT2.mp4"
+      },
+      "review_status": "RECOMMEND_EXCLUSION",
+      "reviews": [
+        {
+          "review_id": "8e0ce4edeaf58f9154efea4235ee2921b7644fed5fc7f13ae9537422503b2bb6",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_059",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260628_1604_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_40359705_20260628_1604_ACT2/Camera_2_40359705_20260628_1604_ACT2_A4.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T20:18:15.114Z",
+          "review_scope": "trace_skim",
+          "review_status": "recommend_exclusion",
+          "analysis_approved": false,
+          "possible_flags": "",
+          "review_comments": "Looks wrong.  NO tracking.",
+          "rerun_requested": true,
+          "movement_override": false,
+          "movement_status": "NO_LARGE_JUMP_BLOCK",
+          "estimated_turtled_percent": 0,
+          "human_marked_percent": 0,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": false,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": true,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "ba_070",
+      "target_locator_key": "bc41e56bc133d10d648f17aa6e2b28e395025aee7a5c738afbfc03297e1b56cf",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_070/FINAL.npz",
+        "candidate_cache": null,
+        "census_id": "single_46797414d95b",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_070/full_window.mp4",
+        "end": 7959,
+        "excluded_frames": [],
+        "id": "ba_070",
+        "label": "Camera_2_40359705_20260627_1326_ACT1_B2",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_070/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1528.2,
+            699.8
+          ],
+          [
+            1514.3,
+            709.8
+          ],
+          [
+            1507.3,
+            722.2
+          ],
+          [
+            1505.8,
+            1031.2
+          ],
+          [
+            1526.7,
+            1050.6
+          ],
+          [
+            1838.3,
+            1053.1
+          ],
+          [
+            1857.2,
+            1036.2
+          ],
+          [
+            1858.2,
+            1034.7
+          ],
+          [
+            1859.7,
+            724.2
+          ],
+          [
+            1851.7,
+            712.7
+          ],
+          [
+            1837.3,
+            702.8
+          ],
+          [
+            1537.2,
+            698.8
+          ],
+          [
+            1531.7,
+            700.8
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_40359705_20260627_1326_ACT1_13/unknown_cell/unknown_run/session_Camera_2_40359705_20260627_1326_ACT1_13",
+        "session_sha256": "4a744cff59cdb0f2058fa0e58c8884024915303aec90489fe4aa23191759d248",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_40359705_20260627_1326_ACT1/Camera_2_40359705_20260627_1326_ACT1_B2.toml",
+        "start": 760,
+        "toml_sha256": "cb50a554d4a0d614f02f11bddb749e22489a7d3c416dd6c946f4909df8ea1887",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_2_40359705_20260627_1326_ACT1_13/unknown_cell/unknown_run/session_Camera_2_40359705_20260627_1326_ACT1_13/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "c9a99c3715e9110597adad2cf6fd72552dd77fa32d1f4190b0010dd29a19b9aa",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "ba_070",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_2_40359705_20260627_1326_ACT1/Camera_2_40359705_20260627_1326_ACT1_B2.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:25:03.508Z",
+          "review_scope": "trace_and_excerpt",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "possible_turtling",
+          "review_comments": "",
+          "rerun_requested": false,
+          "movement_override": false,
+          "movement_status": "NO_LARGE_JUMP_BLOCK",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": false,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "new_017",
+      "target_locator_key": "29e0079007833d75e5b32341bc370175edd929428584ad10c3e427d7eb3a0f2b",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_017/FINAL.npz",
+        "candidate_cache": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_additional100_recovery_20261012/new_017",
+        "census_id": "single_01e393f4b225",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_017/full_window.mp4",
+        "end": 8294,
+        "excluded_frames": [
+          1608,
+          1609
+        ],
+        "id": "new_017",
+        "label": "Camera_1_40169154_20260627_1614_ACT2_B4",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/new_017/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            2252.7,
+            733.0
+          ],
+          [
+            2242.6,
+            742.5
+          ],
+          [
+            2233.6,
+            753.2
+          ],
+          [
+            2236.0,
+            1063.3
+          ],
+          [
+            2249.2,
+            1074.6
+          ],
+          [
+            2257.5,
+            1083.5
+          ],
+          [
+            2566.0,
+            1082.4
+          ],
+          [
+            2576.1,
+            1071.0
+          ],
+          [
+            2585.7,
+            1061.5
+          ],
+          [
+            2583.9,
+            750.3
+          ],
+          [
+            2575.0,
+            740.7
+          ],
+          [
+            2565.4,
+            733.0
+          ],
+          [
+            2560.6,
+            731.2
+          ],
+          [
+            2262.3,
+            732.4
+          ],
+          [
+            2253.9,
+            735.4
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_B4/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2",
+        "session_sha256": null,
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_B4.toml",
+        "start": 1095,
+        "toml_sha256": "9e844e944d58cc10ecba0325883ef21ed923f5cabbd63c5ba12b899dc0709490",
+        "tracking_note": "Verified light-exclusion rerun; IDtracker exited 1 after Success; output independently verified",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_light_exclusion_1608_1609_20261012/runs/Camera_1_40169154_20260627_1614_ACT2_B4/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2/trajectories/trajectories.npy",
+        "trajectory_sha256": "e1ca592b7835d64469cfb539b1ae50096968381044ea0c4f895597a0d2f90b23",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "3f4c2481a341c7a4af02ff931e3e98ddd4fc25d3b6f44d295066be7eba2602e2",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "new_017",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260627_1614_ACT2/Camera_1_40169154_20260627_1614_ACT2_B4.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T19:31:36.918Z",
+          "review_scope": "trace_and_excerpt",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "jumps;missing_gaps",
+          "review_comments": "",
+          "rerun_requested": false,
+          "movement_override": false,
+          "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+          "estimated_turtled_percent": null,
+          "human_marked_percent": null,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": null,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": false,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "ba_035",
+      "target_locator_key": "6bb45dad2bacf8b4f12e3fe89289734fe220347f5b3a941d704ae97a57e97056",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_035/FINAL.npz",
+        "candidate_cache": null,
+        "census_id": "single_72d04707de78",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_035/full_window.mp4",
+        "end": 8021,
+        "excluded_frames": [],
+        "id": "ba_035",
+        "label": "Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_035/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            2699.3,
+            359.1
+          ],
+          [
+            2676.9,
+            377.0
+          ],
+          [
+            2679.2,
+            682.1
+          ],
+          [
+            2689.8,
+            701.6
+          ],
+          [
+            2701.5,
+            709.4
+          ],
+          [
+            3009.6,
+            706.1
+          ],
+          [
+            3023.0,
+            697.7
+          ],
+          [
+            3031.9,
+            686.5
+          ],
+          [
+            3028.6,
+            379.8
+          ],
+          [
+            3012.4,
+            359.1
+          ],
+          [
+            3009.0,
+            356.9
+          ],
+          [
+            3006.2,
+            357.4
+          ],
+          [
+            2708.8,
+            358.6
+          ],
+          [
+            2698.7,
+            360.2
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_14/unknown_cell/unknown_run/session_Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_14",
+        "session_sha256": "4004e4ad2a77be05d634d6545df790ed3c7ae9fd445aed83e19c243fc4a5248e",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5.toml",
+        "start": 822,
+        "toml_sha256": "6ee73cf6f074da68d63f2446a6cf74257b285ef269f1fc0e13bf1ef506310700",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_14/unknown_cell/unknown_run/session_Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_14/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless.mp4"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "86038815c5608ff222a393882c6586538ac43fc8f1b3b64d8ead376e8a3a1902",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "ba_035",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T20:29:35.275Z",
+          "review_scope": "trace_skim",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "jumps",
+          "review_comments": "Jump in begning",
+          "rerun_requested": false,
+          "movement_override": false,
+          "movement_status": "NO_LARGE_JUMP_BLOCK",
+          "estimated_turtled_percent": 0,
+          "human_marked_percent": 0,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": false,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": false,
+      "automatic_submission": false
+    },
+    {
+      "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+      "run_id": "ba_049",
+      "target_locator_key": "87ee7b21349b4b5131e8db96a4dbf9b864ad6f0a88bd3d310626e6aaf3a73c78",
+      "source": {
+        "baseline_kind": "frozen_recovery_all_cells",
+        "baseline_npz": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_049/FINAL.npz",
+        "candidate_cache": null,
+        "census_id": "single_3b2638032dbc",
+        "clean_video": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_049/full_window.mp4",
+        "end": 7964,
+        "excluded_frames": [],
+        "id": "ba_049",
+        "label": "Camera_3_40629046_20260628_1605_ACT2_D1",
+        "reason": "Uniform frozen recovery then interpolation for all compatible BA cells",
+        "review_data": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_combined_recovery_221_20261013/work/ba_049/review/REVIEW_DATA.json",
+        "roi": [
+          [
+            1205.0,
+            1493.6
+          ],
+          [
+            1219.5,
+            1478.5
+          ],
+          [
+            1508.3,
+            1470.8
+          ],
+          [
+            1519.4,
+            1471.9
+          ],
+          [
+            1528.9,
+            1477.4
+          ],
+          [
+            1535.6,
+            1483.6
+          ],
+          [
+            1540.0,
+            1491.9
+          ],
+          [
+            1541.7,
+            1501.9
+          ],
+          [
+            1548.4,
+            1798.0
+          ],
+          [
+            1547.8,
+            1803.0
+          ],
+          [
+            1545.6,
+            1807.4
+          ],
+          [
+            1541.1,
+            1811.3
+          ],
+          [
+            1234.0,
+            1821.9
+          ],
+          [
+            1215.6,
+            1809.6
+          ],
+          [
+            1213.4,
+            1801.3
+          ],
+          [
+            1206.2,
+            1610.5
+          ]
+        ],
+        "session": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_3_40629046_20260628_1605_ACT2/unknown_cell/unknown_run/session_Camera_3_40629046_20260628_1605_ACT2",
+        "session_sha256": "8dce06352238295ec89d6d7a380bda19c992ff078a2a3d1ed548b8dbc176128c",
+        "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_3_40629046_20260628_1605_ACT2/Camera_3_40629046_20260628_1605_ACT2_D1.toml",
+        "start": 765,
+        "toml_sha256": "67eb44202f3875373b7bca95b58c4e13cb13c84aa19583fb64037ce47c00c44b",
+        "trajectory": "/data/labs/vformic1-swat-lab/idtracker_session_archive/2026/session_Camera_3_40629046_20260628_1605_ACT2/unknown_cell/unknown_run/session_Camera_3_40629046_20260628_1605_ACT2/trajectories/trajectories.npy",
+        "video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4"
+      },
+      "review_status": "NEEDS_REVIEW",
+      "reviews": [
+        {
+          "review_id": "f95c5394b6e8518f3fd2ecb648b81ea8feed5fba2f5694365aaed0cb725ed377",
+          "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+          "run_id": "ba_049",
+          "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4",
+          "source_toml": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_IDTrackerai_files/Camera_3_40629046_20260628_1605_ACT2/Camera_3_40629046_20260628_1605_ACT2_D1.toml",
+          "reviewer": "VAF",
+          "reviewed_at": "2026-10-13T20:31:56.107Z",
+          "review_scope": "trace_skim",
+          "review_status": "needs_review",
+          "analysis_approved": false,
+          "possible_flags": "jumps;camera_light",
+          "review_comments": "Jump at begining",
+          "rerun_requested": false,
+          "movement_override": false,
+          "movement_status": "NO_LARGE_JUMP_BLOCK",
+          "estimated_turtled_percent": 0,
+          "human_marked_percent": 0,
+          "possible_turtling_bouts": "[]",
+          "issue_intervals": "[]",
+          "suggest_removal": false,
+          "cutoff_percent": 15.0,
+          "current_opinions": 1,
+          "requires_reconciliation": false
+        }
+      ],
+      "rerun_requested": false,
+      "automatic_submission": false
+    }
+  ]
+}

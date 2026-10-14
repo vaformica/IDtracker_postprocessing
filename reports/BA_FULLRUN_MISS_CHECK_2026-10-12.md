@@ -1,0 +1,17 @@
+# Looking for other long BA turtling misses
+
+AI-written preparation record by Codex, 12 October 2026. Awaiting VAF scores; no new biological result yet.
+
+Vince requested a broader check of whether BA060 is an isolated large miss. Six complete 7,200-frame BA runs (24 minutes) have been packaged with predictions hidden. Four are random selections, including two explicitly sampled from the no-flag stratum; two target long localized, recovery-eligible, unflagged stretches. All six selected runs happen to have no frozen 0.4 flags. They cover six recordings and had no human-reviewed frames in the retained comparison arrays. The recordings were previously represented, so this is neither independent-recording validation nor a prevalence estimate.
+
+Seed 202610123 and the complete selection key are retained in `outputs/ba_fullrun_miss_check_20261012/SELECTION_KEY.json`. The key is kept out of the scoring page. Targeted selection uses 300 consecutive finite, recovery-eligible, unflagged positions within 15 pixels of their median, sampled every 30 frames. This is a search heuristic, not a posture label. No runs were excluded for missing tracking or QC flags, and the original 7,200-frame windows are retained.
+
+Open [the scorer](../outputs/ba_fullrun_miss_check_20261012/START_HERE.html), or use localhost port 8795 while its server is running. `PORTABLE_REVIEW.html` contains the same scorer with embedded videos for offline use. Export `BA_fullrun_miss_check_scores_20261012.json`. Explicit no-turtling and unsure decisions remain distinct from unscored clips; unfinished starts cannot silently become completed labels. Flailing remains unassessed. A complete decision must follow viewing the whole run; use Unsure and notes where posture cannot be established.
+
+[BA060 with frozen 0.4](../outputs/ba_fullrun_miss_check_20261012/BA060_FROZEN04.html) is a separate reference viewer with the original full video, exact stored flags at 6910–8021, and jump buttons to human onset 3942 and detector onset 6910. Confirmed human-positive coverage stops at 7499; do not extrapolate it through 8021.
+
+All seven retrieved videos matched the original media SHA-256 receipts, whose full decode checks established 7,200 encoded frames at 30 fps. The existing boundary-scorer checks passed. The BA060 page rendered in the browser. Browser inspection of the embedded scorer exceeded the browser tool's message limit; a lightweight external-media page was provided alongside the portable version. The lightweight scorer rendered correctly, its first video played with advancing global frames, and frame jumping returned it to the first frame. No scores were entered. Browser playback of all six scoring videos is not claimed.
+
+After scores return, compare exactly the completed, interpretable coverage against the frozen masks. Report missed episodes, total missed on-back seconds, episode duration errors, false events, and unknown coverage separately. Preserve initial-death-feint handling and censor episode boundaries at unknown regions and window edges. Keep random and targeted selections separate. These no-flag runs principally test false negatives; they cannot establish false-positive performance on flagged runs. Previously reviewed upright/circling controls remain complementary evidence.
+
+No detector fit, production change, new IDtracker job, or dyadic extension was made. Preparation evidence is local; no Firebird release is asserted.

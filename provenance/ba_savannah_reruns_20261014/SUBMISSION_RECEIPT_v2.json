@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-14T20:02:03.457591+00:00",
+  "reason": "Create required output_dir before IDtracker CLI; retain failed attempt1",
+  "canceled_blocked_dependencies": [
+    "920103",
+    "920104",
+    "920105"
+  ],
+  "jobs": {
+    "track": "920118",
+    "prepare": "920119",
+    "process": "920120",
+    "package": "920121"
+  }
+}

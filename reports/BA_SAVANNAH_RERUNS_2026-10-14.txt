@@ -1,0 +1,76 @@
+Savannah BA reruns — 14 October 2026
+AI-written operational record by Codex.
+
+Current status: COMPLETE_UNREVIEWED. All 11 reruns and the new QC packet are complete.
+Savannah saved 12 revised TOMLs today in Firebird’s 2026_BA/BA R1 Reruns folder.
+All are single-animal, one-arena configurations. Vince requested that BA_065 be
+skipped after its empty tracking interval was identified. No revised NEW_093
+TOML was found in that folder or in the main BA-tree rerun-name search.
+
+Initial tracking array 920102 failed because its wrapper did not create the required
+IDtracker output directory. Failed logs remain; blocked dependencies were canceled.
+Corrected tracking array 920118, plan job 920119, processing array 920120 and
+packaging job 920121 completed. All tracking runs retain exit-code-1-after-Success
+warnings, with output arrays, intervals and protected exclusions verified.
+
+Submitted TOMLs (source files preserved; runs receive new output directories):
+new_015: Camera_1_40169154_20260627_1614_ACT2_A3_rerun.toml
+  Review window 1096–8295 inclusive; previous start 1095.
+new_017: Camera_1_40169154_20260627_1614_ACT2_B4_rerun.toml
+  Review window 1096–8295 inclusive; previous start 1095.
+new_020: Camera_1_40169154_20260627_1614_ACT2_C5_rerun.toml
+  Review window 1096–8295 inclusive; previous start 10.
+new_021: Camera_1_40169154_20260627_1614_ACT2_D1_rerun.toml
+  Review window 1096–8295 inclusive; previous start 1095.
+new_022: Camera_1_40169154_20260627_1614_ACT2_D2_rerun.toml
+  Review window 1096–8295 inclusive; previous start 1095.
+ba_035: Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5_rerun.toml
+  Review window 823–8022 inclusive; previous start 822.
+ba_070: Camera_2_40359705_20260627_1326_ACT1_B2_rerun.toml
+  Review window 760–7959 inclusive; previous start 760.
+new_046: Camera_2_40359705_20260627_1326_ACT1_C2_rerun.toml
+  Review window 760–7959 inclusive; previous start 760.
+new_059: Camera_2_40359705_20260628_1604_ACT2_A4_rerun.toml
+  Review window 796–7995 inclusive; previous start 796.
+new_072: Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2_rerun.toml
+  Review window 86–7285 inclusive; previous start 85.
+ba_049: Camera_3_40629046_20260628_1605_ACT2_D1_rerun.toml
+  Review window 768–7967 inclusive; previous start 765.
+
+Five ACT2 lighting-recording TOMLs use derived submission copies that preserve
+the prior human exclusion of global frames 1608–1609. Savannah’s originals
+and their hashes are retained. C5 now starts at 1096 rather than 10.
+
+New outputs require fresh review. Existing 221 decisions and their 227 history
+records remain version-bound. Planned processing reuses frozen combined recovery,
+BA-only interpolation 1.0.0, strict movement gating and frozen 0.4 posture hints.
+Passing software/media checks will not establish biological validity.
+
+Existing QC decisions, uploaded to the private ChatGPT Drive folder with Vince’s
+explicit approval: https://drive.google.com/file/d/1bjuovJ8ra6bhDWnUT98z7JaxGDMv6Sl8/view
+
+Evidence: outputs/ba_savannah_reruns_20261014 and the same-named Firebird folder
+under /data/labs/vformic1-swat-lab/idtracker_pipeline_runs/.
+
+After QC, discuss two separate commitments: an attributed selected version and
+inclusion decision per beetle, then a versioned specification of analysis outputs.
+Do not equate track approval with validated automatic posture durations.
+
+Completion and review handoff
+Local packet: outputs/ba_savannah_reruns_20261014/BA_Savannah_reruns11_QC_20261014/START_HERE.html
+BEFORE_AFTER.html compares the old/new strict traces, windows and decisions.
+Local verification passed 353 file hashes, 79,200 frame rows and decoded video
+frames, interpolation replay, and strict/posture unknown-state checks. Firebird
+verified 33 original-video alignment samples. Ten runs have no remaining large
+jumps or unexpected missing positions after processing. NEW_021 retains 21 jumps
+and 3,088 missing frames and remains movement-blocked. BA_070 and NEW_059 have
+automatic posture candidates requiring review. 99 recovered and 234 interpolated
+positions are labeled separately. 10 human-excluded observations remain unknown.
+
+Dataset f625af677617324b89e280fa3656fa641aeb0b28ffda4fecb906c51369d83c91
+ZIP SHA256 a08be312a00c16c49f990f4abaf653a01a5d96e09d5e614324b1be9576ddf98e
+Registry: 11 new lineage links, 227 prior review records preserved, 0 new decisions.
+Browser security policy blocked automatic file-URL opening; interactive playback
+was not tool-verified. Open the portable HTML manually.
+Notebook: existing BA IDtracker tab updated with completion and the exact list;
+old decisions link to the authorized private Drive copy.

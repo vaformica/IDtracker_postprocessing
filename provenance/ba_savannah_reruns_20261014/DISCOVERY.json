@@ -1,0 +1,89 @@
+{
+  "files": [
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260627_1316_ACT1_B1_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1792001589.0,
+      "sha256": "40881622ee0e49735433a771713a9d0898d6bf578621e9d5f870f036b618deb0",
+      "text": "name = 'Camera_1_40169154_20260627_1316_ACT1_B1_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4',\n]\nintensity_ths = [36, 255]\narea_ths = [135.0, inf]\ntracking_intervals = \"\"\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1130.2, 730.1], [1290.5, 729.4], [1435.5, 727.8], [1448.6, 736.3], [1457.0, 749.4], [1461.7, 1058.3], [1440.9, 1083.7], [1134.0, 1086.8], [1106.3, 1062.9], [1101.7, 760.2], [1115.5, 740.9], [1130.2, 730.1]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260627_1614_ACT2_A3_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791993042.0,
+      "sha256": "adf2c6d3bce5f02c2fb2a812fb053b23e271c3cab2aa3b948e46f83131bd23eb",
+      "text": "name = 'Camera_1_40169154_20260627_1614_ACT2_A3_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4',\n]\nintensity_ths = [51, 255]\narea_ths = [107.0, inf]\ntracking_intervals = [[1096, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1877.9, 358.8], [2023.4, 357.6], [2191.3, 357.6], [2208.1, 374.4], [2210.0, 425.0], [2209.4, 556.8], [2211.2, 689.7], [2191.3, 709.7], [1885.4, 711.6], [1854.2, 682.2], [1856.7, 381.3], [1866.8, 363.3], [1877.9, 358.8]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260627_1614_ACT2_B4_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791986751.0,
+      "sha256": "ef0d02e43fe1285d09b104dd3f4a5efe2e4be0cbec52827704293b9dc67314ef",
+      "text": "name = 'Camera_1_40169154_20260627_1614_ACT2_B4_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4',\n]\nintensity_ths = [36, 255]\narea_ths = [132.0, inf]\ntracking_intervals = [[1096, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[2253.1, 734.0], [2557.0, 734.0], [2571.7, 744.1], [2577.7, 754.1], [2579.7, 1062.5], [2557.6, 1086.6], [2250.4, 1084.6], [2229.0, 1063.2], [2227.0, 914.0], [2229.0, 755.5], [2238.4, 742.1], [2251.7, 733.4]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260627_1614_ACT2_C5_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791988777.0,
+      "sha256": "c6badbd2e4f370bf2aeab2795d808269cf73a78a2cf0aa4373c28721e9be925f",
+      "text": "name = 'Camera_1_40169154_20260627_1614_ACT2_C5_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4',\n]\nintensity_ths = [36, 255]\narea_ths = [351.0, inf]\ntracking_intervals = [[1096, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[2633.8, 1100.5], [2783.7, 1102.3], [2941.5, 1104.1], [2958.7, 1121.2], [2956.8, 1432.1], [2937.3, 1454.1], [2627.1, 1452.9], [2609.4, 1435.8], [2610.6, 1129.8], [2617.3, 1112.7], [2632.0, 1101.7]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260627_1614_ACT2_D1_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791990158.0,
+      "sha256": "a9a45c105170db86f9beace0445c083676dfe8e73bfe043a608e2b6124dfefb5",
+      "text": "name = 'Camera_1_40169154_20260627_1614_ACT2_D1_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4',\n]\nintensity_ths = [67, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[1096, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1135.7, 1484.9], [1443.1, 1482.8], [1455.9, 1488.4], [1466.7, 1500.7], [1469.8, 1513.0], [1471.8, 1815.7], [1450.3, 1836.2], [1140.8, 1838.2], [1120.3, 1818.8], [1117.7, 1508.9], [1122.4, 1498.7], [1136.7, 1485.9]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260627_1614_ACT2_D2_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791991404.0,
+      "sha256": "2e97f4bbc3db2a28d7c556fc36e82875735ed4c8df9b594161952fe76b92f37e",
+      "text": "name = 'Camera_1_40169154_20260627_1614_ACT2_D2_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4',\n]\nintensity_ths = [64, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[1096, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1511.0, 1485.1], [1819.0, 1481.7], [1840.1, 1495.4], [1846.3, 1808.6], [1823.1, 1835.9], [1515.8, 1837.3], [1492.6, 1817.5], [1489.8, 1507.0], [1497.4, 1495.4], [1510.3, 1487.2]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791992962.0,
+      "sha256": "4c0992ef08c7e7f7ae888beb89c98447b9b517b596fc473fa1a4680d0701da9d",
+      "text": "name = 'Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless.mp4',\n]\nintensity_ths = [34, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[823, 8907]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[2700.3, 359.2], [2850.0, 356.4], [3006.7, 356.4], [3030.9, 377.2], [3032.3, 687.8], [3015.7, 708.6], [2705.2, 713.4], [2685.1, 701.6], [2676.8, 687.1], [2675.4, 382.7], [2683.7, 370.2], [2697.6, 357.8]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_2_40359705_20260627_1326_ACT1_B2_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1792003463.0,
+      "sha256": "57275a8b86302d31bfc15b915b86fb11cf2e4d1b3fc81dba9da64d564b3db20b",
+      "text": "name = 'Camera_2_40359705_20260627_1326_ACT1_B2_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4',\n]\nintensity_ths = [38, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[760, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1678.7, 700.4], [1841.2, 702.7], [1857.3, 708.8], [1862.6, 730.3], [1858.8, 1037.5], [1840.4, 1057.5], [1524.7, 1055.2], [1504.7, 1034.5], [1506.3, 842.9], [1507.0, 722.6], [1515.5, 708.8], [1530.0, 698.1], [1677.9, 700.4]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_2_40359705_20260627_1326_ACT1_C2_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1792002626.0,
+      "sha256": "0ae929aa573f95567a22b2254430652567db1d4942cf4d5bdafd7a03d92db944",
+      "text": "name = 'Camera_2_40359705_20260627_1326_ACT1_C2_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4',\n]\nintensity_ths = [38, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[760, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1526.2, 1075.5], [1837.6, 1077.0], [1860.0, 1095.5], [1856.1, 1407.5], [1836.8, 1432.9], [1529.3, 1430.6], [1502.3, 1409.8], [1500.7, 1104.0], [1509.2, 1086.3], [1526.2, 1077.0]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_2_40359705_20260628_1604_ACT2_A4_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1791994047.0,
+      "sha256": "b6e0c9f7a0cd34b7756d5a8fc88ca371e727ee46ed09fb17b9898f8acf95b187",
+      "text": "name = 'Camera_2_40359705_20260628_1604_ACT2_A4_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260628_1604_ACT2.mp4',\n]\nintensity_ths = [34, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[796, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[2260.5, 327.9], [2273.8, 319.6], [2411.7, 323.8], [2523.0, 323.8], [2570.4, 324.6], [2601.1, 347.9], [2601.1, 648.7], [2582.8, 674.5], [2561.2, 679.5], [2269.7, 677.8], [2245.6, 659.5], [2244.7, 352.9], [2252.2, 337.1], [2260.5, 327.1]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1792005544.0,
+      "sha256": "b781a876ec52a5cc991a335de24f5121d58a5640db78eb7e800312136b2ccd43",
+      "text": "name = 'Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA.avi',\n]\nintensity_ths = [27, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[86, 7398]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1485.2, 727.5], [1622.6, 725.7], [1793.5, 722.9], [1814.3, 741.9], [1821.5, 1052.0], [1800.7, 1076.4], [1493.4, 1079.1], [1462.6, 1059.3], [1464.4, 758.2], [1470.8, 737.4], [1484.3, 726.6]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    },
+    {
+      "path": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/BA R1 Reruns/Camera_3_40629046_20260628_1605_ACT2_D1_rerun.toml",
+      "owner": "svonesh1-guest-swat",
+      "mtime": 1792004847.0,
+      "sha256": "27dc28544db4b099989785683573da0e1cca7664e1235790b18fd8b72c40235e",
+      "text": "name = 'Camera_3_40629046_20260628_1605_ACT2_D1_rerun'\nvideo_paths = [\n    '/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4',\n]\nintensity_ths = [27, 255]\narea_ths = [135.0, inf]\ntracking_intervals = [[768, 9000]]\nnumber_of_animals = 1\nuse_bkg = true\ncheck_segmentation = false\ntrack_wo_identities = false\nroi_list = [\n    '+ Polygon [[1224.0, 1476.7], [1365.7, 1470.1], [1517.0, 1468.2], [1539.8, 1484.3], [1547.5, 1496.7], [1553.2, 1805.0], [1542.7, 1815.4], [1230.6, 1825.9], [1212.5, 1809.7], [1204.9, 1662.2], [1200.2, 1505.3], [1205.9, 1485.3], [1222.1, 1476.7]]',\n]\nbackground_subtraction_stat = 'median'\n"
+    }
+  ],
+  "utc": "2026-10-14T19:41:52.023759+00:00"
+}

@@ -1,0 +1,125 @@
+BA HUMAN QC PREVIEW — HANDOFF
+13 October 2026. Prepared by Codex for continuation in a new chat.
+
+START HERE
+Read this file, README.md, the applicable AGENTS.md, and
+reports/PROJECT_HANDOFF_2026-09-28.md before changing pipeline code.
+Project: /Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype
+Preview: http://127.0.0.1:8798/START_HERE.html
+Local package: outputs/ba_human_qc_20261013/
+Launcher: outputs/ba_human_qc_20261013/START_QC.command
+Use its range-capable serve.py; a plain HTTP server previously broke seeking.
+Media files are symlinks into /Users/New/Downloads/BA_additional100_recovery_20261012.
+This is a local preview, not a portable independent release.
+
+USER INTENT AND PAUSE
+Vince wants a quick human trace skim of BA beetles, short/full video inspection,
+error categories, and attributed flags to support exclusions and later improvements.
+Excluding some poor beetles is acceptable, but no automatic biological approval
+or silent source changes. Keep work in BA; dyadic extension is deferred.
+Vince explicitly paused jump troubleshooting until the jumping script in the
+other chat is finished. Do not resume that work merely because this handoff exists.
+Other chat: “Add BA single-animal videos”, thread
+01a0eaec-fb7c-7611-bf17-d25310ce803d. Read its latest status before integration;
+do not assume the separate gap/jump work is complete. Do not message it without
+user authorization. The newer six-case gap pilot is NOT in this preview.
+
+WHAT IS DISPLAYED
+100 delivered additional-run FINAL.npz proposals, with raw baseline comparison.
+Original input root: /Users/New/Downloads/BA_additional100_recovery_20261012.
+Every window has 7,200 inclusive observations. Source coordinates are original
+image pixels; crop origin is subtracted only for display. Video uses 30 fps and
+global frame = window start + video frame index. Frame seeking uses midpoint times.
+Original videos, TOMLs, tracking, prior predictions and scores remain unchanged.
+
+Strict gate 0.1.0: ba_strict_jump_qc.py and build_ba_strict_jump_qc.py produce
+strict_v1/*.npz and JSON. Both endpoints of remaining >=100-pixel steps become
+unknown. Because independently supported episode boundaries are unavailable,
+ALL movement_step_px values are NaN for any affected run. Nine runs are blocked,
+with 230 jump pairs. NEW_015 retains 192 and NEW_016 seven (originally 170).
+Endpoint removal is not proof the remaining positions are correct. No automatic
+animal exclusion occurs. Prior scientific reports/production metrics have not
+been regenerated; consumers must explicitly honor movement_status and these arrays.
+
+Turtling: build_ba_qc_turtling.py applies frozen 0.4 development rules anew to
+strict proposal coordinates: baseline diagnostics -> episode 0.2 -> recovery 0.1
+-> continuity 0.3 -> boundary 0.4. These are not old predictions copied onto a
+new track. turtling_v1/ contains masks, states, bouts, input hashes and code hashes.
+Nine jump-blocked runs are NOT ASSESSED. Missing positions and initial recovery
+not established are also unassessed. No candidate detected is NOT an upright label.
+NEW_018 candidate interval is 6453–8294 inclusive, including user example 8060.
+Purple marks automatic candidates on trace, timeline and video circle/trail.
+Pink marks human possible-turtling intervals; these are review concerns, not
+confirmed frame-level posture labels. No retraining or threshold fitting occurred.
+
+UI AND HUMAN DECISIONS
+ba_human_qc_template.html, ba_human_qc.js; served copies in preview root.
+External slider, frame stepping, 0.5/1/2/4x playback, ten-second excerpt/full run.
+Circle and 90-frame trail follow selected strict/proposal coordinates; trails do
+not bridge >=100-pixel jumps or missing data. Optional raw trail is comparison.
+Error categories: jumps/wrong path, missing/gaps, possible turtling/flip,
+camera/lighting, wrong object/shadow, injury/abnormal behavior, other.
+Decisions: looks usable, needs closer review, recommend exclusion. Jump-blocked
+runs cannot receive a new looks-usable decision. A recommendation does not remove
+data. Review scope is explicitly chosen; playback does not establish full coverage.
+Mark turtling start/end saves inclusive turtling_intervals separately from generic
+issue intervals and checks possible_turtling. Save Needs closer review to commit.
+Open intervals must be finished/cleared before saving. Download QC JSON frequently.
+
+Browser storage key is index.id + ':' + index.hash. Current dataset id:
+ba-human-qc-additional100-20261013
+Fingerprint: 5be53562e581d8d9624b6bd83531377cfb258d101161cb24f7b84f96506a1f8f
+DO NOT reset storage, change this fingerprint casually, or rebuild the base index
+while review is active. Existing human reviews are not approvals of later layers.
+JSON schema ba-human-qc-v1 retains drafts, decisions, history, reviewer, timestamps,
+scopes and typed turtling intervals. CSV includes turtling intervals. Import checks
+dataset/scopes/ranges and keeps local conflicting decisions with incoming history.
+Imported draft restoration is not a fully verified resume workflow. A screenshot
+showed a user exclusion recommendation on NEW_015; do not treat this observation
+as a substitute for an exported attributed decision file.
+
+THUMBNAIL FIX
+Old thumbnails skipped most frames, drew disproportionately thick lines and always
+showed delivered proposals. build_ba_qc_thumbnails.py now builds thumbs_v2 SVGs
+from full coordinates in eight layer combinations. Layer toggles refresh thumbnails;
+purple automatic candidates are included. These static thumbnails do not currently
+show browser-local pink annotations or a current-frame dot. The main trace does.
+All 100 IDs, video symlinks and FINAL.npz hashes were checked. NEW_013 visually
+matched after the fix. Switching runs now clears stale plots/status while loading.
+
+VALIDATION AND KNOWN LIMITS
+Three strict-gate tests, nine UI tests, ten schema/export checks passed. All 100
+strict arrays lack finite adjacent >=100-pixel steps; blocked movement arrays are
+all NaN. All 100 turtling masks/states align to 7,200 frames. Browser verified
+NEW_018 purple overlay at 8060 and NEW_013 thumbnail/full trace correspondence.
+This establishes software/display behavior, not correct beetle identity or posture.
+The preview depends on existing lossy cropped videos. Screen mapping/hash checks
+do not independently revalidate every source-video frame. Older EVIDENCE_SHA256.json
+and receipts predate later UI changes; do not represent them as current full hashes.
+Some historical QC hint text contradicts newer missing counts; trust measured
+counts and inspect provenance rather than treating old hints as current approval.
+
+NEXT CHAT
+1. Preserve/export current human QC JSON before any dataset or UI migration.
+2. Read the latest jumping-script chat and identify its exact output/version.
+3. Once Vince resumes integration, make a new versioned preview with input hashes,
+   explicit old/new comparison and a deliberate review-migration policy.
+4. Recompute strict/turtling/thumbnail layers from the chosen coordinate version;
+   do not relabel old human decisions as reviews of changed coordinates.
+5. Keep missingness/unknown posture explicit. Test NEW_015/016 residual jumps,
+   NEW_018 turtling, and rapid run switches. Do not start dyadic work by implication.
+
+KEY RECORDS
+reports/BA_HUMAN_QC_2026-10-13.md
+reports/BA_STRICT_JUMP_QC_2026-10-13.md
+reports/BA_HUMAN_QC_TURTLING_2026-10-13.md
+reports/BA_QC_PREVIEW_NOTEBOOK_2026-10-13.html
+outputs/ba_human_qc_20261013/{INPUT_MANIFEST.json,strict_v1/RECEIPT.json,
+ turtling_v1/SUMMARY.json,turtling_v1/CODE_SHA256.json}
+Screenshots: STRICT_VERIFIED.png, TURTLING_VERIFIED.png, THUMBNAILS_VERIFIED.png.
+
+Focused checks:
+venv-mac/bin/python -m unittest discover -s tests -p test_ba_strict_jump_qc.py -v
+Node runtime: /Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node
+Run tests/test_ba_human_qc_ui.cjs and tests/test_ba_human_qc.cjs with that runtime.
+Do not run build_ba_human_qc.py casually: it recreates the active base index/data.

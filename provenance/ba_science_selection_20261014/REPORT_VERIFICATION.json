@@ -1,0 +1,12 @@
+{
+  "schema": "ba-report-verification-v1",
+  "pdf_pages": 3,
+  "visually_inspected_pages": [
+    1,
+    2,
+    3
+  ],
+  "layout": "PASS",
+  "report_sha256": "72793aae43c8eb190777f15354766f8ec1bf7ff606dd8fd29af46fb6d9b89313",
+  "pdf_sha256": "cd79ce7288ed227581055a136e4fc1f9b485624f1690048f2b535c56843fd918"
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "ba-science-selection-receipt-v1",
+  "version": "1.0.0",
+  "selected_cells": 221,
+  "approved_cells": 180,
+  "excluded_cells": 41,
+  "movement_ready_cells": 176,
+  "approved_movement_hold": [
+    "ba_059",
+    "ba_092",
+    "new_041",
+    "new_088"
+  ],
+  "review_scopes": {
+    "trace_skim": 172,
+    "trace_and_full_video": 6,
+    "trace_and_excerpt": 2
+  },
+  "unique_source_recordings": 14,
+  "verified_run_manifests": 221,
+  "frozen_data_files": 1845,
+  "registry_snapshot_sha256": "93cb05970bac25ab70fed122416631a90c49082018c854d59b6da9e8b5f1be6c",
+  "analysis_variables": "TARGETS_SELECTED: wall frames, fungus frames, movement latency in frames, total distance in pixels; operational definitions pending",
+  "biological_individual_ids": "SOURCE_CELL_LOCATORS_ONLY; animal metadata join remains to be defined",
+  "source_video_hash_status": "PASS; see FULL_SOURCE_AUDIT.json for historical matches versus newly fingerprinted recordings",
+  "frozen_data_location": "/Users/New/Library/CloudStorage/Dropbox/Projects/Coding_Repositories/IDtracker_postprocessing_prototype/outputs/ba_science_selection_20261014/frozen_data"
+}

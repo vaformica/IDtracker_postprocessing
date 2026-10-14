@@ -1,0 +1,185 @@
+{
+  "status": "COMPLETE_UNREVIEWED",
+  "runs": [
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "ba_035",
+      "job": "920127",
+      "utc": "2026-10-14T20:08:15.875234+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/ba_035/idtracker_output/session_Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/ba_035/idtracker_output/session_Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_A5_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "1a9d92f228fc3773d2e8943f9342055d88b7d8e69fcf3b7bafc986e786dd9a76",
+      "session_sha256": "932ab9c1f7c793524251f74bfd522508bf467a533f827fc4f323b9262ad13233",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 8907,
+      "excluded_frames": []
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "ba_049",
+      "job": "920118",
+      "utc": "2026-10-14T20:12:42.217117+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/ba_049/idtracker_output/session_Camera_3_40629046_20260628_1605_ACT2_D1_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/ba_049/idtracker_output/session_Camera_3_40629046_20260628_1605_ACT2_D1_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "fc15dc0580830af8ef1bb992fc18a5b3839d49b86e13b9e41782f45b543b5657",
+      "session_sha256": "e0747d7caa4799122eaf332454df674dbaa4625f5ed108b9a555b1130e7035fa",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": []
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "ba_070",
+      "job": "920128",
+      "utc": "2026-10-14T20:09:56.755038+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/ba_070/idtracker_output/session_Camera_2_40359705_20260627_1326_ACT1_B2_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/ba_070/idtracker_output/session_Camera_2_40359705_20260627_1326_ACT1_B2_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "2a9e89a7cae7ff0b6dd02fa6015036c0beb23570c3d7b7f47677c555612db22c",
+      "session_sha256": "1b42f0ced686f82e80b6f876844a5c6c882bc85e0da1dabef4ef61e0ed503fea",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": []
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_015",
+      "job": "920122",
+      "utc": "2026-10-14T20:05:18.016944+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_015/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_A3_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_015/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_A3_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "7453905a4db09d520f98d815b046f3a8773c2f78514d903d4eb890e5491b8f97",
+      "session_sha256": "7dc5eba2ced4d35853236085557feac6b08d3e270cf52ef189ab7d0c6756be05",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": [
+        1608,
+        1609
+      ]
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_017",
+      "job": "920123",
+      "utc": "2026-10-14T20:05:22.021569+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_017/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_B4_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_017/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_B4_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "c8b68cf9451045d90a898723deadb2fb81e0d4369ca23ea89fc6abdf825f1a5a",
+      "session_sha256": "f245015bec5af97c2f283b62e77d7935d52a784ab625beef7e38ee46dae1c84d",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": [
+        1608,
+        1609
+      ]
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_020",
+      "job": "920124",
+      "utc": "2026-10-14T20:05:17.426616+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_020/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_C5_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_020/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_C5_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "f4a67ee348415ca1a5af21e7d52d957b641d438260474f4526d60d0e4ef80456",
+      "session_sha256": "36f1067adfebca1923051cfc41b01f91b16e694d8da75a2ed3d288d4935e7689",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 138,
+      "frame_count": 9000,
+      "excluded_frames": [
+        1608,
+        1609
+      ]
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_021",
+      "job": "920125",
+      "utc": "2026-10-14T20:05:17.248921+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_021/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_D1_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_021/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_D1_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "0fe2a7cb5e8b638e048706a87585b03de414066806e22406d6e9bc9046f7ccbf",
+      "session_sha256": "9b36acb467b293c8de45a6ab2358485120366478fbe1eb9249f4cef668fecc71",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 3184,
+      "frame_count": 9000,
+      "excluded_frames": [
+        1608,
+        1609
+      ]
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_022",
+      "job": "920126",
+      "utc": "2026-10-14T20:08:15.642719+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_022/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_D2_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_022/idtracker_output/session_Camera_1_40169154_20260627_1614_ACT2_D2_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "1c0c3f938d1a012eea12675466a6e21bbe4138ecfb91dd7c25f1dadb2b36c3a1",
+      "session_sha256": "e8ed3299c0a187879eacc2a4d1354fcef4eaed9061916ff548da32b2c31b1d4e",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": [
+        1608,
+        1609
+      ]
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_046",
+      "job": "920129",
+      "utc": "2026-10-14T20:10:05.872142+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_046/idtracker_output/session_Camera_2_40359705_20260627_1326_ACT1_C2_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_046/idtracker_output/session_Camera_2_40359705_20260627_1326_ACT1_C2_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "a22856b36882eae405329ef159ef88895c8269d5f6432d821ec235e785abc9f0",
+      "session_sha256": "3c10da95ac9dbc0a9d3c3baf98d4b961c050e1423841d9e0708ca3d01dd8c074",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": []
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_059",
+      "job": "920130",
+      "utc": "2026-10-14T20:12:37.592620+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_059/idtracker_output/session_Camera_2_40359705_20260628_1604_ACT2_A4_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_059/idtracker_output/session_Camera_2_40359705_20260628_1604_ACT2_A4_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "c9bb1308bbf0bc84c92f1a19fdb916c3fdf8c50b58fb85352c3818b40837c1fe",
+      "session_sha256": "0de817a6bc30f4348afeb182f82800a7e6ac76ddf275fa1b12c8a46ab5e70b64",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 9000,
+      "excluded_frames": []
+    },
+    {
+      "stage": "COMPLETE_UNREVIEWED",
+      "id": "new_072",
+      "job": "920131",
+      "utc": "2026-10-14T20:09:09.118564+00:00",
+      "session": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_072/idtracker_output/session_Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2_rerun",
+      "trajectory": "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/ba_savannah_reruns_20261014/tracking_v2/new_072/idtracker_output/session_Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2_rerun/trajectories/trajectories.npy",
+      "trajectory_sha256": "7ff50e2a44d0396e7b974b3e87c257658be1d2af09bda5e59cfeb147504c1f78",
+      "session_sha256": "c1d543bf13fbc145c1c60aaf002587ead665053f3ac7a67f74afc8d6829171f4",
+      "exit_code": 1,
+      "exit_warning": true,
+      "unexpected_missing_frames": 0,
+      "frame_count": 7398,
+      "excluded_frames": []
+    }
+  ]
+}

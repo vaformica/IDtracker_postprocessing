@@ -61,7 +61,8 @@ def plan_review_geometry(rois, crop) -> dict:
     x, y, width, height = (int(v) for v in crop)
     if width <= 0 or height <= 0:
         raise ValueError("Review crop must have positive dimensions")
-    rotation, reason = rotation_for_fungus_one_left(rois, (x, y, width, height))
+    rotation, reason = ((0, "single-arena-source-orientation") if len(rois) == 1
+                        else rotation_for_fungus_one_left(rois, (x, y, width, height)))
     rotated_width, rotated_height = (height, width) if rotation in (90, 270) else (width, height)
     scale = min(CANVAS_WIDTH / rotated_width, CANVAS_HEIGHT / rotated_height)
     content_width = max(2, int(rotated_width * scale) // 2 * 2)

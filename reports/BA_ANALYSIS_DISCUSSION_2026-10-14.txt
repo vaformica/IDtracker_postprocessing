@@ -1,0 +1,61 @@
+BA review decisions and analysis extraction — discussion agenda
+Prepared by Codex, 14 October 2026. Proposals for discussion, not adopted rules.
+
+The immediate rerun/QC task preserves old outputs and decisions. It does not
+choose the final biological dataset or regenerate production behavioral metrics.
+
+First commitment: which reviewed version represents each trial?
+Keep the biological animal/trial identifier separate from the arena configuration,
+tracking attempt and processing version. Select a specific dataset hash, run ID
+and attributed review ID. Replacement tracking receives a new review. Preserve
+old rejections, reviewer coverage, concerns and explicit movement overrides.
+An approval can retain concerns for later sensitivity analyses; do not silently
+turn a flagged approval into an exclusion. A fixed selection manifest should
+record any reconciliation, with the rejected alternatives still traceable.
+
+Second commitment: what question and time window are we measuring?
+The older prototype includes provisional latency to move, movement after that
+crossing, wall/interior use, and a fixed post-wake comparison when it fits. Those
+are existing implementation choices, not necessarily the right primary outcomes.
+Agree on the scientific question before choosing a final table of measurements.
+
+Questions for Vince
+1. Which outcomes matter most: latency to recover from death feint, subsequent
+   activity/exploration, wall preference, or another aspect of the BA?
+2. What is the assay time origin? A TOML tracking start is not automatically the
+   start of the behavioral assay. Savannah changed some starts, notably C5.
+   Do we compare a fixed interval from assay start, a fixed interval after recovery,
+   the entire observed post-recovery period, or clearly separated summaries?
+3. What counts as recovery/wake? The historical exact-start displacement rule and
+   the later sustained-departure gate differ. Neither should be renamed as a
+   verified biological transition without agreement and suitable review.
+4. How should overturned behavior enter the analysis: exclusion/filtering,
+   an attributed observed-duration outcome, or both? Current automatic candidates
+   miss quiet on-back episodes. Unmarked and unreviewed footage is not upright.
+5. What animal IDs, treatment/sex/size/recording metadata and physical calibration
+   should accompany each trial? Configuration IDs and tracking copies are not
+   independent biological replicates. Pixels should not be treated as millimeters.
+
+A useful output structure once those decisions are made
+- A trial/version/review selection table, including inclusion and unresolved holds.
+- A frame-level table retaining original global frame/time, raw/recovered/
+  interpolated/strict positions, position provenance, deliberate exclusions,
+  unexpected missingness, and separately attributed posture observations.
+- A trial-level measurement table with units, observation window, denominator,
+  valid movement opportunities, unknown time, interpolation fraction and QC flags.
+- Optional time bins and bout tables if they answer the agreed research question.
+
+Missing locations contribute unknown movement, not zero; movement must not cross
+unsupported gaps. Separate observed/recovered/interpolated contributions and
+predefine sensitivity checks. A screening percentage that combines automatic
+candidates with human flags is not a complete validated posture duration.
+
+Code/review commit plan for discussion
+Commit only a reviewed, scoped BA change set and its meaningful tests; the shared
+working tree also contains unrelated social-pipeline work. Freeze code versions
+and selected-review manifests separately. Keep large videos, raw tracking, prior
+releases and mutable browser state outside Git; preserve them in versioned
+research archives with hashes. Do not commit the live SQLite database. Closed
+registry snapshots and immutable original review exports provide audit records.
+
+No final metric definitions, analysis dataset or Git commit is made by this note.

@@ -1,0 +1,41 @@
+BA QC: faster occasional-use review, UI 1.6.0
+AI-written by Codex, October 13 2026.
+
+Vince requested an occasional-use interface optimized for quick recognition.
+Main decisions, reason flags, percentage and coverage controls now precede the
+footage. Lengthy detector explanations are collapsed. Reason colors retain clear
+text: purple turtling, rust jumps, amber gaps, brown camera/light, blue wrong
+object, pink injury and gray other. Gallery cards show the saved concern labels.
+Colors organize information; they are not the only way to identify a concern.
+
+A approves; T adds possible_turtling and recommends exclusion; R recommends
+exclusion with existing reasons; F requests closer review. T clears a conflicting
+movement override in the new decision while preserving the earlier decision in
+history. It does not delete data or invent a bout. Open intervals must still be
+finished or cleared. Shortcuts ignore typing, modifiers and held-key repeats and
+can be disabled with a persistent checkbox. Revise last decision returns to the
+last saved run; saving an amended decision preserves the earlier history.
+
+Design sources
+Nielsen Norman Group, 10 Usability Heuristics: recognition rather than recall,
+visible system status, user control, efficient shortcuts and restrained layout.
+https://www.nngroup.com/articles/ten-usability-heuristics/
+W3C, Designing for Web Accessibility: text cues accompany color distinctions.
+https://www.w3.org/WAI/tips/designing/
+W3C, Understanding 2.1.4: character shortcuts can be disabled.
+https://www.w3.org/WAI/WCAG22/Understanding/character-key-shortcuts
+These inform the implementation, not a claim of measured speed or complete WCAG
+conformance. Synthetic UI tests pass; browser visual rendering is not tool verified.
+
+Notebook update
+Vince's Laboratory Notebook, BA IDtracker tab t.1sib0epj5u20, now has a new dated
+entry and updated current status: 171 approved (77.4%), 43 recommended exclusions
+(19.5%), 7 closer review (3.2%); 37/43 exclusions mention possible turtling.
+Nine rerun requests and the next-step plan are recorded. Original notes and
+historical checkpoints were retained. Heading: h.g0q8f7lrbqn6.
+
+The user plans to request TOMLs/reruns, review replacement tracking, then proceed
+to final BA data extraction. No new tracking was authorized or submitted in this
+interface/notebook task. The four approved movement holds and absence of explicit
+overrides in the imported scores remain documented. UI changes do not alter the
+dataset fingerprint, scores, source coordinates or detector rules.

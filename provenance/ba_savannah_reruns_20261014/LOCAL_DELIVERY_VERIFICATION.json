@@ -1,0 +1,89 @@
+{
+  "status": "PASS",
+  "verified_files": 353,
+  "runs": [
+    {
+      "id": "new_021",
+      "encoded_frames": 7200,
+      "missing": 3088,
+      "jumps": 21,
+      "interpolated": 96
+    },
+    {
+      "id": "new_017",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "new_022",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "ba_070",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "new_015",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "new_020",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 138
+    },
+    {
+      "id": "new_046",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "ba_035",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "ba_049",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "new_059",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    },
+    {
+      "id": "new_072",
+      "encoded_frames": 7200,
+      "missing": 0,
+      "jumps": 0,
+      "interpolated": 0
+    }
+  ],
+  "dataset_hash": "f625af677617324b89e280fa3656fa641aeb0b28ffda4fecb906c51369d83c91",
+  "frames": 79200,
+  "exact_interpolation_replay": true,
+  "strict_gate_safety": true,
+  "posture_unknown_masks": true,
+  "biological_validation": false
+}

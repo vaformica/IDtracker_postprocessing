@@ -1,0 +1,2622 @@
+{
+  "processing_version": "uniform-recovery-interpolation-1",
+  "view_scope": "New combined track; earlier decisions are not approvals",
+  "schema": "ba-combined-qc-v1",
+  "dataset_sha256": "2379df759e137e2e43c6c4c742b4b9c122478176a88d811ad599162fd2a4b30c",
+  "dataset_id": "ba-combined221-qc-20261013",
+  "reviewer": "VAF",
+  "exported_at": "2026-10-13T19:52:43.958Z",
+  "scope": "Human screening and exclusion recommendations only; no source changes or posture labels",
+  "decisions": [
+    {
+      "errors": [
+        "jumps",
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_full_video",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [
+        [
+          1095,
+          2161
+        ]
+      ],
+      "run_id": "new_015",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_A3",
+      "census_id": "single_f08060df4867",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T18:53:29.942Z"
+    },
+    {
+      "errors": [
+        "jumps",
+        "missing_gaps"
+      ],
+      "notes": "Looks to me like there are lots of missing values that ocudl be filled in with interpolation and some jumpst hat shoudl be eliminated.",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_092",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_B3",
+      "census_id": "single_8e32b9d16ec1",
+      "status": "needs_review",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:27:33.855Z"
+    },
+    {
+      "errors": [
+        "other"
+      ],
+      "notes": "cup in frame rerun TOML",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_020",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_C5",
+      "census_id": "single_10e334d3fde4",
+      "status": "needs_review",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:27:59.536Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [
+        [
+          1095,
+          2358
+        ]
+      ],
+      "run_id": "new_021",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_D1",
+      "census_id": "single_ace7536990a9",
+      "status": "needs_review",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T18:55:26.829Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [
+        [
+          5019,
+          8283
+        ]
+      ],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_016",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_A4",
+      "census_id": "single_8bcda2046093",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:22:56.209Z"
+    },
+    {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_093",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+      "source_label": "Camera_3_40629046_20260629_1321_ACT1B1",
+      "census_id": "single_b04ba7d5299c",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:23:06.356Z"
+    },
+    {
+      "errors": [],
+      "notes": "Hands in video.  rerun with new start time.",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_065",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_B1",
+      "census_id": "single_d5b0de657554",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T18:56:29.517Z"
+    },
+    {
+      "errors": [
+        "jumps",
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_024",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_D5",
+      "census_id": "single_79c4b07b36ec",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:23:21.844Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_071",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_C4",
+      "census_id": "single_cde6465ee3d3",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:23:41.923Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_019",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_C2",
+      "census_id": "single_6f15589302ce",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:23:53.038Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_023",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_D3",
+      "census_id": "single_431e4e77a2e8",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:24:18.629Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_070",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+      "source_label": "Camera_2_40359705_20260627_1326_ACT1_B2",
+      "census_id": "single_46797414d95b",
+      "status": "needs_review",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:25:03.508Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_003",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_B3",
+      "census_id": "single_9f11f9f2dd23",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:25:40.664Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_001",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_A1",
+      "census_id": "single_364cebc35ee8",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:25:48.349Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_002",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_A4",
+      "census_id": "single_8a2eacf1379f",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:25:59.264Z"
+    },
+    {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_022",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_D2",
+      "census_id": "single_52bccc6dfa96",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:28:40.404Z"
+    },
+    {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "Not beetle trace!",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_046",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+      "source_label": "Camera_2_40359705_20260627_1326_ACT1_C2",
+      "census_id": "single_8c3dbb50d600",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:29:01.129Z"
+    },
+    {
+      "errors": [
+        "jumps",
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_017",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_B4",
+      "census_id": "single_01e393f4b225",
+      "status": "needs_review",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:31:36.918Z"
+    },
+    {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_072",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA.avi",
+      "source_label": "Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2",
+      "census_id": "single_d4a16434fa89",
+      "status": "needs_review",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:31:53.286Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_019",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+      "source_label": "Camera_2_40359705_20260627_1326_ACT1_B4",
+      "census_id": "single_8751212d7a3b",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:34:26.278Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_058",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+      "source_label": "Camera_2_40359705_20260627_1326_ACT1_D1",
+      "census_id": "single_55ffc809e808",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:34:35.766Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_005",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_C2",
+      "census_id": "single_4187c8623358",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:36:11.355Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_010",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_D2",
+      "census_id": "single_73b7672273b5",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:36:24.743Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_011",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260627_1316_ACT1_D3",
+      "census_id": "single_206f136f9846",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:36:31.894Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_018",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+      "source_label": "Camera_1_40169154_20260627_1614_ACT2_B5",
+      "census_id": "single_ec3104ad8fda",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:36:42.580Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_047",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+      "source_label": "Camera_2_40359705_20260627_1326_ACT1_D2",
+      "census_id": "single_e1a0c52d9383",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:36:56.902Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_096",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+      "source_label": "Camera_3_40629046_20260629_1321_ACT1_B5",
+      "census_id": "single_a34fe120f828",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:37:41.146Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_and_full_video",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_055",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260629_1319_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260629_1319_ACT1_C3",
+      "census_id": "single_32791e3a6ab8",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:38:07.775Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_051",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260628_1321_ACT1.mp4",
+      "source_label": "Camera_2_40359705_20260628_1321_ACT1_B4",
+      "census_id": "single_864a44603cd7",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:39:38.542Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [
+        [
+          3942,
+          7997
+        ]
+      ],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_060",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless.mp4",
+      "source_label": "Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_D5",
+      "census_id": "single_2220c3afa055",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:40:44.193Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_061",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4",
+      "source_label": "Camera_3_40629046_20260628_1605_ACT2_C4",
+      "census_id": "single_95806ab2f0e8",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:40:49.974Z"
+    },
+    {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "ba_094",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4",
+      "source_label": "Camera_3_40629046_20260628_1605_ACT2_C5",
+      "census_id": "single_883aec036b91",
+      "status": "recommend_exclusion",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:41:17.914Z"
+    },
+    {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "run_id": "new_025",
+      "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260629_1319_ACT1.mp4",
+      "source_label": "Camera_1_40169154_20260629_1319_ACT1_A2",
+      "census_id": "single_701ebc1af2dc",
+      "status": "usable_skim",
+      "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+      "strict_gate_version": "0.1.0",
+      "movement_status": "NO_LARGE_JUMP_BLOCK",
+      "reviewer": "VAF",
+      "at": "2026-10-13T19:42:31.229Z"
+    }
+  ],
+  "drafts": {
+    "new_015": {
+      "errors": [
+        "jumps",
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_full_video",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_021": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_065": {
+      "errors": [],
+      "notes": "Hands in video.  rerun with new start time.",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_016": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_093": {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_024": {
+      "errors": [
+        "jumps",
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_071": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_019": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_023": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_069": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_032": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_070": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_077": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_003": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_004": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_001": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_002": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_027": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_092": {
+      "errors": [
+        "jumps",
+        "missing_gaps"
+      ],
+      "notes": "Looks to me like there are lots of missing values that ocudl be filled in with interpolation and some jumpst hat shoudl be eliminated.",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_020": {
+      "errors": [
+        "other"
+      ],
+      "notes": "cup in frame rerun TOML",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_022": {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_046": {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "Not beetle trace!",
+      "scope": "trace_skim",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_041": {
+      "errors": [],
+      "notes": "THis looks good. ",
+      "scope": "trace_and_full_video",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_017": {
+      "errors": [
+        "jumps",
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_072": {
+      "errors": [
+        "missing_gaps"
+      ],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": true,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_059": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_088": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "This looks good. ",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [
+        [
+          7868,
+          8125
+        ]
+      ],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_019": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_020": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_058": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "followup_01": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_005": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_and_excerpt",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_006": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_007": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_009": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_010": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_011": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_012": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_013": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_018": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_042": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_047": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_048": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_045": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_096": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_055": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_and_full_video",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_001": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_002": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_003": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_005": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_007": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_008": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_009": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_010": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_011": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_012": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_016": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_026": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_036": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_054": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_051": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_052": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_056": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_057": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_060": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_061": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_062": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_066": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_076": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_078": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_079": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_094": {
+      "errors": [
+        "possible_turtling"
+      ],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_095": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "ba_100": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "fresh_01": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "fresh_03": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_025": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_026": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_028": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    },
+    "new_057": {
+      "errors": [],
+      "notes": "",
+      "scope": "trace_skim",
+      "rerun_idtracker": false,
+      "turtling_intervals": [],
+      "turtling_pending": null,
+      "intervals": [],
+      "pending": null
+    }
+  },
+  "history": [
+    {
+      "run_id": "new_015",
+      "previous": null,
+      "next": {
+        "errors": [
+          "jumps",
+          "missing_gaps"
+        ],
+        "notes": "",
+        "scope": "trace_and_full_video",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [
+          [
+            1095,
+            2161
+          ]
+        ],
+        "run_id": "new_015",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_A3",
+        "census_id": "single_f08060df4867",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:53:29.942Z"
+      },
+      "at": "2026-10-13T18:53:29.942Z"
+    },
+    {
+      "run_id": "ba_092",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "Looks to me like there are lots of missing values that ocudl be filled in with interpolation and some jumpst hat shoudl be eliminated.",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_092",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_B3",
+        "census_id": "single_8e32b9d16ec1",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:54:37.699Z"
+      },
+      "at": "2026-10-13T18:54:37.699Z"
+    },
+    {
+      "run_id": "new_020",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_020",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_C5",
+        "census_id": "single_10e334d3fde4",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:54:48.647Z"
+      },
+      "at": "2026-10-13T18:54:48.647Z"
+    },
+    {
+      "run_id": "new_021",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [
+          [
+            1095,
+            2358
+          ]
+        ],
+        "run_id": "new_021",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_D1",
+        "census_id": "single_ace7536990a9",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:55:26.829Z"
+      },
+      "at": "2026-10-13T18:55:26.829Z"
+    },
+    {
+      "run_id": "new_016",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [
+          [
+            5016,
+            8276
+          ]
+        ],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_016",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_A4",
+        "census_id": "single_8bcda2046093",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:55:55.313Z"
+      },
+      "at": "2026-10-13T18:55:55.313Z"
+    },
+    {
+      "run_id": "new_093",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_093",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+        "source_label": "Camera_3_40629046_20260629_1321_ACT1B1",
+        "census_id": "single_b04ba7d5299c",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:56:06.810Z"
+      },
+      "at": "2026-10-13T18:56:06.810Z"
+    },
+    {
+      "run_id": "ba_065",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "Hands in video.  rerun with new start time.",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_065",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_B1",
+        "census_id": "single_d5b0de657554",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:56:29.517Z"
+      },
+      "at": "2026-10-13T18:56:29.517Z"
+    },
+    {
+      "run_id": "new_016",
+      "previous": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [
+          [
+            5016,
+            8276
+          ]
+        ],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_016",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_A4",
+        "census_id": "single_8bcda2046093",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:55:55.313Z"
+      },
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [
+          [
+            5019,
+            8283
+          ]
+        ],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_016",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_A4",
+        "census_id": "single_8bcda2046093",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:22:56.209Z"
+      },
+      "at": "2026-10-13T19:22:56.209Z"
+    },
+    {
+      "run_id": "new_093",
+      "previous": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_093",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+        "source_label": "Camera_3_40629046_20260629_1321_ACT1B1",
+        "census_id": "single_b04ba7d5299c",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:56:06.810Z"
+      },
+      "next": {
+        "errors": [
+          "missing_gaps"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_093",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+        "source_label": "Camera_3_40629046_20260629_1321_ACT1B1",
+        "census_id": "single_b04ba7d5299c",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:23:06.356Z"
+      },
+      "at": "2026-10-13T19:23:06.356Z"
+    },
+    {
+      "run_id": "new_024",
+      "previous": null,
+      "next": {
+        "errors": [
+          "jumps",
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_024",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_D5",
+        "census_id": "single_79c4b07b36ec",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:23:21.844Z"
+      },
+      "at": "2026-10-13T19:23:21.844Z"
+    },
+    {
+      "run_id": "ba_071",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_071",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_C4",
+        "census_id": "single_cde6465ee3d3",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:23:41.923Z"
+      },
+      "at": "2026-10-13T19:23:41.923Z"
+    },
+    {
+      "run_id": "new_019",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_019",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_C2",
+        "census_id": "single_6f15589302ce",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:23:53.038Z"
+      },
+      "at": "2026-10-13T19:23:53.038Z"
+    },
+    {
+      "run_id": "new_023",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_and_excerpt",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_023",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_D3",
+        "census_id": "single_431e4e77a2e8",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:24:18.629Z"
+      },
+      "at": "2026-10-13T19:24:18.629Z"
+    },
+    {
+      "run_id": "ba_070",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_and_excerpt",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_070",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+        "source_label": "Camera_2_40359705_20260627_1326_ACT1_B2",
+        "census_id": "single_46797414d95b",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:25:03.508Z"
+      },
+      "at": "2026-10-13T19:25:03.508Z"
+    },
+    {
+      "run_id": "new_003",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_003",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_B3",
+        "census_id": "single_9f11f9f2dd23",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:25:40.664Z"
+      },
+      "at": "2026-10-13T19:25:40.664Z"
+    },
+    {
+      "run_id": "new_001",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_001",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_A1",
+        "census_id": "single_364cebc35ee8",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:25:48.349Z"
+      },
+      "at": "2026-10-13T19:25:48.349Z"
+    },
+    {
+      "run_id": "new_002",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_002",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_A4",
+        "census_id": "single_8a2eacf1379f",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:25:59.264Z"
+      },
+      "at": "2026-10-13T19:25:59.264Z"
+    },
+    {
+      "run_id": "ba_092",
+      "previous": {
+        "errors": [],
+        "notes": "Looks to me like there are lots of missing values that ocudl be filled in with interpolation and some jumpst hat shoudl be eliminated.",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_092",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_B3",
+        "census_id": "single_8e32b9d16ec1",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:54:37.699Z"
+      },
+      "next": {
+        "errors": [
+          "jumps",
+          "missing_gaps"
+        ],
+        "notes": "Looks to me like there are lots of missing values that ocudl be filled in with interpolation and some jumpst hat shoudl be eliminated.",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_092",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_B3",
+        "census_id": "single_8e32b9d16ec1",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:27:33.855Z"
+      },
+      "at": "2026-10-13T19:27:33.855Z"
+    },
+    {
+      "run_id": "new_020",
+      "previous": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_020",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_C5",
+        "census_id": "single_10e334d3fde4",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T18:54:48.647Z"
+      },
+      "next": {
+        "errors": [
+          "other"
+        ],
+        "notes": "cup in frame rerun TOML",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_020",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_C5",
+        "census_id": "single_10e334d3fde4",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:27:59.536Z"
+      },
+      "at": "2026-10-13T19:27:59.536Z"
+    },
+    {
+      "run_id": "new_022",
+      "previous": null,
+      "next": {
+        "errors": [
+          "missing_gaps"
+        ],
+        "notes": "",
+        "scope": "trace_and_excerpt",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_022",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_D2",
+        "census_id": "single_52bccc6dfa96",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:28:40.404Z"
+      },
+      "at": "2026-10-13T19:28:40.404Z"
+    },
+    {
+      "run_id": "new_046",
+      "previous": null,
+      "next": {
+        "errors": [
+          "missing_gaps"
+        ],
+        "notes": "Not beetle trace!",
+        "scope": "trace_skim",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_046",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+        "source_label": "Camera_2_40359705_20260627_1326_ACT1_C2",
+        "census_id": "single_8c3dbb50d600",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:29:01.129Z"
+      },
+      "at": "2026-10-13T19:29:01.129Z"
+    },
+    {
+      "run_id": "new_017",
+      "previous": null,
+      "next": {
+        "errors": [
+          "jumps",
+          "missing_gaps"
+        ],
+        "notes": "",
+        "scope": "trace_and_excerpt",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_017",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_B4",
+        "census_id": "single_01e393f4b225",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "BLOCKED_UNRESOLVED_JUMPS",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:31:36.918Z"
+      },
+      "at": "2026-10-13T19:31:36.918Z"
+    },
+    {
+      "run_id": "new_072",
+      "previous": null,
+      "next": {
+        "errors": [
+          "missing_gaps"
+        ],
+        "notes": "",
+        "scope": "trace_and_excerpt",
+        "rerun_idtracker": true,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_072",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_Straw_40359705_20260716_1514_EPOCH_BA.avi",
+        "source_label": "Camera_2_Straw_40359705_20260716_1514_EPOCH_BA_B2",
+        "census_id": "single_d4a16434fa89",
+        "status": "needs_review",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:31:53.286Z"
+      },
+      "at": "2026-10-13T19:31:53.286Z"
+    },
+    {
+      "run_id": "ba_019",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_019",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+        "source_label": "Camera_2_40359705_20260627_1326_ACT1_B4",
+        "census_id": "single_8751212d7a3b",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:34:26.278Z"
+      },
+      "at": "2026-10-13T19:34:26.278Z"
+    },
+    {
+      "run_id": "ba_058",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_058",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+        "source_label": "Camera_2_40359705_20260627_1326_ACT1_D1",
+        "census_id": "single_55ffc809e808",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:34:35.766Z"
+      },
+      "at": "2026-10-13T19:34:35.766Z"
+    },
+    {
+      "run_id": "new_005",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_and_excerpt",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_005",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_C2",
+        "census_id": "single_4187c8623358",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:36:11.355Z"
+      },
+      "at": "2026-10-13T19:36:11.355Z"
+    },
+    {
+      "run_id": "new_010",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_010",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_D2",
+        "census_id": "single_73b7672273b5",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:36:24.743Z"
+      },
+      "at": "2026-10-13T19:36:24.743Z"
+    },
+    {
+      "run_id": "new_011",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_011",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1316_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260627_1316_ACT1_D3",
+        "census_id": "single_206f136f9846",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:36:31.894Z"
+      },
+      "at": "2026-10-13T19:36:31.894Z"
+    },
+    {
+      "run_id": "new_018",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_018",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260627_1614_ACT2.mp4",
+        "source_label": "Camera_1_40169154_20260627_1614_ACT2_B5",
+        "census_id": "single_ec3104ad8fda",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:36:42.580Z"
+      },
+      "at": "2026-10-13T19:36:42.580Z"
+    },
+    {
+      "run_id": "new_047",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_047",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260627_1326_ACT1.mp4",
+        "source_label": "Camera_2_40359705_20260627_1326_ACT1_D2",
+        "census_id": "single_e1a0c52d9383",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:36:56.902Z"
+      },
+      "at": "2026-10-13T19:36:56.902Z"
+    },
+    {
+      "run_id": "new_096",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_096",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260629_1321_ACT1.mp4",
+        "source_label": "Camera_3_40629046_20260629_1321_ACT1_B5",
+        "census_id": "single_a34fe120f828",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:37:41.146Z"
+      },
+      "at": "2026-10-13T19:37:41.146Z"
+    },
+    {
+      "run_id": "ba_055",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_and_full_video",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_055",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260629_1319_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260629_1319_ACT1_C3",
+        "census_id": "single_32791e3a6ab8",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:38:07.775Z"
+      },
+      "at": "2026-10-13T19:38:07.775Z"
+    },
+    {
+      "run_id": "ba_051",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_051",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_2_40359705_20260628_1321_ACT1.mp4",
+        "source_label": "Camera_2_40359705_20260628_1321_ACT1_B4",
+        "census_id": "single_864a44603cd7",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:39:38.542Z"
+      },
+      "at": "2026-10-13T19:39:38.542Z"
+    },
+    {
+      "run_id": "ba_060",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [
+          [
+            3942,
+            7997
+          ]
+        ],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_060",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless.mp4",
+        "source_label": "Camera_1_40169154_20260628_1319_ACT1_FLIP_180_lossless_D5",
+        "census_id": "single_2220c3afa055",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:40:44.193Z"
+      },
+      "at": "2026-10-13T19:40:44.193Z"
+    },
+    {
+      "run_id": "ba_061",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_061",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4",
+        "source_label": "Camera_3_40629046_20260628_1605_ACT2_C4",
+        "census_id": "single_95806ab2f0e8",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:40:49.974Z"
+      },
+      "at": "2026-10-13T19:40:49.974Z"
+    },
+    {
+      "run_id": "ba_094",
+      "previous": null,
+      "next": {
+        "errors": [
+          "possible_turtling"
+        ],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "ba_094",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_3_40629046_20260628_1605_ACT2.mp4",
+        "source_label": "Camera_3_40629046_20260628_1605_ACT2_C5",
+        "census_id": "single_883aec036b91",
+        "status": "recommend_exclusion",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:41:17.914Z"
+      },
+      "at": "2026-10-13T19:41:17.914Z"
+    },
+    {
+      "run_id": "new_025",
+      "previous": null,
+      "next": {
+        "errors": [],
+        "notes": "",
+        "scope": "trace_skim",
+        "rerun_idtracker": false,
+        "turtling_intervals": [],
+        "turtling_pending": null,
+        "intervals": [],
+        "run_id": "new_025",
+        "source_video": "/data/labs/vformic1-swat-lab/2026_Videos/2026_BA/2026_BA_Recorded/Camera_1_40169154_20260629_1319_ACT1.mp4",
+        "source_label": "Camera_1_40169154_20260629_1319_ACT1_A2",
+        "census_id": "single_701ebc1af2dc",
+        "status": "usable_skim",
+        "turtling_version": "frozen-0.4-on-recovered-before-interpolation-v1",
+        "strict_gate_version": "0.1.0",
+        "movement_status": "NO_LARGE_JUMP_BLOCK",
+        "reviewer": "VAF",
+        "at": "2026-10-13T19:42:31.229Z"
+      },
+      "at": "2026-10-13T19:42:31.229Z"
+    }
+  ]
+}

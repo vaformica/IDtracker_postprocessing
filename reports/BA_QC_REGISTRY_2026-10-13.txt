@@ -1,0 +1,91 @@
+BA review, comments and reruns: a lightweight working plan
+AI-written by Codex, 13 October 2026
+
+For reviewers
+Download and unzip the HTML QC packet. Open START_HERE.html, enter your name,
+and skim the enlarged traces. A approves the current run and advances. It is
+inactive in text fields and on held/repeated keys. Check concerns and still
+approve when appropriate; those flags are retained for filtering. Coverage is
+recorded separately: a skim does not become full-video review.
+
+Turtling above 15% now suggests removal, but does not exclude automatically.
+The cutoff is editable. It uses the union of automatic candidates and completed
+human bouts divided by the full window, not just successfully tracked frames.
+No flag is not evidence of no turtling. Known frozen-detector misses remain.
+An explicit human movement override can release finite strict-track steps while
+leaving jump endpoints and gap-crossing movement unknown.
+
+Download ALL QC scores before stopping. Browser storage provides local resume,
+not a central backup. Return the JSON to Vince/Codex, or put it in the lab's
+agreed collection folder. No reviewer account, installation or SSH is required.
+The packet reopens the last visited run in that browser. Import JSON to resume
+on another computer. Use separate browser profiles/packet copies for reviewers
+sharing a computer, so one person's unfinished draft is not attributed to another.
+
+What is built
+ba_review_registry.py is a Python-standard-library importer and SQLite registry.
+The live database is /Users/New/Library/Application Support/BeetleQC/reviews.sqlite3.
+It is outside Dropbox. The initial registered collection has 221 cells, not 300.
+The manifest fingerprint binds every review to the exact packet. The source
+TOML, source video, ROI, tracking session and input hashes remain available through
+stored manifests. Target locator keys help reconciliation but do not prove that
+two differently configured targets are biologically identical.
+
+All imported JSON bytes and their hashes are retained. Reviews, concern flags,
+inclusive bouts and explicit revisions are normalized in separate tables.
+Unfinished drafts and import-conflict records are archived but are not approvals.
+Repeated exports do not duplicate identical decisions. Different reviewers and
+unlinked conflicting revisions remain separate; there is no last-upload-wins
+consensus. A downstream analysis must select an attributed review_id or reconcile
+multiple opinions before joining annotations onto measurements.
+
+Exports include review_annotations.csv, review_history.json, workflow_reviews.json,
+and REVIEW_HISTORY.js. The CSV has analysis_approved, possible_flags,
+review_comments, possible_turtling_bouts, issue_intervals, reviewer, review_scope,
+rerun_requested, movement_override and estimated_turtled_percent. The snapshot
+cutoff is recalculable without changing the saved annotation or original JSON.
+These are annotation sidecars; existing scientific metric files are not overwritten.
+The viewer can show imported registry history via the small REVIEW_HISTORY.js
+sidecar without changing the packet fingerprint or resetting active scores.
+
+Coordinator commands (run from the scientific repository)
+python3 ba_review_registry.py --db '/Users/New/Library/Application Support/BeetleQC/reviews.sqlite3' register '/Users/New/Downloads/BA_combined_221_QC'
+python3 ba_review_registry.py --db '/Users/New/Library/Application Support/BeetleQC/reviews.sqlite3' import '/path/to/returned_scores.json'
+python3 ba_review_registry.py --db '/Users/New/Library/Application Support/BeetleQC/reviews.sqlite3' snapshot '/new/versioned/snapshot/path' --cutoff 15
+
+Snapshot folders must be new. Copy their REVIEW_HISTORY.js to the packet root
+when preparing its next review handoff; preserve the previous sidecar. Copy closed
+snapshots to Firebird with lab group access. Do not put the live database on a
+shared mount or sync a database being written. SQLite documents network-file
+locking/sync limitations: https://www.sqlite.org/useovernet.html
+
+Reruns and workflow integration
+A rerun request is a human request, not submission authority. The operations
+workflow reads workflow_reviews.json alongside scheduler and execution records.
+Approved reruns receive new versioned output roots, tracking/processing attempt
+records and packet hashes. Register the new packet, then explicitly link it:
+python3 ba_review_registry.py --db '/Users/New/Library/Application Support/BeetleQC/reviews.sqlite3' link-rerun PARENT_HASH PARENT_RUN CHILD_HASH CHILD_RUN --reason 'Attributed request and tracking attempt reference'
+Earlier comments remain available; approval is never inherited by new tracking.
+An explicit link may reconcile a changed TOML/ROI; do not silently merge by name.
+The existing provenance register uses its own draft asset/config/attempt IDs.
+This registry supplies exact path/hash manifests and version edges for a crosswalk;
+it does not replace or rewrite that register or assert missing attempt IDs.
+
+Hosting choice
+Use Firebird for archived packets, returned JSON files and closed snapshots.
+No login-node web service or network-mounted live SQLite database was installed.
+A later authenticated web uploader could feed the same importer, but it is not
+necessary for this round. The initial inbox is a coordinator-accessible SSH path,
+not a public/browser upload URL. Agree a collaborator-accessible return folder
+before distribution; for now JSON can be returned through this chat.
+
+Verification and current state
+Six registry tests cover duplicate import, revisions, different reviewers,
+malformed-file rollback, draft isolation, no inherited approvals and cutoff
+boundaries. Synthetic UI tests cover keyboard guards, flags plus approval,
+export/import, frame stepping, override and turtling percentage updates.
+221 packet manifest hashes were reconciled with the dataset fingerprint.
+No current-packet JSON exports were present, so the registry contains zero human
+reviews; marks currently in the browser must still be downloaded and imported.
+No scientific reruns, trajectory changes or biological validation occurred.
+Browser visual rendering/playback has not been tool verified this turn.

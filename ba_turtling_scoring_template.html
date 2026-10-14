@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>BA turtling — new scoring set</title>
+<style>body{font:17px system-ui;background:#f4f6f8;color:#172c3b;max-width:1000px;margin:20px auto;padding:16px}h1{font-size:26px}video{display:block;width:100%;height:36vh;background:#101820;object-fit:contain}button,input,select,textarea{font:inherit;padding:8px;margin:5px}button{cursor:pointer}label{display:block;margin:10px 0}.bar{display:flex;align-items:center;gap:12px;justify-content:space-between}.card{background:white;padding:14px;border-radius:8px;margin:14px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}textarea{width:95%}small{display:block;color:#425c6d}#message{padding:10px;background:#e3eef5}#time{font-variant-numeric:tabular-nums;font-weight:600}input[type=text]{max-width:90%}@media(max-width:650px){.grid{display:block}}.quick{border:2px solid #b9cddd;padding:10px;margin:8px 0}.quick h2{font-size:18px;margin:0}.quick button{font-weight:600}.active{color:#9b3100;font-weight:700}.quick small{min-height:24px}.bar{flex-wrap:wrap}video::-webkit-media-controls{display:none!important}.transport{position:static;padding:8px 10px;background:#e3eef5;border-radius:0 0 8px 8px}.transport label[for=seek]{margin:4px 0;font-size:14px}.transport input[type=range]{display:block;width:calc(100% - 12px);margin:6px;padding:0}</style>
+<h1>BA turtling: new scoring set</h1>
+<p>Time turtled means all time on the back, including quiet periods. Flailing is a separate check for whether the detector misses those quiet periods. Predictions and source filenames are hidden. Labels printed in the original video remain visible. Use <b>Uncertain</b> when the view is unclear.</p>
+<label>Your name <input id="reviewer" placeholder="Name or initials"></label>
+<div class="bar"><button id="prev">Previous</button><b id="title"></b><button id="saveClip">Save this clip</button><button id="downloadTop">Download scores</button><button id="next">Next</button></div>
+<video id="video" playsinline preload="auto" disablepictureinpicture></video>
+<div class="transport"><div><button id="play">Play / pause</button><button id="back">−1 frame</button><button id="forward">+1 frame</button><label style="display:inline">Speed <select id="speed"><option value="1">Normal</option><option value="2">2×</option><option value="4">4×</option><option value="0.5">Half</option><option value="0.25">Quarter</option></select></label></div><label for="seek">Video position</label><input id="seek" type="range" min="0" max="0" step="1" value="0" aria-label="Video position"></div>
+
+<div class="card quick">
+<button id="startBoth">Start both: on back + flailing</button>
+<div class="grid">
+<section><h2>On its back / turtled</h2><button id="postureStart">Start on back</button><button id="postureStop">Stop on back</button><button id="postureToEnd">Continues to end</button><button id="postureCancel">Cancel start</button><small id="postureActive" role="status"></small></section>
+<section><h2>Active flailing</h2><button id="flailingStart">Start flailing</button><button id="flailingStop">Stop flailing</button><button id="flailingToEnd">Continues to end</button><button id="flailingCancel">Cancel start</button><small id="flailingActive" role="status"></small></section>
+</div>
+<small>Start records the current frame. Stop saves through the current frame, including it. For an exact boundary, pause on the last frame of that behavior before pressing Stop. Stop flailing independently if the beetle stays on its back. Repeat for another bout; no typing or Add step is needed.</small>
+</div>
+
+<p id="saveFeedback" role="status"></p><p id="time"></p><p id="message" role="status">Loading video…</p>
+<p>The Start / Stop buttons fill the interval boxes below automatically. Choose “Never” when there was no behavior, or “Uncertain” if the view is unclear. Choose “Throughout” only if the behavior continues for the entire run. If the beetle recovers and turtles again, enter separate intervals; score pauses in flailing separately. Use frame intervals only for “Only during specified intervals”; leave those boxes empty for other choices.</p>
+<div class="card grid">
+<div><label><b>On its back / turtled</b><select id="posture"><option value="">Not scored</option><option value="none">Never in this clip</option><option value="throughout">Throughout this clip</option><option value="intervals">Only during specified intervals</option><option value="uncertain">Uncertain</option></select></label><label>Inclusive global frame intervals <input id="posture_ranges" type="text" placeholder="Start-end, start-end"></label></div>
+<div><label><b>Actively flailing</b><select id="flailing"><option value="">Not scored</option><option value="none">Never in this clip</option><option value="throughout">Throughout this clip</option><option value="intervals">Only during specified intervals</option><option value="uncertain">Uncertain</option></select></label><label>Inclusive global frame intervals <input id="flailing_ranges" type="text" placeholder="Start-end, start-end"></label></div>
+</div>
+<details class="card"><summary>Optional: manually edit or mark intervals</summary><p>Pause at the first frame and mark the start. Move to the last frame and mark the end, then add it. Repeat for more than one interval.</p><select id="target"><option value="posture">Turtled posture</option><option value="flailing">Active flailing</option></select><button id="markStart">Mark start</button><input id="rangeStart" type="number" aria-label="Interval start"><button id="markEnd">Mark end</button><input id="rangeEnd" type="number" aria-label="Interval end"><button id="addRange">Add interval</button></details>
+<label>Notes, uncertainty, or anything unusual<textarea id="notes" rows="2"></textarea></label>
+<div class="card"><button id="export">Download scores</button><span id="progress"></span><p id="storage"></p><label>Resume from a previously downloaded score file <input type="file" id="import" accept="application/json,.json"></label><small>Download your scores when finished and attach the JSON in this chat. Browser saving is only a convenience. Times resolve to individual 30-fps frames (about 33 milliseconds).</small></div>
+<script>
+const SET=__SET__, CLIPS=__CLIPS__, MEDIA=__MEDIA__, INITIAL_SCORES=__INITIAL_SCORES__;
+const storageKey=SET.id+':scorer-v3',legacyStorageKey=SET.id+':scorer-v2';
+const $=id=>document.getElementById(id),fields=['posture','posture_ranges','flailing','flailing_ranges','notes'];
+let scores=JSON.parse(JSON.stringify(INITIAL_SCORES)),n=0,pending={};try{const stored=localStorage.getItem(storageKey)||localStorage.getItem(legacyStorageKey);if(stored)scores=JSON.parse(stored)}catch(e){}
+function clip(){return CLIPS[n]}
+function frame(){return clip().start+Math.max(0,Math.min(clip().frames-1,Math.floor($('video').currentTime*clip().fps+1e-5)))}
+function ranges(value,c){if(!value.trim())return [];return value.split(',').map(part=>{const m=part.trim().match(/^(\d+)\s*[-–—]\s*(\d+)$/);if(!m)throw Error('Use start-end frame ranges, separated by commas.');const first=+m[1],last=+m[2];if(first<c.start||last>c.start+c.frames-1||first>last)throw Error('An interval is outside this clip or has its end before its start.');return {first_global_frame:first,last_global_frame:last}})}
+function issues(s,c){if(!s)return ['not scored yet'];const errors=[];for(const k of ['posture','flailing']){if(s.pending_starts?.[k]!==undefined)errors.push((k==='posture'?'On back':'Flailing')+': a start is still open; press Stop, Continues to end, or Cancel start');const label=k==='posture'?'Turtled posture':'Active flailing';if(!['none','throughout','intervals','uncertain'].includes(s[k])){errors.push(label+': choose a score');continue}let rr;try{rr=ranges(s[k+'_ranges']||'',c)}catch(e){errors.push(label+': enter BOTH start and end, e.g. '+c.start+'-'+(c.start+c.frames-1)+'. '+e.message);continue}if(s[k]==='intervals'&&!rr.length)errors.push(label+': enter a start-end interval');if(s[k]!=='intervals'&&rr.length)errors.push(label+': clear the interval box or choose specified intervals');}return errors}
+function valid(s,c){return issues(s,c).length===0}
+function progress(){const incomplete=CLIPS.filter(c=>!valid(scores[c.id],c));$('progress').textContent=(CLIPS.length-incomplete.length)+' / '+CLIPS.length+' complete'+(incomplete.length?' — needs attention: '+incomplete.map(c=>c.id.replace('clip_','clip ')).join(', '):' — ready to return');}
+function save(){scores.reviewer=$('reviewer').value;scores[clip().id]={...scores[clip().id],...Object.fromEntries(fields.map(f=>[f,$(f).value])),pending_starts:{...pending}};scores[clip().id].updated_utc=new Date().toISOString();try{localStorage.setItem(storageKey,JSON.stringify(scores));$('storage').textContent='Progress saved in this browser. Download a copy before closing.'}catch(e){$('storage').textContent='Browser saving is unavailable. Download your scores before closing.'}progress();renderButtons();const problems=issues(scores[clip().id],clip());$('saveFeedback').textContent='Clip '+(n+1)+' saved.'+(problems.length?' Needs attention: '+problems.join(' '):' Complete. You can download now; Next is not required.')}
+function show(){const c=clip(),s=scores[c.id]||{};pending={...(s.pending_starts||{})};fields.forEach(f=>$(f).value=s[f]||'');$('title').textContent=`Clip ${n+1} of ${CLIPS.length} · ${c.frames/c.fps} seconds`;$('video').src=MEDIA[c.id];$('video').controls=false;$('seek').max=c.frames-1;$('seek').value=0;$('video').playbackRate=+$('speed').value;$('prev').disabled=n===0;$('next').disabled=false;$('next').textContent=n===CLIPS.length-1?'Finish & download':'Save & next';$('rangeStart').value='';$('rangeEnd').value='';$('message').textContent=`Loading video. Clip bounds: global frames ${c.start}–${c.start+c.frames-1}.`;progress();$('saveFeedback').textContent=scores[c.id]?(valid(scores[c.id],c)?'Saved and complete.':'Saved; needs attention: '+issues(scores[c.id],c).join(' ')):'Not scored yet.';renderButtons();updateTime()}
+function updateTime(){const c=clip();$('seek').value=frame()-c.start;$('time').textContent=`Global frame ${frame()} · ${$('video').currentTime.toFixed(3)} s · clip ends at frame ${c.start+c.frames-1}`}
+function seek(i){const c=clip();$('video').pause();$('video').currentTime=(Math.max(0,Math.min(c.frames-1,i))+.1)/c.fps;updateTime()}
+
+function renderButtons(){
+ for(const k of ['posture','flailing']){
+  const open=pending[k]!==undefined;
+  $(k+'Start').disabled=open;$(k+'Stop').disabled=!open;$(k+'ToEnd').disabled=!open;$(k+'Cancel').disabled=!open;
+  $(k+'Active').textContent=open?'Recording from frame '+pending[k]+' — waiting for Stop.':($(k+'_ranges').value?'Saved: '+$(k+'_ranges').value:'Press Start when this behavior begins.');
+  $(k+'Active').className=open?'active':'';
+ }
+ $('startBoth').disabled=pending.posture!==undefined&&pending.flailing!==undefined;
+}
+function startBehavior(k){
+ if(pending[k]!==undefined)return;
+ if($(k).value==='throughout'){$('message').textContent='This behavior is already scored Throughout. Change that choice first if you want to correct it.';return}
+ pending[k]=frame();save();$('message').textContent='Start recorded. Press the matching Stop when that behavior ends.';
+}
+function finishBehavior(k,last=frame()){
+ if(pending[k]===undefined)return;
+ const first=pending[k],c=clip();
+ if(!Number.isInteger(first)||first<c.start||last<first||last>c.start+c.frames-1){$('message').textContent='Stop must be at or after the start and inside this run. The start is still saved.';return}
+ let rr;
+ try{rr=ranges($(k+'_ranges').value,c)}catch(e){$('message').textContent='Please correct the existing interval text first. '+e.message;return}
+ rr.push({first_global_frame:first,last_global_frame:last});rr.sort((a,b)=>a.first_global_frame-b.first_global_frame);
+ const merged=[];for(const b of rr){const prev=merged[merged.length-1];if(prev&&b.first_global_frame<=prev.last_global_frame+1)prev.last_global_frame=Math.max(prev.last_global_frame,b.last_global_frame);else merged.push({...b})}
+ $(k+'_ranges').value=merged.map(b=>b.first_global_frame+'-'+b.last_global_frame).join(', ');$(k).value='intervals';delete pending[k];save();
+ $('message').textContent=(k==='posture'?'On back':'Flailing')+' saved: frames '+first+'–'+last+'.';
+}
+for(const k of ['posture','flailing']){
+ $(k+'Start').onclick=()=>startBehavior(k);
+ $(k+'Stop').onclick=()=>finishBehavior(k);
+ $(k+'ToEnd').onclick=()=>finishBehavior(k,clip().start+clip().frames-1);
+ $(k+'Cancel').onclick=()=>{delete pending[k];save();$('message').textContent='Unfinished start cancelled; saved intervals unchanged.'};
+}
+$('startBoth').onclick=()=>{const at=frame();for(const k of ['posture','flailing'])if(pending[k]===undefined&&$(k).value!=='throughout')pending[k]=at;save();$('message').textContent='Both starts are recorded (any existing start is kept). Stop each behavior separately.'};
+
+$('reviewer').value=scores.reviewer||'';fields.concat(['reviewer']).forEach(f=>{$(f).oninput=save;$(f).onchange=save});$('saveClip').onclick=save;$('downloadTop').onclick=()=> $('export').onclick();
+$('prev').onclick=()=>{save();n--;show()};$('next').onclick=()=>{save();if(n===CLIPS.length-1){$('export').onclick();return}n++;show()};
+$('play').onclick=async()=>{try{if($('video').paused)await $('video').play();else $('video').pause()}catch(e){$('message').textContent='Playback failed: '+e.message}};
+$('seek').oninput=e=>seek(Number(e.target.value));
+$('back').onclick=()=>seek(frame()-clip().start-1);$('forward').onclick=()=>seek(frame()-clip().start+1);$('speed').onchange=()=>{$('video').playbackRate=+$('speed').value};
+$('video').onloadeddata=()=>{$('message').textContent='Ready — press Play. Quiet periods on the back count as turtled.';$('video').playbackRate=+$('speed').value;updateTime()};$('video').onerror=()=>{$('message').textContent='Video could not load. Reopen this saved HTML file in Safari or Firefox.'};$('video').ontimeupdate=updateTime;
+$('markStart').onclick=()=>{$('rangeStart').value=frame()};$('markEnd').onclick=()=>{$('rangeEnd').value=frame()};
+$('addRange').onclick=()=>{const target=$('target').value,range=$('rangeStart').value+'-'+$('rangeEnd').value;try{ranges(range,clip());const previous=$(target+'_ranges').value.trim();$(target+'_ranges').value=previous?previous+', '+range:range;$(target).value='intervals';save();$('message').textContent='Interval added.'}catch(e){$('message').textContent=e.message}};
+$('export').onclick=()=>{save();if(!$('reviewer').value.trim()){$('message').textContent='Please enter your name or initials before downloading.';return}const completed=CLIPS.filter(c=>valid(scores[c.id],c)).length;const annotations=CLIPS.map(c=>{const s=scores[c.id]||{};return {clip_id:c.id,start_global_frame:c.start,end_global_frame_inclusive:c.start+c.frames-1,fps:c.fps,complete:valid(s,c),decisions:s,...(valid(s,c)?{posture_intervals:s.posture==='throughout'?[{first_global_frame:c.start,last_global_frame:c.start+c.frames-1}]:ranges(s.posture_ranges||'',c),flailing_intervals:s.flailing==='throughout'?[{first_global_frame:c.start,last_global_frame:c.start+c.frames-1}]:ranges(s.flailing_ranges||'',c)}:{})}});const data={schema:'ba-validation-scores-v1',scorer_version:'0.3.1',scoring_set:SET,exported_utc:new Date().toISOString(),completed_clips:completed,reviewer:$('reviewer').value.trim(),scores,annotations};const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=SET.export_filename||'BA_turtling_validation_scores_20261005.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('message').textContent=`Downloaded all saved entries; ${completed}/${CLIPS.length} complete. ${completed===CLIPS.length?'Attach the JSON here.':'See the progress line for clips needing attention; incomplete entries are preserved.'}`};
+$('import').onchange=async e=>{try{const data=JSON.parse(await e.target.files[0].text());if(data.schema!=='ba-validation-scores-v1'||JSON.stringify(data.scoring_set)!==JSON.stringify(SET))throw Error('That file belongs to a different scoring set.');if(!confirm('Replace this page’s current scores with the imported file?'))return;scores=data.scores;$('reviewer').value=scores.reviewer||data.reviewer||'';show();save();$('message').textContent='Saved scores restored.'}catch(err){$('message').textContent='Import failed: '+err.message}};
+const firstIncomplete=CLIPS.findIndex(c=>!valid(scores[c.id],c));n=firstIncomplete<0?0:firstIncomplete;show();
+</script></html>

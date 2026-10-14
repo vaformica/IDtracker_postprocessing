@@ -1,0 +1,15 @@
+{
+  "registry_after_reruns/review_history.json": "360a5631127d90ff27ecf25ab96046a03673c4bb44bb2d668eef2cc039e140a5",
+  "registry_after_reruns/workflow_reviews.json": "a27a268de485ae9953724d3e401f3a105fd308204df6c6e7ccca2d5ab676f988",
+  "registry_after_reruns/review_annotations.csv": "7310181ed12ba2acd8e5a21e4da1ca3e907edc6ec5349f18013cc05d7b638f99",
+  "registry_after_reruns/reviews.sqlite3": "1df730a8c17e3466fd2ca893d4cf568378ec52c721499abf928a681ca911545a",
+  "registry_after_reruns/REVIEW_HISTORY.js": "f0a0d4e8e089bad8e3731032ad142feb11297cb2d14162f45650154c23a937eb",
+  "registry_after_reruns/RECEIPT.json": "230810ce13c5b3ff981dc2e871b8b32f453b314df5d4c0c70f99d837ae0bb445",
+  "REGISTRY_RECEIPT.json": "ab5f1f87b76963a7a9ec9f3008bfec439d1ed817019103e694a8ba8581214d43",
+  "LOCAL_DELIVERY_VERIFICATION.json": "e6b585abd7a64e7277ac214889c7095fdc6d6fe7a222478276caeec0d6c7dd73",
+  "NOTEBOOK_RECEIPT.json": "eb519e0494ca2ebccfcc6eed85861a7dbfa0ab4e6ece522312cb75d06903f6c6",
+  "QC_DECISIONS_DRIVE_LINK.json": "a3b5d3187d31777c5214d2cbd6d503cada573a1fe1dd2c343018d0b8c785e16a",
+  "RESUME.txt": "eacea7ebd597cf3215e8ca83bc2afcf84f8ce57efc4492441214eb13d8fff296",
+  "BA_SAVANNAH_RERUNS_2026-10-14.txt": "eacea7ebd597cf3215e8ca83bc2afcf84f8ce57efc4492441214eb13d8fff296",
+  "BA_ANALYSIS_DISCUSSION_2026-10-14.txt": "7755e075fa967bd68f124b2af15f9cbd9f51e16483945a1e312c069bcef3ae0c"
+}

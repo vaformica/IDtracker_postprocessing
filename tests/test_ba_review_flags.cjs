@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict'),api=require('../ba_review_flags.js');
+const run={id:'r1',label:'Camera cell A1',video:'source',priority:'high',human_review:{reviewed_frames:0},flags:[{code:'MISSING_TRACKING',domain:'tracking',reason:'gap'}]};const index={id:'test',runs:[run]};
+const x=api.exportFlags(index,'hash','VAF',{r1:{requested:true,reason:'tracking',notes:'check gap'}});
+assert.equal(api.validate(x,index,'hash').flags[0].run_id,'r1');
+assert.throws(()=>api.validate(x,index,'wrong'));
+assert.throws(()=>api.validate({...x,flags:[...x.flags,...x.flags]},index,'hash'));
+assert.throws(()=>api.validate({...x,flags:[{...x.flags[0],run_id:'unknown'}]},index,'hash'));
+assert.throws(()=>api.exportFlags(index,'hash','',{}));
+assert.throws(()=>api.validate({...x,flags:[{...x.flags[0],requested:'yes'}]},index,'hash'));
+assert(api.matches(run,'tracking','A1',{}));assert(!api.matches(run,'behavior','',{}));
+assert(api.matches(run,'manual','',{r1:{requested:true}}));assert(!api.matches(run,'manual','',{}));
+assert(api.matches(run,'unscored','',{}));assert(api.matches(run,'MISSING_TRACKING','',{}));
+assert.equal(run.priority,'high');assert.equal(run.human_review.reviewed_frames,0);
+console.log('14 manual flag/export/filter checks passed.');

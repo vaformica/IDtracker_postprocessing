@@ -2232,6 +2232,7 @@ def write_plot_pdf(
     video: str,
     cell_label: str,
     qc_record_id: str,
+    ba_turtling_report: dict | None = None,
 ) -> None:
     """Write audit plots without interpolation, seconds, or derived smoothing."""
     try:
@@ -3036,6 +3037,10 @@ def write_plot_pdf(
         )
         pdf.savefig(fig)
         plt.close(fig)
+
+        if ba_turtling_report is not None:
+            from ba_turtling import pdf_pages
+            pdf_pages(pdf, ba_turtling_report)
 
 
 def main() -> int:

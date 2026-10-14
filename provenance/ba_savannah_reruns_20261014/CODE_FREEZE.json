@@ -1,0 +1,24 @@
+{
+  "files": {
+    "ba_combined_layers.py": "d28cb3461f6cecd0b702100014d27691105015f3bfdf421923a4db075e14b322",
+    "ba_excursion_recovery.py": "fc70c6224cbb93c55477958b6e29333b5d7e4e95c83ff96cc7c3c46c203dd07d",
+    "ba_strict_jump_qc.py": "5cedbddd4a940609b6a675a83cad8de28d51ba1b5ff7200c807b0145836df961",
+    "ba_recovery_candidates.py": "9d424ed8b224a021a2efbb67cd5c550fd1a43ca755f6ed001431d629f5378a41",
+    "ba_turtling.py": "610508153ede170f23b90f41e4697183dd1e1826f6236d19bfacbb663857c31b",
+    "ba_combined_qc.js": "59ef32658aeb92a1d09253a4095f0db53196f02d044db17bf12f3f6f33183457",
+    "ba_turtling_continuity_experiment.py": "4579f5d7304d36ccb5910b002b86bc4ec9385d39bc7ee05e9eb696cff795bcc7",
+    "ba_turtling_boundary_experiment.py": "30cdf051ec68708b385f5e8a115f1d9d6b35de1d1216dcd6ab9519393fe292b8",
+    "ba_major_jump_recovery.py": "76cf100a2ace251ba70079ac7882f894836f906be205e8fe8af865d5d335aae0",
+    "ba_combined_package.py": "e40cf6fb8af1432b6b7d389dab7bd003174fa9d6eced7e25851fb274ce36539b",
+    "ba_combined_review.html": "141cc494d92b8eb611a7a9f8c22f1de1971d4f7c828e3cdf43654aa8b0d0af03",
+    "ba_combined_recovery.py": "e3e06687e040e09812d981b3725e11681a809270a2453f66907aebcc98f15055",
+    "ba_turtling_candidates.py": "1a1af37b31e5150ec5cef42efccdc7162644d486986b4881dac3c1d04e0733ae",
+    "ba_turtling_diagnostics.py": "27fdedbf4466ca0b14876fd6477714d1b84d9ff606e4b25cd579c1da8b5f055c",
+    "ba_turtling_recovery_gate.py": "febab98292df25a9515cd705276fcb7fd245afe0f67dea3be923ebfe6524682b",
+    "ba_review_workflow.html": "0585a553bb09704427b4ead15c2a5bae8667f700744edcd046159e98ff09eb71",
+    "ba_interpolation.py": "2df7b3d3da30fe62d385788fed46da50a7b0933e9e48a0f77c51b08d45572e34",
+    "ba_stationary_reacquisition.py": "7f8b903f62fbedcf2460c10e291e170a0e11fc2004fbde3e4147e53d904ee687",
+    "ba_turtling_episode_experiment.py": "f79881cdddf0e9a138ce607384a43efef9803d868a12f919673d024df445b4e3",
+    "ba_frozen_batch.py": "758d3e9d2a425c57f4923ba28b68a62c5a7ca847a3b23ba68212005929bf4706"
+  }
+}
