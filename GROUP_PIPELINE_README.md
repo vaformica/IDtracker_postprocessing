@@ -1,5 +1,7 @@
 # Reusable beetle group pipeline
 
+**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping. The implementation/release descriptions below retain their historical Git checkpoint; the handoff records current archived output status.
+
 The same processor now handles **two or more tracked animals** and an ROI list
 containing an arena followed by **one or more fungi**. It reads animal count
 from the trajectory array and fungus count from `session.json`. The original

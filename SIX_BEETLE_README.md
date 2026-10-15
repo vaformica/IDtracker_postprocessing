@@ -1,3 +1,42 @@
+# Charlotte six-beetle dataset handoff — 15 October 2026
+
+**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred.
+
+## Review findings and interpretation
+
+Savannah reported reviewing five videos spanning better and worse tracking. She observed missing IDs, IDs jumping across simultaneous groups, disruption when a third beetle joined, and identity swaps even in good videos. These are attributed review observations, not a quantified error rate or accepted correction set. The best/worst split is inconsistent in the source descriptions; no split is assigned here.
+
+Apparent lag can be a viewer artifact; establish the source video, global frame and raw-versus-PSC state before attributing it to tracking. PSC requires a missing beetle: available IDs retain their exact input coordinates, assigned-centroid proximity is at most 60 original-image pixels, and only missing IDs with compatible evidence may receive PSC inference. Unsupported positions stay missing. Neither proximity nor inferred PSC establishes touching, mounting or fighting.
+
+## Preserved review package and counts
+
+The canonical science-output root is:
+`/data/labs/vformic1-swat-lab/idtracker_pipeline_runs/psc_1_6_0_regenerated_51_20261005`
+
+The six-beetle package uses **2024 recordings processed in 2026**, PSC **1.6.0**, processor **0.8.2-group**, and raw/PSC viewer **v4**. All outputs remain **UNREVIEWED**, not scientifically accepted. Software verification and Savannah’s observations do not grant blanket acceptance. Preserve the original inputs, attributed reviews, manifests and historical release receipts.
+
+| Count | Meaning and evidence | Status |
+| --- | --- | --- |
+| 26 | Six-beetle trials in the October 5 regenerated review package; 9,000 inclusive frames each | Confirmed locally against `plan.json`, `RELEASE_RECEIPT.json`, 26 six-animal per-run analysis manifests, and the warning-package index |
+| 28 | Processed count reported in Savannah’s meeting notes | Not reconciled to named review-package trials |
+| 30 | Experimental-design buckets | Design count, not a verified delivered or accepted sample |
+
+The checked package manifests establish 26 delivered review trials but do not supply a complete mapping to the reported 28 processed or 30 design buckets. The two-trial and four-bucket numerical differences must not be labeled exclusions, failures, duplicates or missing recordings without an explicit source-to-trial mapping. This discrepancy remains unresolved.
+
+Local review entry point: `outputs/psc_regenerated_51_20261005/review_set/START_HERE.html`. Warning-guided packages are under `outputs/psc_review_qc_20261005/`; they add review priorities without changing the scientific trajectories. The local regeneration and warning-package records retain validation and access provenance. The collection also contains 25 separate dyadic cases; these are not six-beetle trials.
+
+The local identity-only editor 0.3.0 report and its October 19 reminder are historical. A reminder is not authorization to resume; this handoff does not claim to have canceled or changed a scheduled reminder. The methods and commands below are retained technical reference, not instructions to restart six-beetle work.
+
+## Source provenance and publication scope
+
+The decision is recorded in Vince’s October 14–15 messages and message to Charlotte; Savannah’s review discussion and the updated lab notebook retain the detailed evidence. Private source links and reviewer records remain in the local handoff rather than this Git publication.
+
+The October 5 regeneration, warning-package and identity-corrector reports remain local historical records. Their current-status cross-references do not authorize a restart. This handoff preserves the essential current guidance without publishing those reports or their access details. The methods and commands below describe the historical implementation; current archived output versions above do not assert that this Git code snapshot implements them.
+
+---
+
+## Historical implementation reference
+
 ## Persistent detection-supported analysis (v0.7.0)
 
 For the reusable two-or-more-animal command and input contract, see

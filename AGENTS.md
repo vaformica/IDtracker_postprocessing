@@ -1,5 +1,7 @@
 # Current handoff for future Codex tasks
 
+**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping. The implementation/release descriptions below retain their historical Git checkpoint; the handoff records current archived output status.
+
 Read [README.md](README.md) and [reports/PROJECT_HANDOFF_2026-09-28.md](reports/PROJECT_HANDOFF_2026-09-28.md) before changing the pipeline. This file records the 2026-09-28 checkpoint; verify live Firebird state for later work.
 
 - **Current science versions:** `persistent_groups.py` has PSC model **1.5.1**; `six_beetle_processor.py` has script **0.8.1-group**. The same module and parameters serve dyads and six-beetle runs. `processor.py` and root `VERSION=0.8.1` describe the older standalone prototype.
