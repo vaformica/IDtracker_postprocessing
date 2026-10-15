@@ -1,5 +1,7 @@
 # IDtracker post-processing
 
+**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping. The implementation/release descriptions below retain their historical Git checkpoint; the handoff records current archived output status.
+
 > **Historical code checkpoint — 28 September 2026.** This branch preserves the earlier dyadic and six-beetle implementation and its documentation. New PSC contact corrections and BA work are in development locally as of 30 September; this checkpoint is not the latest implementation. Release paths and availability described below are historical and must be reverified, especially following subsequent invalidation and cleanup. Passing software tests does not validate the scientific inferences.
 
 This repository turns IDtracker.ai tracking into frame-by-frame beetle locations, movement and fungus measurements, review PDFs, and a synchronized video viewer. It supports dyads and larger groups with the **same persistent social contact (PSC) rules**. The original v0.8.1 prototype remains available for comparison; it is not the current PSC pipeline.
@@ -11,7 +13,7 @@ This repository turns IDtracker.ai tracking into frame-by-frame beetle locations
 
 Both workflows use the same PSC model and retain raw tracking alongside inferred positions. This is the maintained post-processing project; “prototype” refers only to the historical standalone implementation. Renaming the project does not change scientific version numbers or the review status of its outputs.
 
-**Read the [visual project handoff](reports/PROJECT_HANDOFF_2026-09-28.html)** for a quick orientation, or the [text version](reports/PROJECT_HANDOFF_2026-09-28.md) for release paths and status. [AGENTS.md](AGENTS.md) is the concise technical handoff for the next development task.
+**For the historical September checkpoint, read the [visual project handoff](reports/PROJECT_HANDOFF_2026-09-28.html)** for a quick orientation, or the [text version](reports/PROJECT_HANDOFF_2026-09-28.md) for release paths and status. [AGENTS.md](AGENTS.md) is the concise technical handoff for the next development task.
 
 | Current component | Version | Where it lives |
 | --- | --- | --- |
