@@ -1,0 +1,31 @@
+GitHub publication checkpoint — 16 October 2026
+AI-written by Codex for Vince.
+
+Scope: all accumulated BA, dyadic, turtling, post-processing, review and dashboard
+source/record changes in the scientific and operations repositories. Includes
+previously committed local BA checkpoints and the selected 300-frame dashboard
+candidate layer. Existing Git history is preserved. Paused six-beetle and editor
+work is saved as historical work; neither project resumes.
+
+Scientific source keeps its existing public GitHub repository. Operations is a
+new private GitHub repository because it contains detailed local/lab inventories
+and human review records. This is repository publication, not public web hosting.
+
+Included in operations: all nonignored source, reports, dashboards/trace data,
+review exports, approvals, provenance snapshots/databases and experiment evidence.
+Excluded: video media and an interrupted video transfer; both stay untouched in
+their current local/Firebird storage. Scientific outputs/caches/environments
+already excluded by its established .gitignore remain excluded. No cleanup,
+history rewrite, scientific promotion or biological approval was performed.
+
+Verification: 353 scientific Python tests; four operations monitor tests;
+18 fight review/posture import tests; dashboard controls, identity editor core
+and dyadic-comment viewer checks passed. All 98 rendered sidecars match their
+manifest/packet; 34 masks replay exactly; protected human records unchanged.
+The initial incomplete runtime failed for absent dependencies; the complete run
+used installed local dependencies without installing or upgrading software.
+Known credential patterns were scanned with no findings; no eligible file is
+over 50 MB. Current browser appearance was not newly verified.
+
+Branches: science codex/six-beetles-three-fungus-rois; operations codex/operations-setup.
+Remote commit hashes are verified after pushing and reported in the chat.

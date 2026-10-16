@@ -21,7 +21,7 @@ from trajectory_reconstruction import reconstruct
 from persistent_groups import persistent_groups,MODEL_VERSION
 from frame_data import write_frame_data
 
-SCRIPT_VERSION = '0.8.1-group'
+SCRIPT_VERSION = '0.8.2-group'
 PDF_TRACK_STYLE_VERSION = 'outlined-psc-v1'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
@@ -359,6 +359,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     timeline['states'][:]=1
     timeline['states'][np.isfinite(group['xy']).all(axis=2)]=0
     timeline['states'][group['inferred']]=2
+    # Individual disappearance flags must not call the assigned partner missing.
+    timeline['disappearance_candidate'] = group['source'] == 'PSCP_BLOB'
     estimated_windows, estimated_regions, estimated_turtling_masks = [], [], []
     # Preserve two evidence classes: visible assigned proximity is an
     # interaction; co-location with at least one inferred identity is PSCP.
@@ -386,16 +388,19 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         trajectory_source_kind=source_kind, settings=settings, animal_count=animal_count,
         roi_order=['arena']+[f'fungus_{i}' for i in range(1,len(rois))],
         fungus_numbering_convention='Input order is preserved, not automatically sorted. For the 2024 GroupTrial six-beetle recordings, fungus 1 is the leftmost or bottommost bracket, as specified by Vince.',
-        frame_state_definition='Presumed social disappearance takes precedence: membership in a detection-supported group with at least one inferred identity. One detected blob supports at most one independently visible identity, even if IDtracker supplies coordinates for several IDs. Observed proximity alone does not change the individual display state. Missing canonical coordinates remain missing. Ambiguity is flagged separately.',
+        frame_state_definition='Every finite IDtracker coordinate remains ASSIGNED at its exact input position. Available IDs are never relabeled PSC, including when sharing one blob. Proximity uses two assigned centroids within the social radius. Only missing IDs may have inferred locations. Missing unsupported positions stay missing.',
         rois=[p.tolist() for p in rois], fixed_anchor_rule='ALL_SIX_WAKE_LATEST_CROSSING',
         qc_status='UNREVIEWED', coordinate_substitution=True, raw_coordinates_preserved=True,
-        presumed_group_rule='Persistent groups survive identity loss and true detection gaps. One blob supports at most one assigned identity. All pile movement and split branches obey the per-member speed gate. Short-gap reacquisition is bounded; distant independent return requires a sustained smooth singly labeled track. A separate entity claiming that blob causes an explicit review conflict, not identity theft. A confirmed return may retrospectively follow a unique smooth unclaimed unlabeled blob path back to its former pile; such positions remain inferred and ambiguous. The short interval immediately before that path appears has unknown departure timing and receives no pile location, movement, or fungus credit. A multiway split with no defensible branch for a hidden member leaves its position missing until former-partner rejoin or sustained independent return. No frame-specific automatic overrides.',
+        raw_identity_policy='IDTRACKER_AUTHORITATIVE',
+        presumed_group_rule='Inference applies only to missing IDs. New contact requires immediately preceding supported proximity within the social radius and a compatible detection. Available IDs detach immediately from prior groups and retain their raw positions without blob, movement, or confirmation gates. Competing missing-ID blob claims remain unresolved. Short-gap inference is bounded; no retrospective identity reassignment or raw-label swap correction.',
         persistent_group_settings=dict(social_radius_px=social_distance_threshold_px,
             max_step_px_per_frame=reconstruction_speed_px,split_confirmation_frames=split_confirmation_frames,
             gap_speed_px_per_frame=gap_speed_px,gap_radius_cap_px=gap_radius_cap_px,
             max_reacquire_gap_frames=max_reacquire_gap_frames,
             distant_confirmation_frames=distant_confirmation_frames,
-            unresolved_multiway_split_policy='MISSING_UNTIL_FORMER_PARTNER_OR_SUSTAINED_RAW_RETURN'),
+            raw_return_confirmation_applied=False,
+            confirmation_settings_status='LEGACY_ARGUMENTS_INACTIVE',
+            unresolved_multiway_split_policy='MISSING_UNTIL_SUPPORTED_DETECTION_OR_IMMEDIATE_RAW_RETURN'),
         persistent_model_version=MODEL_VERSION,blob_evidence_sha256=sha256(blob_path),blob_evidence_file=str(blob_path.resolve()),
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
@@ -612,7 +617,7 @@ def write_pdf(result, destination, video, cell):
                              label='Ambiguous disappearance'))
         fig.legend(handles=handles, loc='upper center', bbox_to_anchor=(.5,.89),
                    ncol=2, frameon=False, fontsize=10)
-        fig.text(.08,.155,fill('Gold marks presumed social disappearance: group members sharing one detected blob. Proximity alone does not turn this panel gold. Hatching marks uncertain partner attribution. This is not proof of attack; inferred coordinates are stored separately from the original missing values.',125),fontsize=10)
+        fig.text(.08,.155,fill('Gold marks an inferred position for a missing ID: either PSCP_BLOB in a social group or singleton BLOB_CONTINUITY. Available IDtracker IDs stay assigned. Proximity alone does not turn this panel gold. Hatching marks uncertain attribution; this is not proof of attack.',125),fontsize=10)
         fig.text(.08,.10,fill('Observed means a coordinate assigned to this ID in the selected trajectory file; IDtracker may already have filled gaps. Very brief states may be hard to see at page scale; frame_states.csv preserves every frame and its evidence.',125),fontsize=9)
         fig.subplots_adjust(left=.10,right=.96,bottom=.28,top=.78)
         footer(fig,animal_count+4); pdf.savefig(fig); plt.close(fig)
@@ -697,7 +702,7 @@ def write_pdf(result, destination, video, cell):
             fig.text(.32,y,fill(description,76),fontsize=10,va='top')
         fig.text(.08,.29,fill(f'"Near" means within the configured proximity radius ({settings["social_distance_threshold_px"]:g} pixels here). "Raw" means the selected IDtracker trajectory input before PSC processing; its ID labels can be wrong.',115),fontsize=10)
         fig.text(.08,.20,fill('Do not sum these four columns. Raw near can overlap the screened categories. Assigned near and PSC describe different evidence for a pair at a frame.',115),fontsize=10)
-        fig.text(.08,.11,fill('If a pile of three or more splits and the model cannot tell which branch contains a hidden beetle, that beetle is marked UNRESOLVED_SPLIT with no location. It may count in neither pair\'s unresolved total because even its partner is uncertain. Check frame_data.csv for the frame-level location_source and ambiguity flag.',115),fontsize=10)
+        fig.text(.08,.11,fill('Available IDs retain their exact IDtracker coordinates immediately after separation. If a missing member has no defensible detection attribution, it remains MISSING, with ambiguity flagged when candidates exist. Check frame_data.csv for raw coordinates, location_source and inferred flags.',115),fontsize=10)
         footer(fig,animal_count+7+fungus_count);pdf.savefig(fig);plt.close(fig)
 
 
@@ -809,7 +814,10 @@ def main():
         matches=list(session.rglob('session.json'))
         if len(matches)!=1: parser.error('Expected exactly one session.json')
         session_json=matches[0]
-    before={str(p.resolve()):sha256(p) for p in [source,session_json]}
+    inputs = [source, session_json]
+    if source.name == 'human_corrected_trajectories.npy':
+        inputs.append(source.parent / 'IDENTITY_CORRECTION_RECEIPT.json')
+    before={str(p.resolve()):sha256(p) for p in inputs}
     result=analyze_six(**args)
     if any(sha256(p)!=value for p,value in before.items()): raise RuntimeError('Input changed during analysis')
     result['metadata']['frames_per_second']=fps

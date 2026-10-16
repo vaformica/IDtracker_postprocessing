@@ -27,7 +27,8 @@ class ReviewDecisionTests(unittest.TestCase):
                 reconstruction=dict(max_speed_px_per_frame=100))
             (bundle/'manifest.json').write_text(json.dumps(manifest))
             video=root/'clip.mp4';video.write_bytes(b'fake-video-for-portable-review-test')
-            source_review=root/'review';build(bundle,video,source_review,(0,0,100,100),30)
+            source_review=root/'review';build(bundle,video,source_review,(0,0,100,100),30,
+                                             source_toml='/inputs/Camera_test_B2.toml')
             def decision(kind,value,a,b,frame):
                 return dict(created_utc='2026-09-23T00:00:00Z',reviewer='Tester',reason='Visible in source clip',
                     kind=kind,value=value,animal_id=a,partner_id=b,start_frame=frame,end_frame_inclusive=frame)
@@ -48,10 +49,13 @@ class ReviewDecisionTests(unittest.TestCase):
                 pairs=list(csv.DictReader(stream))
             self.assertEqual((pairs[0]['pscp_frames'],pairs[0]['observed_proximity_frames']),('1','1'))
             self.assertEqual(sha(state),manifest['output_sha256']['canonical_states.npz'])
-            html=(output/'review'/'interaction_review.html').read_text()
+            review_files=json.loads((output/'review'/'source_manifest.json').read_text())
+            self.assertEqual(review_files['cell_id'],'B2')
+            self.assertEqual(review_files['html'],'Camera_test_B2__interaction_review.html')
+            html=(output/'review'/review_files['html']).read_text()
             self.assertIn('Review and correct frames',html)
             self.assertIn('Visible in source clip',html)
-            self.assertTrue((output/'review'/'review_video.mp4').is_file())
+            self.assertTrue((output/'review'/review_files['video']).is_file())
             with self.assertRaises(FileExistsError):replay(bundle,review,output)
             invalid=dict(review,decisions=[decision('fungus','1',1,None,11),
                                            decision('location','missing',1,0,11)])

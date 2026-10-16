@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html
 import itertools
 import json
 import os
+import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -41,6 +43,14 @@ def _safe_filename(name: str, suffix: str) -> str:
     return name
 
 
+def artifact_stem(source_toml, label):
+    """Keep the complete original TOML stem, including its arena/cell suffix."""
+    stem = Path(str(source_toml)).stem if source_toml else str(label)
+    if not stem or Path(stem).name != stem or '\\' in stem or stem in ('.', '..'):
+        raise ValueError('Artifact label must be a plain filename stem')
+    return stem
+
+
 def _replace_once(text: str, old: str, new: str) -> str:
     count = text.count(old)
     if count != 1:
@@ -55,20 +65,19 @@ def build(
     crop,
     fps,
     label=None,
-    html_name="interaction_review.html",
-    video_name="review_video.mp4",
+    html_name=None,
+    video_name=None,
     link_video=False,
     initial_decisions=None,
     video_geometry=None,
     source_video=None,
     video_filter=None,
+    source_toml=None,
 ):
     """Create a self-contained HTML/video review directory without overwriting."""
     bundle = Path(bundle)
     video = Path(video)
     output = Path(output)
-    html_name = _safe_filename(html_name, ".html")
-    video_name = _safe_filename(video_name, ".mp4")
     if output.exists():
         raise FileExistsError(f"Refusing existing output: {output}")
     if not video.is_file():
@@ -104,6 +113,17 @@ def build(
     frames = len(xy)
     start = int(meta["settings"]["start"])
     label = label or meta.get("cell_label") or Path(meta.get("video", "session")).stem
+    source_toml = str(source_toml or meta.get('source_toml') or '')
+    stem = artifact_stem(source_toml, label)
+    html_name = _safe_filename(html_name or f'{stem}__interaction_review.html', '.html')
+    video_name = _safe_filename(video_name or f'{stem}__review_video.mp4', '.mp4')
+    # The recording name is shared by several cells. Never let a custom
+    # display label replace the identity carried by the source TOML.
+    toml_name = Path(source_toml).name if source_toml else ''
+    cell_match = re.search(r'_(Box\d+|[A-Z]\d+)(?:_(?:OLD|MIX|YOUNG))?$', Path(toml_name).stem, re.IGNORECASE)
+    cell_id = cell_match.group(1).upper() if cell_match else ''
+    identity_text = (f'Cell: {cell_id or "not recorded"} · Source TOML: '
+                     f'{toml_name or "not recorded"}')
     roi_polygons = [np.asarray(polygon, float) for polygon in meta["rois"]]
     proximity_px = float(meta['settings'].get('social_distance_threshold_px', 60))
     max_step_px = float(meta.get('reconstruction', {}).get('max_speed_px_per_frame', 100))
@@ -142,6 +162,8 @@ def build(
     zero = np.zeros(xy.shape[:2], dtype=int)
     accepted = data["source"] == "ASSIGNED"
     payload = dict(
+        cellId=cell_id or None,
+        sourceToml=source_toml or None,
         start=start,
         end=start + frames - 1,
         fps=float(fps),
@@ -150,7 +172,7 @@ def build(
         modelSettings=meta.get('persistent_group_settings',{}),
         pscModelVersion=meta.get('persistent_model_version', 'unknown'),
         processorVersion=meta.get('script_version', 'unknown'),
-        reviewViewVersion='raw-psc-compare-v3',
+        reviewViewVersion='raw-psc-compare-v4',
         videoGeometry=video_geometry,
         analysisManifestSha256=sha256(manifest_path),
         canonicalSha256=expected,
@@ -181,10 +203,13 @@ def build(
     editor = editor_path.read_text()
     editor = _replace_once(editor, "__INITIAL_DECISIONS__", json.dumps(initial_decisions or [], separators=(",", ":")).replace('<', '\\u003c'))
     template = _replace_once(template, "__EDITOR_SCRIPT__", editor)
-    template = _replace_once(template, "2024 six-beetle battles — OLD review", f"{animal_count}-beetle review — {label}")
-    template = _replace_once(template, "2024 six-beetle battles · OLD · synchronized interaction review", f"{animal_count}-beetle synchronized interaction review · {label}")
+    display_label = html.escape(str(label))
+    cell_title = f'Cell {cell_id} · ' if cell_id else ''
+    template = _replace_once(template, "2024 six-beetle battles — OLD review", f"{cell_title}{animal_count}-beetle review — {display_label}")
+    template = _replace_once(template, "2024 six-beetle battles · OLD · synchronized interaction review", f"{cell_title}{animal_count}-beetle synchronized interaction review · {display_label}")
+    template = _replace_once(template, '</h1>', '</h1>\n<p id="recordingIdentity">'+html.escape(identity_text)+'</p>')
     template = _replace_once(template, "Pink: provisional user-reviewed contact.", "All positions come from the report bundle. UNREVIEWED: identity attribution remains uncertain.")
-    template = template.replace("OLD_source_crop.mp4", video_name)
+    template = template.replace("OLD_source_crop.mp4", html.escape(video_name, quote=True))
     template = _replace_once(template, "point(D.raw[t][D.anchors[t][a]])", "point(D.held[t][a])")
     template = _replace_once(
         template,
@@ -210,14 +235,16 @@ def build(
     template = _replace_once(
         template,
         "Reacquisition uses elapsed frames and three consistent candidate frames; it cannot prove identity.",
-        "Group splits require three consistent assignments. Automatic identity inference cannot prove identity; review the video before approval.",
+        ("Available IDs remain assigned, including after separation and when sharing a blob. PSC applies only to missing IDs; review inferred positions before approval."
+         if meta.get("raw_identity_policy") == "IDTRACKER_AUTHORITATIVE" else
+         "Group splits require three consistent assignments. Automatic identity inference cannot prove identity; review the video before approval."),
     )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".six-beetle-review-", dir=output.parent))
     try:
         (staging / html_name).write_text(
-            template.replace("__DATA__", json.dumps(payload, separators=(",", ":"), allow_nan=False))
+            template.replace("__DATA__", json.dumps(payload, separators=(",", ":"), allow_nan=False).replace('<', '\\u003c'))
         )
         destination_video = staging / video_name
         if link_video:
@@ -229,7 +256,7 @@ def build(
                 shutil.copy2(video, destination_video)
         source_manifest = dict(
             schema="six-beetle-interaction-review-v2" if animal_count == 6 else "group-interaction-review-v2",
-            review_view_version='raw-psc-compare-v3',
+            review_view_version='raw-psc-compare-v4',
             analysis_frame_count=frames,
             psc_model_version=meta.get('persistent_model_version', 'unknown'),
             processor_version=meta.get('script_version', 'unknown'),
@@ -242,6 +269,8 @@ def build(
             animal_count=animal_count,
             fungus_count=len(roi_polygons)-1,
             label=label,
+            cell_id=cell_id or None,
+            source_toml=source_toml or None,
             analysis_bundle=str(bundle.resolve()),
             analysis_manifest_sha256=sha256(manifest_path),
             canonical_sha256=expected,
@@ -271,8 +300,9 @@ def main():
     parser.add_argument("--crop", type=float, nargs=4, required=True, metavar=("X", "Y", "WIDTH", "HEIGHT"))
     parser.add_argument("--fps", type=float, required=True)
     parser.add_argument("--label")
-    parser.add_argument("--html-name", default="interaction_review.html")
-    parser.add_argument("--video-name", default="review_video.mp4")
+    parser.add_argument("--source-toml")
+    parser.add_argument("--html-name")
+    parser.add_argument("--video-name")
     parser.add_argument("--link-video", action="store_true", help="Use a symlink instead of making a portable video file")
     args = parser.parse_args()
     print(build(**vars(args)))

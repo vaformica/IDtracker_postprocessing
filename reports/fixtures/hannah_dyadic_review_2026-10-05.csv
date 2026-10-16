@@ -1,0 +1,15 @@
+video,beetle_0_colour,beetle_1_colour,reported_frame,issue
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_A1,white,black,6707,"example of farther than 1 body's length for proximity (potentially not an issue, but included as an example)"
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_C1,black,white,5995,"PSCP assigned but no social contact, and Idtracker still tracking both beetles"
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_C1,black,white,6571,"PSCP assigned but no social contact; Idtracker only tracking one beetle (not necessarily an issue, just wanted to compare cases)"
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_C1,black,white,6909,"PSCP assigned but no social contact, and Idtracker still tracking both beetles"
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_C1,black,white,7026,Beetle not assigned ID after interaction but are still labeled in Idtracker
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_C1,black,white,6780,missing social interaction but idtracker still tracking both beetles
+Camera_1_40169154_20260630_1342_FIGHT_ACT1_C1,black,white,6865,missing social interaction but idtracker still tracking both beetles
+Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2,white,black,3071,case of swapped identity
+Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2,white,black,3605,missing social interaction but idtracker still tracking both beetles
+Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2,black,white,865,"PSCP assigned but no social contact, and Idtracker still tracking both beetles"
+Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2,black,white,1168,"PSCP assigned but no social contact, and Idtracker still tracking both beetles"
+Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2,black,white,1169,Beetle not assigned ID after interaction but are still labeled in Idtracker
+Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2,black,white,1291,Beetle not assigned ID after interaction but are still labeled in Idtracker
+Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2,black,white,3243,Beetle not assigned ID after interaction but are still labeled in Idtracker

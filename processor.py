@@ -350,6 +350,16 @@ def load_trajectories(path: Path) -> np.ndarray:
 
 
 def validate_trajectory_source(path: Path) -> str:
+    if path.name == 'human_corrected_trajectories.npy':
+        import hashlib
+        receipt_path = path.parent / 'IDENTITY_CORRECTION_RECEIPT.json'
+        receipt = json.loads(receipt_path.read_text())
+        if (receipt.get('schema') != 'beetle-identity-corrections-v1' or
+                receipt.get('status') != 'HUMAN_CORRECTED_NEEDS_REPROCESSING' or
+                receipt.get('corrected_full_trajectory') is not True or
+                receipt.get('output_sha256', {}).get(path.name) != hashlib.sha256(path.read_bytes()).hexdigest()):
+            raise ValueError('Human-corrected trajectory lacks a matching provenance receipt')
+        return 'HUMAN_IDENTITY_CORRECTED'
     source_kind = IDTRACKER_TRAJECTORY_SOURCES.get(path.name)
     if source_kind is None:
         raise ValueError(

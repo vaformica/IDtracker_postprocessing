@@ -267,6 +267,8 @@ def pipeline_command(code_dir: str, run_dir: str, post_python: str, idtracker_py
     ]
     if parameters.get("trajectory"):
         command += ["--trajectory", parameters["trajectory"]]
+    if parameters.get('source_toml'):
+        command += ['--source-toml', parameters['source_toml']]
     return command
 
 
@@ -343,9 +345,11 @@ class App(tk.Tk):
                         movement="30", wall="30", fungus="30", proximity="60", jump="200", reconstruction="100",
                         split_confirmation="3", gap_speed="20", gap_cap="300", gap_frames="30",
                         distant_confirmation="10")
+        defaults['source_toml'] = ''
         self.variables = {key: tk.StringVar(value=value) for key, value in defaults.items()}
         labels = [
             ("session", "Remote session"), ("trajectory", "Remote trajectory (optional)"), ("video", "Remote source video"),
+            ('source_toml', 'Original TOML path (for cell/name)'),
             ("label", "Output label"), ("start", "Start frame"), ("end", "End frame inclusive"), ("fps", "FPS"),
             ("movement", "Wake movement px"), ("wall", "Wall buffer px"), ("fungus", "Fungus buffer px"),
             ("proximity", "Proximity px"), ("jump", "Analysis jump px"), ("reconstruction", "One-frame identity speed px"),
@@ -440,6 +444,7 @@ class App(tk.Tk):
         chosen = self.tree.selection()
         if not chosen:return
         row = self.records[int(chosen[0])]
+        self.variables['source_toml'].set(str(row.get('source_toml') or ''))
         for key in ("session", "trajectory", "video", "label"):
             if row.get(key) not in (None, "", 0):self.variables[key].set(str(row[key]))
         if isinstance(row.get('start'), int) and isinstance(row.get('end'), int) and row['start']>=0 and row['end']>row['start']:

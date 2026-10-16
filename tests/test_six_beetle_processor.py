@@ -12,7 +12,7 @@ class SixBeetleTests(unittest.TestCase):
     def test_methods_page_tracks_versions_and_current_rules(self):
         import dyadic_processor
         self.assertIs(dyadic_processor.main, six.main)
-        self.assertEqual(dyadic_processor.MODEL_VERSION,'1.5.1')
+        self.assertEqual(dyadic_processor.MODEL_VERSION,'1.6.0')
         methods = Path(six.__file__).with_name('SIX_BEETLE_METHODS.html').read_text()
         self.assertIn(f'data-processor-version="{six.SCRIPT_VERSION}"', methods)
         self.assertIn(f'data-model-version="{persistent_groups.MODEL_VERSION}"', methods)
@@ -54,6 +54,30 @@ class SixBeetleTests(unittest.TestCase):
         self.assertTrue(all(x['frame_observations']==3601 and x['available_steps']==3600 for x in fixed))
         self.assertEqual({x['region'] for x in r['regions'] if x['region'].startswith('fungus_')},
                          {f'fungus_{i}{suffix}' for i in range(1,4) for suffix in ['', '_edge','_interior']})
+
+    def test_raw_authority_reaches_timeline_and_proximity_exports(self):
+        # Same-blob assignments and a post-gap jump must survive in both modes.
+        for count in (2, 6):
+            with self.subTest(animals=count):
+                raw = np.full((10, count, 2), np.nan)
+                raw[0] = [[i*500, 0] for i in range(count)]
+                raw[:, 1] = [30, 0]
+                raw[0, 0] = [0, 0]
+                raw[3, 0] = [45, 0]
+                raw[4, 0] = [700, 0]
+                np.save(self.source, {'trajectories': raw})
+                (self.root/'blob_evidence.json').write_text(json.dumps({'frames':
+                    {str(t): [dict(centroid=[30, 0], identities=[1, 2])] for t in range(5)}}))
+                result = six.analyze_six(self.source, self.root, 1, 3)
+                raw = raw[1:5]
+                known = np.isfinite(raw).all(axis=2)
+                np.testing.assert_array_equal(result['group']['xy'][known], raw[known])
+                self.assertTrue((result['frame_timeline']['states'][known] == 0).all())
+                self.assertFalse(result['frame_timeline']['disappearance_candidate'][known].any())
+                self.assertTrue(result['masks'][0, 1][2])
+                self.assertFalse(result['group']['masks'][0, 1][2])
+                self.assertFalse(result['masks'][0, 1][3])
+                self.assertEqual(result['metadata']['raw_identity_policy'], 'IDTRACKER_AUTHORITATIVE')
 
     def test_partition_additivity(self):
         r=self.analyze()

@@ -1,0 +1,16 @@
+Hannah and Savannah dyadic comment review — 14 October 2026
+
+Vince is reviewing their reported problems before deciding whether code changes are warranted. The original CSV is retained with its reviewer initials and wording. It contains 48 rows across 10 distinct video/cell names; Hannah's Slack message says 11 videos reviewed. One row cites two frames, yielding 49 review cards. Three rows have no frame and remain general observations.
+
+Open Downloads/Dyadic_comment_review_20261014/START_HERE.html, keeping its media and snapshots folders together. The working preview is http://127.0.0.1:8790/START_HERE.html while serve_review.py is running. The dashboard includes full scrub-through videos, 141 unlabeled snapshots, raw/PSC/no-label views, suggested categories, explicit decisions and notes. Download the decision JSON to preserve/share the review; browser drafts are not the authoritative scientific record.
+
+Frame values follow the original review HTML's global frame display. Cases open five frames before the cited frame, bounded by available footage. The frame-zero row explicitly discusses a late video start and maps to first available global frame 170. Each card also displays the zero-based video frame. Snapshot extraction uses the exact encoded frame index (global minus window start).
+
+Source CSV SHA256: 0547ed82d05a12a4454e0a84a4f219b28b57f29b0f0078559f8e7219ddc87f03
+Source science remains PSC 1.6.0 / processor 0.8.2-group, UNREVIEWED. No scientific rules, trajectories, source videos or existing analyses were changed. Suggested categories are triage hypotheses. Decisions cannot apply corrections.
+
+Checks: ten media hashes and 7200 encoded frames per video verified; 141 snapshots generated. Node checks cover source coverage, frame mapping, stepping/clamping, persistent drafts, explicit decisions, import rejection and blank/start/range cases. Browser preview verified initial seek at 1659, +1 at 1660, playback and raw-label mode. Python's ordinary HTTP server does not support the required seeking; use serve_review.py. Direct file-URL testing is blocked by the in-app browser policy and is not claimed tested.
+
+Code: build_dyadic_comment_review.py, dyadic_comment_review.html, tests/test_dyadic_comment_review.cjs.
+Evidence: outputs/dyadic_comment_review_20261014/BUILD_RECEIPT.json and preserved source manifests.
+The native lab notebook's 2026 aggression tab has an October 14 entry and linked Contents entry, with the original Dropbox workbook and Hannah's Slack message. Other notebook tabs were verified unchanged.

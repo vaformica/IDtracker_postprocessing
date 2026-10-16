@@ -1,6 +1,6 @@
 # Reusable beetle group pipeline
 
-**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping. The implementation/release descriptions below retain their historical Git checkpoint; the handoff records current archived output status.
+**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping.
 
 The same processor now handles **two or more tracked animals** and an ROI list
 containing an arena followed by **one or more fungi**. It reads animal count
@@ -54,7 +54,9 @@ folder contains a synchronized HTML viewer and its video. These are
 
 ## Review and correct the synchronized video
 
-Open `review/interaction_review.html` with its `review_video.mp4` beside it.
+Pass `--source-toml /path/to/original_recording_cell.toml` so the original video/cell stem identifies every artifact. Open `review/<TOML-stem>__interaction_review.html` with `<TOML-stem>__review_video.mp4` beside it. The regular PDF is `<TOML-stem>.pdf`; the outlined derivative appends `__PSC_paths_outlined.pdf`. The viewer prominently displays the cell and source TOML. Without a source TOML, filenames use the display label and the cell is shown as not recorded.
+
+Local PSC 1.5.2 additionally requires fresh proximity within the configured social radius (60 px by default) for new merges and former-partner rejoins. Movement reachability is insufficient. Official 1.5.1 releases remain unchanged pending a new verified release.
 For reliable seeking in a browser preview, you can also run
 `python serve_review.py /path/to/review --port 8769` and open the localhost URL
 it prints; this serves only that folder and supports MP4 byte ranges.
@@ -134,3 +136,17 @@ biological identity assignments.
 A real 2026 two-beetle/one-fungus Firebird run, its portable reviews, and the
 important long-contact caveat are recorded in
 [`reports/DYADIC_GENERIC_VALIDATION_2026-09-22.md`](reports/DYADIC_GENERIC_VALIDATION_2026-09-22.md).
+
+## 5 October 2026 — shared IDtracker-first correction
+
+Current development versions are PSC **1.6.0** and group processor **0.8.2-group**.
+Every finite input ID remains assigned at its exact centroid, including shared
+blobs and immediate post-gap returns. Only missing IDs may receive PSC inference.
+Proximity remains <=60 original-image pixels between assigned centroids.
+The split/distant confirmation arguments are accepted but inactive; their old
+delays must not suppress available IDs. Distance-summary jump rejection remains
+separate from coordinate availability. Both dyadic and six-beetle entry points
+use these rules. See [the audit](reports/DYADIC_RAW_ID_PRIORITY_2026-10-05.md).
+Use new output roots; the 25-run 1.5.2 review set and 26-run 1.5.1 six-beetle
+release have not been regenerated. Version-specific old batch scripts must not
+be reused as 1.6.0 release drivers.

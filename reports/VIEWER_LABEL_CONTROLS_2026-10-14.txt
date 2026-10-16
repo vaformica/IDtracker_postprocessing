@@ -1,0 +1,11 @@
+Viewer label controls — October 14, 2026
+
+Dyadic and six-beetle viewers now share a Video labels menu: offset arrows (default), no labels/overlays, or original labels and trails. Offset mode clears the video overlays and draws translucent arrows terminating outside the centroid, with separate labels. Six IDs fan out in different directions. This is a visual aid, not anatomical body localization; crowded piles can still require the no-label view.
+
+The same control is in the BA per-run template, BA human-QC template and combined BA template. The current Downloads/BA_combined_221_QC/START_HERE.html and local BA human-QC page were updated. BA arrows follow the selected displayed track, retaining missing positions as missing. Original overlay checkbox still switches video annotations off. The timeline and numeric evidence remain available in every mode.
+
+Current local QC and regenerated dyadic/six-beetle pages were patched with prior HTML retained as .before_label_controls. Original page contents, including embedded science data and review logic, were verified unchanged before the appended display controls. The frozen code snapshot was restored unchanged. Receipt: outputs/viewer_label_controls_20261014.json. Existing ZIPs and Firebird copies are not updated; they remain historical interface packages.
+
+Four templates pass JavaScript parsing. Browser checks found no JavaScript errors for the six-beetle and combined BA viewers, and verified switching to no-label mode. The dyadic viewer uses the identical shared social template. Scores, storage keys and scientific models are unchanged.
+
+Implementation helper: scripts/add_viewer_label_controls.py. Future templates already include the controls; the helper is idempotent and can add them to an existing supported page.

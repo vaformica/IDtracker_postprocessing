@@ -1,0 +1,113 @@
+table,field,type_unit,status,definition
+recordings,recording_id,string PK,N,"Stable identity for the original source video, shared by all cells."
+recordings,video_filename,string,E,Exact source basename including extension; retain Camera and ACT tokens.
+recordings,video_uri,string,E,Canonical original-video location; review MP4 is a different artifact.
+recordings,video_sha256,string,E,"Content hash, not a filename hash."
+recordings,recorded_at,string timestamp/date nullable,N,Acquisition date/time from authoritative metadata; retain precision and source.
+recordings,camera_id,string nullable,N,Camera serial/name from acquisition record or verified filename mapping.
+recordings,fps,float frames/s,E,Actual source frame rate; use frame timestamps if variable-frame-rate.
+recordings,frame_count,integer,E,"Total decoded source frames, independently checked."
+recordings,"width_px,height_px",integers px,E,Original image dimensions; separate from review crop dimensions.
+recordings,calibration_px_per_mm,float nullable,N,Measured scale with calibration artifact; null if unavailable.
+trials,trial_id,string PK,N,Stable physical experimental trial/cell identifier across reruns.
+trials,recording_id,string FK,N,Links to recordings.
+trials,cell_id,string,E,"Exact TOML cell label, e.g. A2; source stem retained separately."
+trials,"source_toml_name,source_toml_uri",strings,E,Original configuration name and immutable path.
+trials,source_toml_sha256,string,E,Hash of original configuration; submitted copies separately recorded.
+trials,assay_type,string,N,DYADIC_FIGHT for this handoff; BA and SIX_BEETLE remain separate scopes.
+trials,"experimental_block,treatment,replicate_id",strings nullable,N,"Verified design metadata; null until mapped, not inferred."
+trials,animal_count,integer,E,"Expected identities, 2 for dyads."
+trials,stimulus_global_frame,integer nullable,N,"Release/experimental time origin, source and reviewer; may differ from tracking start."
+trials,"roi_definition_uri,roi_sha256",strings,E,Original-coordinate arena and ordered fungus polygons.
+trials,"roi_protocol_version,roi_author,roi_review_status",strings nullable,N,Boundary drawing protocol and attributed verification.
+trials,source_start_global_frame,integer,E,TOML start before any approved revision.
+tracking_runs,tracking_run_id,string PK,N,Unique IDtracker attempt; never overwrite a prior attempt.
+tracking_runs,trial_id,string FK,N,Physical trial processed.
+tracking_runs,"session_uri,trajectory_uri",strings,E,Exact session and selected trajectory file.
+tracking_runs,"trajectory_sha256,submitted_toml_sha256",strings,E,Hashes of actual inputs used downstream.
+tracking_runs,trajectory_source_kind,string enum,E,"Raw, validated or gap-processed input; use exact recorded category."
+tracking_runs,idtracker_version,string nullable,N,"Version from environment/log for this attempt, not current installed version."
+tracking_runs,"tracking_started_at,tracking_completed_at",UTC timestamps nullable,N,From execution records; preserve unknown and timestamp provenance.
+tracking_runs,tracking_date_source,string,N,"Log/manifest/manual attribution/unknown, with evidence URI."
+tracking_runs,"container_digest,environment_uri",strings nullable,N,Immutable SIF/image digest and dependency capture.
+tracking_runs,tracking_status,string enum,N,"RUNNING, COMPLETE, FAILED, COMPLETE_WITH_WARNING or UNKNOWN with log evidence."
+tracking_runs,"tracking_log_uri,job_id",strings nullable,E,Execution evidence; scheduler success alone does not establish valid tracking.
+processing_runs,processing_run_id,string PK,N,Unique post-processing attempt; joins every derived table.
+processing_runs,tracking_run_id,string FK,N,Exact upstream attempt.
+processing_runs,"processor_version,psc_engine_version,base_processor_version",strings,E,"Current verified local values 0.8.2-group, 1.6.0, 0.8.1; record actual deployed versions per run."
+processing_runs,"code_revision,code_bundle_sha256",strings,N,Git revision plus hash of actual dirty/frozen source bundle; revision alone is insufficient.
+processing_runs,"viewer_version,viewer_code_sha256",strings,E,Display version and exact code hash; display changes do not change science version.
+processing_runs,"qc_version,schema_version,metric_definition_version",strings,N,"Separate QC, table contract and scientific-definition versions."
+processing_runs,"processing_started_at,processing_completed_at",UTC timestamps,N,Actual processor execution times; packaging and review times are separate.
+processing_runs,"parameter_json,parameter_sha256",JSON/string,E,All resolved settings including inactive legacy arguments explicitly marked.
+processing_runs,"social_radius_px,wall_buffer_px,fungus_buffer_px",floats px,E,"Current defaults 60, 30, 30; retain resolved values."
+processing_runs,"raw_jump_cutoff_px,psc_jump_cutoff_px",floats px/step,E,Current defaults 200 and 100; retain inequality convention.
+processing_runs,movement_threshold_px,float px,E,Current latency threshold 30 px.
+processing_runs,"analysis_status,review_status",strings,N,Separate successful computation from UNREVIEWED/NEEDS_REVIEW/ACCEPTED_FOR_METRIC.
+processing_runs,"manifest_uri,manifest_sha256",strings,E,Exact output provenance manifest; timestamps may need new instrumentation.
+animal_identity,"processing_run_id,animal_id",composite PK; ID integer,E,"Zero-based run-local tracking index, not biological identity."
+animal_identity,biological_beetle_id,nullable string FK,N,Validated experimental individual ID; no automatic cross-run match.
+animal_identity,"paint_color,identity_mapping_status",strings nullable,N,Human mapping and CONFIRMED/UNCERTAIN/UNKNOWN.
+animal_identity,"identity_mapping_reviewer,identity_mapping_evidence",strings nullable,N,Attribution and source frames/record.
+windows,"processing_run_id,window_id",composite PK strings,N,"Explicit named interval, e.g. full or post_both_move_3600_intervals."
+windows,"start_global_frame,end_global_frame_inclusive",integers,E,Original global indices; never renumber scientific coordinates.
+windows,"window_n_frames,window_n_intervals",integers,D,N and N-1; requested and actual values must match or status fails.
+windows,"window_duration_s,timestamp_span_s",floats seconds,D,"N/fps and (N-1)/fps, respectively."
+windows,"window_anchor_rule,window_status",strings,E,"Full, individual crossing or latest pair crossing; explicit unavailable/truncated status."
+windows,excluded_frames_uri,nullable string,N,Human-approved excluded intervals with attribution; retain as unknown.
+animal_window,"processing_run_id,animal_id,window_id,trajectory_layer",composite PK,N,Layer RAW_INPUT or PSC_ESTIMATED; do not pool layers as replicates.
+animal_window,"latency_to_threshold_frames,latency_to_threshold_s",integer/float nullable,E/D,Existing animals.csv latency; seconds=frames/fps. Exact-start continuous-chain rule.
+animal_window,threshold_crossing_global_frame,integer nullable,E,"First reachable threshold crossing, not necessarily first physical movement."
+animal_window,"latency_status,latency_censor_reason",strings,E/N,"OBSERVED, NOT_REACHED_FULL_COVERAGE, MISSING_BASELINE, CHAIN_BROKEN, START_ALREADY_MOVING or UNRESOLVED; adapter must distinguish legacy ambiguous status."
+animal_window,"valid_coordinate_frames,missing_coordinate_frames",integers,E,Located versus unknown observations within this window.
+animal_window,"observed_frames,inferred_psc_frames,inferred_other_frames",integers,D,Disjoint location evidence classes; do not count inferred as observed.
+animal_window,tracking_coverage_fraction,float 0..1,D,"Valid coordinate frames/window_n_frames, separately by layer."
+animal_window,"accepted_steps,missing_endpoint_steps,rejected_jump_steps",integers,E,Partition N-1 candidate steps; no incoming step from before window.
+animal_window,distance_px,float nullable px,E,Sum Euclidean adjacent steps passing this layer's cutoff; null if none evaluable.
+animal_window,accepted_step_time_s,float seconds,D,Accepted_steps/fps.
+animal_window,mean_speed_valid_px_s,float nullable px/s,D,Distance/accepted_step_time_s; null for zero denominator.
+animal_window,distance_per_scheduled_s,float nullable px/s,D,"Distance/window_duration_s, explicitly coverage-dependent, not interchangeable with conditional speed."
+animal_window,"max_raw_jump_px,raw_jumps_gt100",float/integer,D,"Diagnostic maximum and count of consecutive finite raw displacements >100 px, independent of movement cutoff."
+animal_window,"longest_missing_gap_frames,missing_gap_count",integers,D,Contiguous unknown runs; record censoring at window edges.
+animal_window,"movement_metric_usable,identity_metric_usable",booleans nullable,N,"Attributed metric-specific eligibility; null before review, not inferred from no warnings."
+region_metrics,"processing_run_id,animal_id,window_id,trajectory_layer,region_id",composite PK,N,"Long-format wall, any_fungus, fungus_1..N, open_arena, fungus edge/interior etc."
+region_metrics,region_coordinate_frames,integer,E,Centroid membership from regions.csv coordinate_frames.
+region_metrics,region_time_s,float seconds,D,Region frames/fps; unknown frames excluded from numerator.
+region_metrics,region_fraction_located,float nullable,D,Region frames/valid_coordinate_frames for this layer/window.
+region_metrics,region_fraction_scheduled,float nullable,D,Region frames/window_n_frames; accompanying coverage required.
+region_metrics,region_accepted_steps,integer,E,Accepted steps whose midpoint is in region.
+region_metrics,region_distance_px,float nullable px,E,Midpoint-allocated distance from regions.csv; not perimeter arc length.
+region_metrics,region_mean_speed_px_s,float nullable px/s,D,Region distance/(region_accepted_steps/fps).
+region_metrics,"region_entry_count,first_entry_latency_s",integer/float nullable,N,Optional consecutive known outside-to-inside transitions; unknown boundaries censored.
+region_metrics,"region_visit_median_s,region_visit_max_s",floats nullable seconds,N,Optional fully observed visit durations; censored visits retained separately.
+pair_window,"processing_run_id,window_id,animal_a,animal_b",composite PK,E/N,"One unordered pair; a<b. A dyad contributes one pair, not two independent observations."
+pair_window,jointly_located_frames,integer,E,Both raw-input IDs located; existing pairs.csv jointly_visible_frames.
+pair_window,"observed_proximity_frames,observed_proximity_s",integer/float seconds,E/D,Both assigned centroids <=60 px; frames/fps.
+pair_window,proximity_fraction_jointly_located,float nullable,E,Observed proximity frames/jointly located frames; null if denominator zero.
+pair_window,observed_proximity_segments,integer,E,"Existing proximity_bouts: contiguous positive segments, including censored ones."
+pair_window,complete_proximity_bout_count,integer,N,Segments with known outside state at both boundaries; unknown breaks cannot establish separate complete interactions.
+pair_window,"psc_inferred_frames,psc_inferred_s",integer/float seconds,D,Pair-specific missing-ID PSC evidence; never called touching time.
+pair_window,pair_unknown_frames,integer,D,Neither measurable two-ID distance nor supported PSC; state mapping explicitly versioned.
+pair_window,supported_social_context_s,float seconds,N,"Optional union of observed proximity and supported PSC, no double counting; separate from primary observed proximity."
+pair_window,first_proximity_latency_s,float nullable seconds,D,First observed positive relative to window start; mark starts-already-near and unknown-before-onset.
+pair_window,"proximity_bout_median_s,proximity_bout_max_s",floats nullable seconds,D,Fully bounded bouts only in primary summary; censored durations listed separately.
+pair_window,median_pair_distance_px,float nullable px,D,"Median center distance over jointly located frames, irrespective of proximity."
+pair_window,identity_swap_review_status,string,N,UNREVIEWED/SUSPECTED/CONFIRMED/RESOLVED with attributed evidence.
+bouts,bout_id,string PK,N,"Unique event identity within processing run, pair and window."
+bouts,"processing_run_id,window_id,animal_a,animal_b",FKs,E/N,Exact run/pair context.
+bouts,"event_type,evidence_layer",strings,E/N,"OBSERVED_PROXIMITY or INFERRED_PSC; human TOUCH/MOUNT/ATTACK separately sourced, never auto-substituted."
+bouts,"start_global_frame,end_global_frame_inclusive",integers,E,Event bounds in original video.
+bouts,"frame_count,duration_s",integer/float seconds,E/D,End-start+1 and count/fps.
+bouts,"left_censored,right_censored,boundary_reason",booleans/string,N,"Window edge, missing evidence, exclusion or known transition."
+bouts,"rule_version,review_decision_id",strings nullable,N,Event definition version and optional linked human review.
+frame_observations / pair_frames,"processing_run_id,global_frame,animal_id",observation PK,E/N,Per-animal evidence; pair_frames replaces animal_id with sorted pair.
+frame_observations / pair_frames,"raw_x_px,raw_y_px,model_x_px,model_y_px",floats nullable,E,Preserve original and inferred coordinates side by side.
+frame_observations / pair_frames,"location_source,inferred,identity_conflict",enum/booleans,E,"Exact processor evidence states, including missing/ambiguous; no imputation to zero."
+frame_observations / pair_frames,"region_membership,step_accepted,step_distance_px",list/boolean/float,E,Membership and adjacent-step evidence; first step is not applicable.
+frame_observations / pair_frames,"pair_distance_px,pair_state",float nullable/enum,D,Observed distance plus OBSERVED_NEAR/OBSERVED_APART/INFERRED_PSC/UNKNOWN; validate mutually exclusive mapping.
+review_decisions / artifacts / selection,"review_decision_id,reviewer,reviewed_at",ID/string/UTC,N,Attributed decision; preserve original review export hash.
+review_decisions / artifacts / selection,"processing_run_id,metric_scope,coverage_intervals",FK/string/list,N,"Exactly which version, metric and frames were inspected; unseen is not approved."
+review_decisions / artifacts / selection,"decision,reason,notes,supersedes_decision_id",strings nullable,N,Append-only decisions and revisions; never overwrite original annotations.
+review_decisions / artifacts / selection,"artifact_id,artifact_type,uri,sha256",strings,E/N,"Video, TOML, trajectory, CSV, PDF, HTML, review JSON, log and code bundle inventory."
+review_decisions / artifacts / selection,artifact_created_at,UTC nullable,N,"Creation/export time, separate from acquisition and computation dates."
+review_decisions / artifacts / selection,"selected_processing_run_id,selection_reviewer,selection_reason",strings,N,Exactly one selected result per trial/metric/versioned analysis release; do not silently choose newest rerun.

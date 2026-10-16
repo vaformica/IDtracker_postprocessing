@@ -1,0 +1,790 @@
+{
+  "schema_version": "0.1-proposed",
+  "status": "PROPOSED_NOT_IMPLEMENTED",
+  "fields": [
+    {
+      "table": "recordings",
+      "field": "recording_id",
+      "type_unit": "string PK",
+      "status": "N",
+      "definition": "Stable identity for the original source video, shared by all cells."
+    },
+    {
+      "table": "recordings",
+      "field": "video_filename",
+      "type_unit": "string",
+      "status": "E",
+      "definition": "Exact source basename including extension; retain Camera and ACT tokens."
+    },
+    {
+      "table": "recordings",
+      "field": "video_uri",
+      "type_unit": "string",
+      "status": "E",
+      "definition": "Canonical original-video location; review MP4 is a different artifact."
+    },
+    {
+      "table": "recordings",
+      "field": "video_sha256",
+      "type_unit": "string",
+      "status": "E",
+      "definition": "Content hash, not a filename hash."
+    },
+    {
+      "table": "recordings",
+      "field": "recorded_at",
+      "type_unit": "string timestamp/date nullable",
+      "status": "N",
+      "definition": "Acquisition date/time from authoritative metadata; retain precision and source."
+    },
+    {
+      "table": "recordings",
+      "field": "camera_id",
+      "type_unit": "string nullable",
+      "status": "N",
+      "definition": "Camera serial/name from acquisition record or verified filename mapping."
+    },
+    {
+      "table": "recordings",
+      "field": "fps",
+      "type_unit": "float frames/s",
+      "status": "E",
+      "definition": "Actual source frame rate; use frame timestamps if variable-frame-rate."
+    },
+    {
+      "table": "recordings",
+      "field": "frame_count",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "Total decoded source frames, independently checked."
+    },
+    {
+      "table": "recordings",
+      "field": "width_px,height_px",
+      "type_unit": "integers px",
+      "status": "E",
+      "definition": "Original image dimensions; separate from review crop dimensions."
+    },
+    {
+      "table": "recordings",
+      "field": "calibration_px_per_mm",
+      "type_unit": "float nullable",
+      "status": "N",
+      "definition": "Measured scale with calibration artifact; null if unavailable."
+    },
+    {
+      "table": "trials",
+      "field": "trial_id",
+      "type_unit": "string PK",
+      "status": "N",
+      "definition": "Stable physical experimental trial/cell identifier across reruns."
+    },
+    {
+      "table": "trials",
+      "field": "recording_id",
+      "type_unit": "string FK",
+      "status": "N",
+      "definition": "Links to recordings."
+    },
+    {
+      "table": "trials",
+      "field": "cell_id",
+      "type_unit": "string",
+      "status": "E",
+      "definition": "Exact TOML cell label, e.g. A2; source stem retained separately."
+    },
+    {
+      "table": "trials",
+      "field": "source_toml_name,source_toml_uri",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Original configuration name and immutable path."
+    },
+    {
+      "table": "trials",
+      "field": "source_toml_sha256",
+      "type_unit": "string",
+      "status": "E",
+      "definition": "Hash of original configuration; submitted copies separately recorded."
+    },
+    {
+      "table": "trials",
+      "field": "assay_type",
+      "type_unit": "string",
+      "status": "N",
+      "definition": "DYADIC_FIGHT for this handoff; BA and SIX_BEETLE remain separate scopes."
+    },
+    {
+      "table": "trials",
+      "field": "experimental_block,treatment,replicate_id",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Verified design metadata; null until mapped, not inferred."
+    },
+    {
+      "table": "trials",
+      "field": "animal_count",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "Expected identities, 2 for dyads."
+    },
+    {
+      "table": "trials",
+      "field": "stimulus_global_frame",
+      "type_unit": "integer nullable",
+      "status": "N",
+      "definition": "Release/experimental time origin, source and reviewer; may differ from tracking start."
+    },
+    {
+      "table": "trials",
+      "field": "roi_definition_uri,roi_sha256",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Original-coordinate arena and ordered fungus polygons."
+    },
+    {
+      "table": "trials",
+      "field": "roi_protocol_version,roi_author,roi_review_status",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Boundary drawing protocol and attributed verification."
+    },
+    {
+      "table": "trials",
+      "field": "source_start_global_frame",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "TOML start before any approved revision."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "tracking_run_id",
+      "type_unit": "string PK",
+      "status": "N",
+      "definition": "Unique IDtracker attempt; never overwrite a prior attempt."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "trial_id",
+      "type_unit": "string FK",
+      "status": "N",
+      "definition": "Physical trial processed."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "session_uri,trajectory_uri",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Exact session and selected trajectory file."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "trajectory_sha256,submitted_toml_sha256",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Hashes of actual inputs used downstream."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "trajectory_source_kind",
+      "type_unit": "string enum",
+      "status": "E",
+      "definition": "Raw, validated or gap-processed input; use exact recorded category."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "idtracker_version",
+      "type_unit": "string nullable",
+      "status": "N",
+      "definition": "Version from environment/log for this attempt, not current installed version."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "tracking_started_at,tracking_completed_at",
+      "type_unit": "UTC timestamps nullable",
+      "status": "N",
+      "definition": "From execution records; preserve unknown and timestamp provenance."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "tracking_date_source",
+      "type_unit": "string",
+      "status": "N",
+      "definition": "Log/manifest/manual attribution/unknown, with evidence URI."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "container_digest,environment_uri",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Immutable SIF/image digest and dependency capture."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "tracking_status",
+      "type_unit": "string enum",
+      "status": "N",
+      "definition": "RUNNING, COMPLETE, FAILED, COMPLETE_WITH_WARNING or UNKNOWN with log evidence."
+    },
+    {
+      "table": "tracking_runs",
+      "field": "tracking_log_uri,job_id",
+      "type_unit": "strings nullable",
+      "status": "E",
+      "definition": "Execution evidence; scheduler success alone does not establish valid tracking."
+    },
+    {
+      "table": "processing_runs",
+      "field": "processing_run_id",
+      "type_unit": "string PK",
+      "status": "N",
+      "definition": "Unique post-processing attempt; joins every derived table."
+    },
+    {
+      "table": "processing_runs",
+      "field": "tracking_run_id",
+      "type_unit": "string FK",
+      "status": "N",
+      "definition": "Exact upstream attempt."
+    },
+    {
+      "table": "processing_runs",
+      "field": "processor_version,psc_engine_version,base_processor_version",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Current verified local values 0.8.2-group, 1.6.0, 0.8.1; record actual deployed versions per run."
+    },
+    {
+      "table": "processing_runs",
+      "field": "code_revision,code_bundle_sha256",
+      "type_unit": "strings",
+      "status": "N",
+      "definition": "Git revision plus hash of actual dirty/frozen source bundle; revision alone is insufficient."
+    },
+    {
+      "table": "processing_runs",
+      "field": "viewer_version,viewer_code_sha256",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Display version and exact code hash; display changes do not change science version."
+    },
+    {
+      "table": "processing_runs",
+      "field": "qc_version,schema_version,metric_definition_version",
+      "type_unit": "strings",
+      "status": "N",
+      "definition": "Separate QC, table contract and scientific-definition versions."
+    },
+    {
+      "table": "processing_runs",
+      "field": "processing_started_at,processing_completed_at",
+      "type_unit": "UTC timestamps",
+      "status": "N",
+      "definition": "Actual processor execution times; packaging and review times are separate."
+    },
+    {
+      "table": "processing_runs",
+      "field": "parameter_json,parameter_sha256",
+      "type_unit": "JSON/string",
+      "status": "E",
+      "definition": "All resolved settings including inactive legacy arguments explicitly marked."
+    },
+    {
+      "table": "processing_runs",
+      "field": "social_radius_px,wall_buffer_px,fungus_buffer_px",
+      "type_unit": "floats px",
+      "status": "E",
+      "definition": "Current defaults 60, 30, 30; retain resolved values."
+    },
+    {
+      "table": "processing_runs",
+      "field": "raw_jump_cutoff_px,psc_jump_cutoff_px",
+      "type_unit": "floats px/step",
+      "status": "E",
+      "definition": "Current defaults 200 and 100; retain inequality convention."
+    },
+    {
+      "table": "processing_runs",
+      "field": "movement_threshold_px",
+      "type_unit": "float px",
+      "status": "E",
+      "definition": "Current latency threshold 30 px."
+    },
+    {
+      "table": "processing_runs",
+      "field": "analysis_status,review_status",
+      "type_unit": "strings",
+      "status": "N",
+      "definition": "Separate successful computation from UNREVIEWED/NEEDS_REVIEW/ACCEPTED_FOR_METRIC."
+    },
+    {
+      "table": "processing_runs",
+      "field": "manifest_uri,manifest_sha256",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Exact output provenance manifest; timestamps may need new instrumentation."
+    },
+    {
+      "table": "animal_identity",
+      "field": "processing_run_id,animal_id",
+      "type_unit": "composite PK; ID integer",
+      "status": "E",
+      "definition": "Zero-based run-local tracking index, not biological identity."
+    },
+    {
+      "table": "animal_identity",
+      "field": "biological_beetle_id",
+      "type_unit": "nullable string FK",
+      "status": "N",
+      "definition": "Validated experimental individual ID; no automatic cross-run match."
+    },
+    {
+      "table": "animal_identity",
+      "field": "paint_color,identity_mapping_status",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Human mapping and CONFIRMED/UNCERTAIN/UNKNOWN."
+    },
+    {
+      "table": "animal_identity",
+      "field": "identity_mapping_reviewer,identity_mapping_evidence",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Attribution and source frames/record."
+    },
+    {
+      "table": "windows",
+      "field": "processing_run_id,window_id",
+      "type_unit": "composite PK strings",
+      "status": "N",
+      "definition": "Explicit named interval, e.g. full or post_both_move_3600_intervals."
+    },
+    {
+      "table": "windows",
+      "field": "start_global_frame,end_global_frame_inclusive",
+      "type_unit": "integers",
+      "status": "E",
+      "definition": "Original global indices; never renumber scientific coordinates."
+    },
+    {
+      "table": "windows",
+      "field": "window_n_frames,window_n_intervals",
+      "type_unit": "integers",
+      "status": "D",
+      "definition": "N and N-1; requested and actual values must match or status fails."
+    },
+    {
+      "table": "windows",
+      "field": "window_duration_s,timestamp_span_s",
+      "type_unit": "floats seconds",
+      "status": "D",
+      "definition": "N/fps and (N-1)/fps, respectively."
+    },
+    {
+      "table": "windows",
+      "field": "window_anchor_rule,window_status",
+      "type_unit": "strings",
+      "status": "E",
+      "definition": "Full, individual crossing or latest pair crossing; explicit unavailable/truncated status."
+    },
+    {
+      "table": "windows",
+      "field": "excluded_frames_uri",
+      "type_unit": "nullable string",
+      "status": "N",
+      "definition": "Human-approved excluded intervals with attribution; retain as unknown."
+    },
+    {
+      "table": "animal_window",
+      "field": "processing_run_id,animal_id,window_id,trajectory_layer",
+      "type_unit": "composite PK",
+      "status": "N",
+      "definition": "Layer RAW_INPUT or PSC_ESTIMATED; do not pool layers as replicates."
+    },
+    {
+      "table": "animal_window",
+      "field": "latency_to_threshold_frames,latency_to_threshold_s",
+      "type_unit": "integer/float nullable",
+      "status": "E/D",
+      "definition": "Existing animals.csv latency; seconds=frames/fps. Exact-start continuous-chain rule."
+    },
+    {
+      "table": "animal_window",
+      "field": "threshold_crossing_global_frame",
+      "type_unit": "integer nullable",
+      "status": "E",
+      "definition": "First reachable threshold crossing, not necessarily first physical movement."
+    },
+    {
+      "table": "animal_window",
+      "field": "latency_status,latency_censor_reason",
+      "type_unit": "strings",
+      "status": "E/N",
+      "definition": "OBSERVED, NOT_REACHED_FULL_COVERAGE, MISSING_BASELINE, CHAIN_BROKEN, START_ALREADY_MOVING or UNRESOLVED; adapter must distinguish legacy ambiguous status."
+    },
+    {
+      "table": "animal_window",
+      "field": "valid_coordinate_frames,missing_coordinate_frames",
+      "type_unit": "integers",
+      "status": "E",
+      "definition": "Located versus unknown observations within this window."
+    },
+    {
+      "table": "animal_window",
+      "field": "observed_frames,inferred_psc_frames,inferred_other_frames",
+      "type_unit": "integers",
+      "status": "D",
+      "definition": "Disjoint location evidence classes; do not count inferred as observed."
+    },
+    {
+      "table": "animal_window",
+      "field": "tracking_coverage_fraction",
+      "type_unit": "float 0..1",
+      "status": "D",
+      "definition": "Valid coordinate frames/window_n_frames, separately by layer."
+    },
+    {
+      "table": "animal_window",
+      "field": "accepted_steps,missing_endpoint_steps,rejected_jump_steps",
+      "type_unit": "integers",
+      "status": "E",
+      "definition": "Partition N-1 candidate steps; no incoming step from before window."
+    },
+    {
+      "table": "animal_window",
+      "field": "distance_px",
+      "type_unit": "float nullable px",
+      "status": "E",
+      "definition": "Sum Euclidean adjacent steps passing this layer's cutoff; null if none evaluable."
+    },
+    {
+      "table": "animal_window",
+      "field": "accepted_step_time_s",
+      "type_unit": "float seconds",
+      "status": "D",
+      "definition": "Accepted_steps/fps."
+    },
+    {
+      "table": "animal_window",
+      "field": "mean_speed_valid_px_s",
+      "type_unit": "float nullable px/s",
+      "status": "D",
+      "definition": "Distance/accepted_step_time_s; null for zero denominator."
+    },
+    {
+      "table": "animal_window",
+      "field": "distance_per_scheduled_s",
+      "type_unit": "float nullable px/s",
+      "status": "D",
+      "definition": "Distance/window_duration_s, explicitly coverage-dependent, not interchangeable with conditional speed."
+    },
+    {
+      "table": "animal_window",
+      "field": "max_raw_jump_px,raw_jumps_gt100",
+      "type_unit": "float/integer",
+      "status": "D",
+      "definition": "Diagnostic maximum and count of consecutive finite raw displacements >100 px, independent of movement cutoff."
+    },
+    {
+      "table": "animal_window",
+      "field": "longest_missing_gap_frames,missing_gap_count",
+      "type_unit": "integers",
+      "status": "D",
+      "definition": "Contiguous unknown runs; record censoring at window edges."
+    },
+    {
+      "table": "animal_window",
+      "field": "movement_metric_usable,identity_metric_usable",
+      "type_unit": "booleans nullable",
+      "status": "N",
+      "definition": "Attributed metric-specific eligibility; null before review, not inferred from no warnings."
+    },
+    {
+      "table": "region_metrics",
+      "field": "processing_run_id,animal_id,window_id,trajectory_layer,region_id",
+      "type_unit": "composite PK",
+      "status": "N",
+      "definition": "Long-format wall, any_fungus, fungus_1..N, open_arena, fungus edge/interior etc."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_coordinate_frames",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "Centroid membership from regions.csv coordinate_frames."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_time_s",
+      "type_unit": "float seconds",
+      "status": "D",
+      "definition": "Region frames/fps; unknown frames excluded from numerator."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_fraction_located",
+      "type_unit": "float nullable",
+      "status": "D",
+      "definition": "Region frames/valid_coordinate_frames for this layer/window."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_fraction_scheduled",
+      "type_unit": "float nullable",
+      "status": "D",
+      "definition": "Region frames/window_n_frames; accompanying coverage required."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_accepted_steps",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "Accepted steps whose midpoint is in region."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_distance_px",
+      "type_unit": "float nullable px",
+      "status": "E",
+      "definition": "Midpoint-allocated distance from regions.csv; not perimeter arc length."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_mean_speed_px_s",
+      "type_unit": "float nullable px/s",
+      "status": "D",
+      "definition": "Region distance/(region_accepted_steps/fps)."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_entry_count,first_entry_latency_s",
+      "type_unit": "integer/float nullable",
+      "status": "N",
+      "definition": "Optional consecutive known outside-to-inside transitions; unknown boundaries censored."
+    },
+    {
+      "table": "region_metrics",
+      "field": "region_visit_median_s,region_visit_max_s",
+      "type_unit": "floats nullable seconds",
+      "status": "N",
+      "definition": "Optional fully observed visit durations; censored visits retained separately."
+    },
+    {
+      "table": "pair_window",
+      "field": "processing_run_id,window_id,animal_a,animal_b",
+      "type_unit": "composite PK",
+      "status": "E/N",
+      "definition": "One unordered pair; a<b. A dyad contributes one pair, not two independent observations."
+    },
+    {
+      "table": "pair_window",
+      "field": "jointly_located_frames",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "Both raw-input IDs located; existing pairs.csv jointly_visible_frames."
+    },
+    {
+      "table": "pair_window",
+      "field": "observed_proximity_frames,observed_proximity_s",
+      "type_unit": "integer/float seconds",
+      "status": "E/D",
+      "definition": "Both assigned centroids <=60 px; frames/fps."
+    },
+    {
+      "table": "pair_window",
+      "field": "proximity_fraction_jointly_located",
+      "type_unit": "float nullable",
+      "status": "E",
+      "definition": "Observed proximity frames/jointly located frames; null if denominator zero."
+    },
+    {
+      "table": "pair_window",
+      "field": "observed_proximity_segments",
+      "type_unit": "integer",
+      "status": "E",
+      "definition": "Existing proximity_bouts: contiguous positive segments, including censored ones."
+    },
+    {
+      "table": "pair_window",
+      "field": "complete_proximity_bout_count",
+      "type_unit": "integer",
+      "status": "N",
+      "definition": "Segments with known outside state at both boundaries; unknown breaks cannot establish separate complete interactions."
+    },
+    {
+      "table": "pair_window",
+      "field": "psc_inferred_frames,psc_inferred_s",
+      "type_unit": "integer/float seconds",
+      "status": "D",
+      "definition": "Pair-specific missing-ID PSC evidence; never called touching time."
+    },
+    {
+      "table": "pair_window",
+      "field": "pair_unknown_frames",
+      "type_unit": "integer",
+      "status": "D",
+      "definition": "Neither measurable two-ID distance nor supported PSC; state mapping explicitly versioned."
+    },
+    {
+      "table": "pair_window",
+      "field": "supported_social_context_s",
+      "type_unit": "float seconds",
+      "status": "N",
+      "definition": "Optional union of observed proximity and supported PSC, no double counting; separate from primary observed proximity."
+    },
+    {
+      "table": "pair_window",
+      "field": "first_proximity_latency_s",
+      "type_unit": "float nullable seconds",
+      "status": "D",
+      "definition": "First observed positive relative to window start; mark starts-already-near and unknown-before-onset."
+    },
+    {
+      "table": "pair_window",
+      "field": "proximity_bout_median_s,proximity_bout_max_s",
+      "type_unit": "floats nullable seconds",
+      "status": "D",
+      "definition": "Fully bounded bouts only in primary summary; censored durations listed separately."
+    },
+    {
+      "table": "pair_window",
+      "field": "median_pair_distance_px",
+      "type_unit": "float nullable px",
+      "status": "D",
+      "definition": "Median center distance over jointly located frames, irrespective of proximity."
+    },
+    {
+      "table": "pair_window",
+      "field": "identity_swap_review_status",
+      "type_unit": "string",
+      "status": "N",
+      "definition": "UNREVIEWED/SUSPECTED/CONFIRMED/RESOLVED with attributed evidence."
+    },
+    {
+      "table": "bouts",
+      "field": "bout_id",
+      "type_unit": "string PK",
+      "status": "N",
+      "definition": "Unique event identity within processing run, pair and window."
+    },
+    {
+      "table": "bouts",
+      "field": "processing_run_id,window_id,animal_a,animal_b",
+      "type_unit": "FKs",
+      "status": "E/N",
+      "definition": "Exact run/pair context."
+    },
+    {
+      "table": "bouts",
+      "field": "event_type,evidence_layer",
+      "type_unit": "strings",
+      "status": "E/N",
+      "definition": "OBSERVED_PROXIMITY or INFERRED_PSC; human TOUCH/MOUNT/ATTACK separately sourced, never auto-substituted."
+    },
+    {
+      "table": "bouts",
+      "field": "start_global_frame,end_global_frame_inclusive",
+      "type_unit": "integers",
+      "status": "E",
+      "definition": "Event bounds in original video."
+    },
+    {
+      "table": "bouts",
+      "field": "frame_count,duration_s",
+      "type_unit": "integer/float seconds",
+      "status": "E/D",
+      "definition": "End-start+1 and count/fps."
+    },
+    {
+      "table": "bouts",
+      "field": "left_censored,right_censored,boundary_reason",
+      "type_unit": "booleans/string",
+      "status": "N",
+      "definition": "Window edge, missing evidence, exclusion or known transition."
+    },
+    {
+      "table": "bouts",
+      "field": "rule_version,review_decision_id",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Event definition version and optional linked human review."
+    },
+    {
+      "table": "frame_observations / pair_frames",
+      "field": "processing_run_id,global_frame,animal_id",
+      "type_unit": "observation PK",
+      "status": "E/N",
+      "definition": "Per-animal evidence; pair_frames replaces animal_id with sorted pair."
+    },
+    {
+      "table": "frame_observations / pair_frames",
+      "field": "raw_x_px,raw_y_px,model_x_px,model_y_px",
+      "type_unit": "floats nullable",
+      "status": "E",
+      "definition": "Preserve original and inferred coordinates side by side."
+    },
+    {
+      "table": "frame_observations / pair_frames",
+      "field": "location_source,inferred,identity_conflict",
+      "type_unit": "enum/booleans",
+      "status": "E",
+      "definition": "Exact processor evidence states, including missing/ambiguous; no imputation to zero."
+    },
+    {
+      "table": "frame_observations / pair_frames",
+      "field": "region_membership,step_accepted,step_distance_px",
+      "type_unit": "list/boolean/float",
+      "status": "E",
+      "definition": "Membership and adjacent-step evidence; first step is not applicable."
+    },
+    {
+      "table": "frame_observations / pair_frames",
+      "field": "pair_distance_px,pair_state",
+      "type_unit": "float nullable/enum",
+      "status": "D",
+      "definition": "Observed distance plus OBSERVED_NEAR/OBSERVED_APART/INFERRED_PSC/UNKNOWN; validate mutually exclusive mapping."
+    },
+    {
+      "table": "review_decisions / artifacts / selection",
+      "field": "review_decision_id,reviewer,reviewed_at",
+      "type_unit": "ID/string/UTC",
+      "status": "N",
+      "definition": "Attributed decision; preserve original review export hash."
+    },
+    {
+      "table": "review_decisions / artifacts / selection",
+      "field": "processing_run_id,metric_scope,coverage_intervals",
+      "type_unit": "FK/string/list",
+      "status": "N",
+      "definition": "Exactly which version, metric and frames were inspected; unseen is not approved."
+    },
+    {
+      "table": "review_decisions / artifacts / selection",
+      "field": "decision,reason,notes,supersedes_decision_id",
+      "type_unit": "strings nullable",
+      "status": "N",
+      "definition": "Append-only decisions and revisions; never overwrite original annotations."
+    },
+    {
+      "table": "review_decisions / artifacts / selection",
+      "field": "artifact_id,artifact_type,uri,sha256",
+      "type_unit": "strings",
+      "status": "E/N",
+      "definition": "Video, TOML, trajectory, CSV, PDF, HTML, review JSON, log and code bundle inventory."
+    },
+    {
+      "table": "review_decisions / artifacts / selection",
+      "field": "artifact_created_at",
+      "type_unit": "UTC nullable",
+      "status": "N",
+      "definition": "Creation/export time, separate from acquisition and computation dates."
+    },
+    {
+      "table": "review_decisions / artifacts / selection",
+      "field": "selected_processing_run_id,selection_reviewer,selection_reason",
+      "type_unit": "strings",
+      "status": "N",
+      "definition": "Exactly one selected result per trial/metric/versioned analysis release; do not silently choose newest rerun."
+    }
+  ]
+}

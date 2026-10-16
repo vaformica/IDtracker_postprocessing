@@ -15,8 +15,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
+import unified_qc
 
-from build_canonical_review import build as build_review
+from build_canonical_review import build as build_review, artifact_stem
 from output_manifest import write_output_manifest
 from processor import load_rois as load_session_rois
 from review_geometry import legacy_review_geometry, plan_review_geometry, review_filter
@@ -203,7 +204,10 @@ def run(args) -> Path:
     generated_evidence = analysis_output.parent / f"{analysis_output.name}.blob_evidence.json"
     evidence = ensure_blob_evidence(session, args.idtracker_python, generated_evidence)
     window = args.end - args.start
-    pdf_name = args.pdf_name or f"{args.label}.pdf"
+    source_toml = getattr(args, 'source_toml', None)
+    stem = artifact_stem(source_toml, args.label)
+    # Source identity takes precedence over old batch UUID PDF overrides.
+    pdf_name = f'{stem}.pdf' if source_toml else (args.pdf_name or f'{stem}.pdf')
     command = [
         sys.executable,
         str(BASE / "six_beetle_processor.py"),
@@ -222,7 +226,7 @@ def run(args) -> Path:
         "--video",
         source_video.name,
         "--cell-label",
-        args.label,
+        stem,
         "--pdf-name",
         pdf_name,
         "--fps",
@@ -282,6 +286,7 @@ def run(args) -> Path:
             crop,
             args.fps,
             label=args.label,
+            source_toml=getattr(args, 'source_toml', None),
             video_geometry=video_geometry,
             source_video=source_video,
             video_filter=None if args.prepared_review_video else review_filter(args.start, args.end, video_geometry),
@@ -290,7 +295,12 @@ def run(args) -> Path:
         shutil.rmtree(temporary, ignore_errors=True)
 
     manifest = json.loads((analysis_output / "manifest.json").read_text())
+    unified = unified_qc.run_qc(analysis_output, trajectory, source_video, args.start, args.end,
+        args.fps, rois[0], ffmpeg=args.ffmpeg, cache_dir=getattr(args, "qc_cache_dir", None) or analysis_output.parent.parent/".unified_qc_cache",
+        skip_video=getattr(args, "skip_qc_video", False),
+        review_link=os.path.relpath(html, analysis_output))
     receipt = dict(
+        unified_qc=unified,
         schema="six-beetle-pipeline-run-v1" if manifest.get('animal_count') == 6 else "group-pipeline-run-v1",
         created_utc=datetime.now(timezone.utc).isoformat(),
         status="COMPLETE_UNREVIEWED",
@@ -339,6 +349,7 @@ def run(args) -> Path:
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
+    unified_qc.add_arguments(result)
     result.add_argument("--session", required=True)
     result.add_argument("--source-toml", help="Original tracking TOML for the student-facing output manifest")
     result.add_argument("--trajectory")

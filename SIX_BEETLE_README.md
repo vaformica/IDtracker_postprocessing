@@ -23,15 +23,16 @@ The six-beetle package uses **2024 recordings processed in 2026**, PSC **1.6.0**
 
 The checked package manifests establish 26 delivered review trials but do not supply a complete mapping to the reported 28 processed or 30 design buckets. The two-trial and four-bucket numerical differences must not be labeled exclusions, failures, duplicates or missing recordings without an explicit source-to-trial mapping. This discrepancy remains unresolved.
 
-Local review entry point: `outputs/psc_regenerated_51_20261005/review_set/START_HERE.html`. Warning-guided packages are under `outputs/psc_review_qc_20261005/`; they add review priorities without changing the scientific trajectories. The local regeneration and warning-package records retain validation and access provenance. The collection also contains 25 separate dyadic cases; these are not six-beetle trials.
+Local review entry point: `outputs/psc_regenerated_51_20261005/review_set/START_HERE.html`. Warning-guided packages are under `outputs/psc_review_qc_20261005/`; they add review priorities without changing the scientific trajectories. See the [regeneration/access record](reports/PSC_1_6_0_REGENERATION_2026-10-05.md) and [warning-package record](reports/REVIEW_WARNINGS_2026-10-05.md). The collection also contains 25 separate dyadic cases; these are not six-beetle trials.
 
-The local identity-only editor 0.3.0 report and its October 19 reminder are historical. A reminder is not authorization to resume; this handoff does not claim to have canceled or changed a scheduled reminder. The methods and commands below are retained technical reference, not instructions to restart six-beetle work.
+The [identity-only editor 0.3.0 report](reports/IDENTITY_CORRECTOR_PILOT_2026-10-05.md) and its October 19 reminder are historical. A reminder is not authorization to resume; this handoff does not claim to have canceled or changed a scheduled reminder. The methods and commands below are retained technical reference, not instructions to restart six-beetle work.
 
-## Source provenance and publication scope
+## Decision and review sources
 
-The decision is recorded in Vince’s October 14–15 messages and message to Charlotte; Savannah’s review discussion and the updated lab notebook retain the detailed evidence. Private source links and reviewer records remain in the local handoff rather than this Git publication.
-
-The October 5 regeneration, warning-package and identity-corrector reports remain local historical records. Their current-status cross-references do not authorize a restart. This handoff preserves the essential current guidance without publishing those reports or their access details. The methods and commands below describe the historical implementation; current archived output versions above do not assert that this Git code snapshot implements them.
+- Vince’s [October 14 decision](https://formica-brodielabs.slack.com/archives/C0BSAMV6R9U/p1792011614990739) and [October 15 follow-up](https://formica-brodielabs.slack.com/archives/C0BSAMV6R9U/p1792061598634689).
+- [Message to Charlotte](https://formica-brodielabs.slack.com/archives/C0C317PQXPH/p1792014358294739).
+- [Savannah’s review discussion](https://formica-brodielabs.slack.com/archives/D0B73KVAJAK/p1791927319753599).
+- [Updated lab notebook](https://docs.google.com/document/d/1Lvy9aQ2QgwGcYOXRDEy4KGymfCUDzsByKlfpbBKERrA/edit?tab=t.l3dmfvxbplmz).
 
 ---
 

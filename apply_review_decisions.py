@@ -184,6 +184,8 @@ def _replay_into(bundle, review, output, source_review=None):
     if review_meta:
         build(bundle,Path(source_review)/review_meta['video'],output/'review',review_meta['crop'],
               review_meta['fps'],label=review_meta['label']+' · human review',
+              source_toml=review_meta.get('source_toml'),
+              video_geometry=review_meta.get('video_geometry'),
               initial_decisions=review['decisions'])
     files={str(p.relative_to(output)):digest(p) for p in output.rglob('*') if p.is_file()}
     (output/'review_manifest.json').write_text(json.dumps(dict(schema='beetle-reviewed-layer-v1',

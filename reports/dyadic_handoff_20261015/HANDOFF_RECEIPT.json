@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-15",
+  "schema_status": "PROPOSED_NOT_IMPLEMENTED",
+  "notebook_tab": "t.lkmxp1jvsq2v",
+  "notebook_heading": "h.gcgqy6wnaktz",
+  "zoom_message_id": "1a13c283afdcd5d4",
+  "processing_started": false,
+  "six_beetle_status": "ON_HOLD",
+  "sha256": {
+    "reports/dyadic_handoff_20261015/README.md": "c024fed3c5e645a42bec3c8af1bc8032b0d812f7346f5afd1753a1400ae580ab",
+    "reports/dyadic_handoff_20261015/proposed_data_dictionary.csv": "bcd5a5351ec44f1945a49ce661e9beea640a780ffe50828f716fbc585ef5cbf2",
+    "reports/dyadic_handoff_20261015/schema_proposal.json": "596d4c7681fd60977de590d46495a78c99d9faa201546ce299fb6cb61a143b5d",
+    "reports/dyadic_handoff_20261015/Dyadic_comment_decisions_20261014.json": "30dacc38c8d2d434ce07f6c22ec0d7093bd41fe1c0cc41b5fbc601f4e03b7c52",
+    "output/pdf/Dyadic_processing_handoff_and_data_dictionary_20261015.pdf": "9c09b6845bfeaaf65bea1ebf41d732db0aed6de1fa3ffc604d7d56cc369b4286"
+  }
+}

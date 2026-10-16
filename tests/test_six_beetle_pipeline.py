@@ -93,13 +93,16 @@ class PortableReviewTests(unittest.TestCase):
             video = root / "clip.mp4"
             video.write_bytes(b"portable-video-test")
             output = root / "review"
-            html = build(bundle, video, output, (0, 0, 800, 600), 30, label="Trial A")
+            html = build(bundle, video, output, (0, 0, 800, 600), 30, label="Trial A", source_toml="/inputs/Camera_test_A2.toml")
             self.assertTrue(html.is_file())
-            self.assertTrue((output / "review_video.mp4").is_file())
-            self.assertFalse((output / "review_video.mp4").is_symlink())
-            self.assertEqual((output / "review_video.mp4").read_bytes(), video.read_bytes())
+            self.assertTrue((output / "Camera_test_A2__review_video.mp4").is_file())
+            self.assertFalse((output / "Camera_test_A2__review_video.mp4").is_symlink())
+            self.assertEqual((output / "Camera_test_A2__review_video.mp4").read_bytes(), video.read_bytes())
             text = html.read_text()
             self.assertIn("Trial A", text)
+            self.assertIn("Cell: A2", text)
+            self.assertIn("Camera_test_A2.toml", text)
+            self.assertEqual(html.name, "Camera_test_A2__interaction_review.html")
             self.assertNotIn("OLD_source_crop.mp4", text)
             payload = json.loads(re.search(r"const D=(.*);\nconst v=", text).group(1))
             pair_index = payload["pairs"].index([4, 5])
@@ -113,7 +116,7 @@ class PortableReviewTests(unittest.TestCase):
             manifest = json.loads((output / "source_manifest.json").read_text())
             self.assertEqual(manifest["canonical_sha256"], digest)
             self.assertEqual(manifest["status"], "UNREVIEWED")
-            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v3")
+            self.assertEqual(manifest["review_view_version"], "raw-psc-compare-v4")
             self.assertEqual(manifest["analysis_frame_count"], 4)
             self.assertFalse(manifest['video_geometry']['aspect_preserved'])
             oriented_geometry = plan_review_geometry(rois, (0, 0, 800, 600))
@@ -228,6 +231,7 @@ class PipelineHelpersTests(unittest.TestCase):
             trajectory="/remote/session/trajectories/validated.npy",
             video="/remote/video.mp4",
             label="Box 01",
+            source_toml='/remote/recording_A2.toml',
             start="422",
             end="7622",
             fps="30",
@@ -247,6 +251,7 @@ class PipelineHelpersTests(unittest.TestCase):
         command = pipeline_command("/code", "/run", "/post/python", "/id/python", "/ffmpeg", "/ffprobe", parameters)
         joined = " ".join(command)
         self.assertIn("--proximity-px 61.0", joined)
+        self.assertIn('--source-toml /remote/recording_A2.toml', joined)
         self.assertIn("--jump-threshold-px 201.0", joined)
         self.assertIn("--reconstruction-speed-px 99.0", joined)
         self.assertIn("--split-confirmation-frames 2", joined)

@@ -1,0 +1,34 @@
+const assert=require('node:assert/strict');const C=require('../identity_corrector_core.js');
+const meta={frame_start:175,frame_end_inclusive:181,animal_count:3};
+const raw=Array.from({length:7},(_,t)=>[[10+t,10],[300+t,10],[600+t,10]]);raw[1][2]=[null,null];raw[5][0]=[302,10];
+const before=JSON.stringify(raw);
+const d={id:'one',kind:'swap',reviewer:'Tester',reason:'Clear labels',created_utc:'2026-10-05',animal_a:0,animal_b:1,start_frame:176,end_frame_inclusive:179,anchor_frame:178};
+const result=C.replay(raw,[d],meta);assert.equal(JSON.stringify(raw),before);assert.deepEqual(result[1][0],raw[1][1]);assert.deepEqual(result[4][1],raw[4][0]);assert.deepEqual(result[5],raw[5]);
+assert.throws(()=>C.replay(raw,[d,d],meta));assert.throws(()=>C.validate({...d,start_frame:180},meta));
+const bounds=C.suggest(raw,178,0,1,meta);assert.deepEqual([bounds.lo,bounds.hi],[175,179]);
+assert.deepEqual(C.suggest(raw,180,0,1,meta).lo,180);
+const gaps=[[[0,0]],[[null,null]],[[300,0]],[[401,0]]];assert.deepEqual(C.warnings(gaps,10).map(x=>[x.kind,x.frame,x.gap_frames]),[['return_after_gap',12,1],['adjacent_jump',13,0]]);
+for(const angle of [0,90,180,270]){const g={crop:[100,200,800,600],rotation_cw:angle,pad_x:0,pad_y:0,content_width:800,content_height:600};assert.deepEqual(C.project([500,500],g),[400,300]);}
+assert.equal(C.project([null,null],{}),null);
+console.log('Identity core: swaps, source preservation, bounds, gaps, and rotated geometry passed.');
+const pscRaw=[[[0,0],[null,null]],[[10,0],[null,null]],[[20,0],[50,0]]];
+const pm={frame_start:10,frame_end_inclusive:12,animal_count:2};
+const pd={id:'pile',kind:'pscp',mode:'partner',animal_a:1,animal_b:0,start_frame:10,end_frame_inclusive:11,anchor_frame:11,reviewer:'Test',reason:'Pile seen',created_utc:'2026-10-05'};
+const pr=C.replay(pscRaw,[pd],pm);assert.deepEqual(pr,pscRaw);
+const pl=C.pscLayer(pr,[pd],pm);assert.deepEqual(pl.data[1][1],[10,0]);assert.equal(pl.source[1][1],'HUMAN_PSCP');assert.deepEqual(pr[1][1],[null,null]);
+assert.throws(()=>C.replay(pscRaw,[{...pd,end_frame_inclusive:12}],pm),/detected/);
+assert.deepEqual(C.pscLayer(pr,[{...pd,mode:'unresolved'}],pm).data[1][1],[null,null]);
+assert.deepEqual([C.suggestPSC(pr,11,1,0,pm,'partner').lo,C.suggestPSC(pr,11,1,0,pm,'partner').hi],[10,11]);
+console.log('Human PSC: separate inferred layer, missing-ID guard, unknown location, and interval bounds passed.');
+const fm={frame_start:100,frame_end_inclusive:108,animal_count:3};
+const fraw=Array.from({length:9},(_,i)=>i<5?[[i*2,0],[400+i*2,0],[800,0]]:[[400+i*2,0],[i*2,0],[800,0]]);
+const followed=C.follow(fraw,103,0,1,fm);assert.deepEqual(followed.segments,[{lo:100,hi:104}]);assert.equal(followed.hi,108);
+assert.deepEqual(C.follow(fraw,107,1,0,fm).segments,[{lo:105,hi:108}]);
+const protectedLog=[{...d,animal_a:0,animal_b:1,start_frame:101,end_frame_inclusive:101}];assert.equal(C.follow(fraw,103,0,1,fm,protectedLog).lo,102);
+assert.equal(C.follow(fraw,101,0,1,fm,protectedLog).segments.length,0);
+const missingOther=fraw.map(r=>[r[0],[null,null],r[2]]);assert.equal(C.follow(missingOther,102,0,1,fm).hi,104);
+const ambiguous=fraw.map(r=>r.map(p=>p.slice()));ambiguous[4][2]=[9,0];assert.equal(C.follow(ambiguous,102,0,1,fm).hi,103);
+const gap=fraw.map(r=>r.map(p=>p.slice()));gap[4][0]=[null,null];assert.equal(C.follow(gap,102,0,1,fm).hi,103);
+const immutable=JSON.stringify(fraw);const decisions=followed.segments.map((s,i)=>({...d,id:'follow'+i,animal_a:0,animal_b:1,start_frame:s.lo,end_frame_inclusive:s.hi,anchor_frame:Math.max(s.lo,Math.min(103,s.hi))}));
+const fixed=C.replay(fraw,decisions,fm);assert.equal(JSON.stringify(fraw),immutable);for(let i=0;i<9;i++){assert.deepEqual(fixed[i][1],[i*2,0]);assert.deepEqual(fixed[i][0],[400+i*2,0]);}
+console.log('Motion follower: forward/backward label reversals, saved boundaries, missing counterpart, ambiguity, gaps, and exact replay passed.');

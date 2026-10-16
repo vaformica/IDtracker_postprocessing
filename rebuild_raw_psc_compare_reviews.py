@@ -19,7 +19,7 @@ from build_canonical_review import build, sha256
 from review_geometry import plan_review_geometry, review_filter
 from run_six_beetle_pipeline import make_review_video
 
-VIEW_VERSION = "raw-psc-compare-v3"
+VIEW_VERSION = "raw-psc-compare-v4"
 MODEL_VERSION = "1.5.1"
 PROCESSOR_VERSION = "0.8.1-group"
 
@@ -40,7 +40,7 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
         status = folder / "status.json"
         analysis = folder / "analysis"
         review = folder / "review"
-        output = folder / "review_compare_v3"
+        output = folder / "review_compare_v4"
         original_video = Path(task['video'])
     else:
         label = task["id"]
@@ -53,7 +53,7 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
         status = folder / "status_v151r081.json"
         analysis = folder / "analysis_v151r081"
         review = folder / "review_v151r081"
-        output = folder / "review_compare_v151r081_v3"
+        output = folder / "review_compare_v151r081_v4"
         submitted = tomllib.loads((folder / 'input' / 'submitted.toml').read_text())
         original_video = Path(submitted['video_paths'][0])
 
@@ -77,7 +77,7 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
         current = json.loads((output / "source_manifest.json").read_text())
         if (current.get("review_view_version") != VIEW_VERSION or
                 current.get("analysis_manifest_sha256") != source["analysis_manifest_sha256"] or
-                current.get("copied_video_sha256") != sha256(output / "review_video.mp4") or
+                current.get("copied_video_sha256") != sha256(output / current['video']) or
                 current.get('video_geometry') != geometry or
                 current.get("status") != "UNREVIEWED"):
             raise FileExistsError(f"Existing comparison review differs: {output}")
@@ -99,6 +99,7 @@ def rebuild_task(root: Path, kind: str, task: dict, ffmpeg: str) -> str:
             raise RuntimeError(f'Review video has {stream["nb_frames"]} frames; analysis has {expected_frames}: {label}')
         build(analysis, oriented_video, output, source["crop"], source["fps"],
               label=source["label"], video_geometry=geometry,
+              source_toml=task.get('source_toml') or task.get('source_path'),
               source_video=original_video,
               video_filter=review_filter(start, end, geometry))
     current = json.loads((output / "source_manifest.json").read_text())

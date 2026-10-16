@@ -1,0 +1,2381 @@
+{
+  "schema": "dyadic-comment-decisions-v1",
+  "version": "1.0.0",
+  "source_sha256": "0547ed82d05a12a4454e0a84a4f219b28b57f29b0f0078559f8e7219ddc87f03",
+  "source_filename": "Manual_Review_IDtracker_20261014(20261014_dyad).csv",
+  "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+  "exported_utc": "2026-10-14T19:24:55.180Z",
+  "reviewer": "VAF",
+  "scope": "comment triage only; no trajectory or PSC correction",
+  "annotations": [
+    {
+      "id": "row002_1",
+      "csv_row": 2,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__PSC1.6.0",
+      "issue": "PSCP assigned ~2 frames before actual contact ",
+      "original_frame": "1664",
+      "reported_frame": 1664,
+      "reported_end": 1664,
+      "target": 1664,
+      "end": 1664,
+      "initial": 1659,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 1659,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f1659.jpg"
+        },
+        {
+          "frame": 1664,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f1664.jpg"
+        },
+        {
+          "frame": 1669,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f1669.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 1675,
+      "updated_utc": "2026-10-14T18:59:52.487Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row003_1",
+      "csv_row": 3,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__PSC1.6.0",
+      "issue": "PSCP assigned ~2 frames after contact ended",
+      "original_frame": "1680",
+      "reported_frame": 1680,
+      "reported_end": 1680,
+      "target": 1680,
+      "end": 1680,
+      "initial": 1675,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 1675,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f1675.jpg"
+        },
+        {
+          "frame": 1680,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f1680.jpg"
+        },
+        {
+          "frame": 1685,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f1685.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 1683,
+      "updated_utc": "2026-10-14T19:00:37.704Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row004_1",
+      "csv_row": 4,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__PSC1.6.0",
+      "issue": "beetles in contact but white centroid located at base of beetle 1 so it doesn't catch the PSCP",
+      "original_frame": "4505",
+      "reported_frame": 4505,
+      "reported_end": 4505,
+      "target": 4505,
+      "end": 4505,
+      "initial": 4500,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 4500,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f4500.jpg"
+        },
+        {
+          "frame": 4505,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f4505.jpg"
+        },
+        {
+          "frame": 4510,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f4510.jpg"
+        }
+      ],
+      "decision": "ignore",
+      "notes": "",
+      "category": "",
+      "frame": 4504,
+      "updated_utc": "2026-10-14T19:01:06.694Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row005_1",
+      "csv_row": 5,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__PSC1.6.0",
+      "issue": "white centroid misplaced again, then jumps to PSCP but technically no contact ",
+      "original_frame": "6753",
+      "reported_frame": 6753,
+      "reported_end": 6753,
+      "target": 6753,
+      "end": 6753,
+      "initial": 6748,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 6748,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f6748.jpg"
+        },
+        {
+          "frame": 6753,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f6753.jpg"
+        },
+        {
+          "frame": 6758,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f6758.jpg"
+        }
+      ],
+      "decision": "unsure",
+      "notes": "does this matter.  They are really close.  I think proximity is fine but contact etc is not clear.",
+      "category": "",
+      "frame": 6754,
+      "updated_utc": "2026-10-14T19:01:43.418Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row006_1",
+      "csv_row": 6,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__PSC1.6.0",
+      "issue": "several frames throughout video where beetles' centroids are not centered on the beetle. Lag effect during fast movement?",
+      "original_frame": "",
+      "reported_frame": null,
+      "reported_end": null,
+      "target": 46,
+      "end": 46,
+      "initial": 46,
+      "frame_note": "No frame supplied: video overview, not a located error",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 46,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f46.jpg"
+        },
+        {
+          "frame": 51,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f51.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 82,
+      "updated_utc": "2026-10-14T19:02:04.280Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row007_1",
+      "csv_row": 7,
+      "run": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "original_video": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "issue": "contact ends before PSC ends",
+      "original_frame": "1260",
+      "reported_frame": 1260,
+      "reported_end": 1260,
+      "target": 1260,
+      "end": 1260,
+      "initial": 1255,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 1255,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f1255.jpg"
+        },
+        {
+          "frame": 1260,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f1260.jpg"
+        },
+        {
+          "frame": 1265,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f1265.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 1272,
+      "updated_utc": "2026-10-14T19:02:17.551Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row008_1",
+      "csv_row": 8,
+      "run": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "original_video": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "issue": "during the long bout of PSC, often locates beetles 1 but inaccurately. Not sure it matters, but seems more accurate to have a share PSCP blob than the incorrectly placed centroid for beetle 1",
+      "original_frame": "",
+      "reported_frame": null,
+      "reported_end": null,
+      "target": 24,
+      "end": 24,
+      "initial": 24,
+      "frame_note": "No frame supplied: video overview, not a located error",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 24,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f24.jpg"
+        },
+        {
+          "frame": 29,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f29.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "Not terrible and probably withn the realm of what we need. ",
+      "category": "",
+      "frame": 665,
+      "updated_utc": "2026-10-14T19:03:34.996Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row009_1",
+      "csv_row": 9,
+      "run": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "original_video": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "issue": "briefly loses black beetle on edge but accurately re-assigns beetle 0",
+      "original_frame": "6069; 6599",
+      "reported_frame": 6069,
+      "reported_end": 6069,
+      "target": 6069,
+      "end": 6069,
+      "initial": 6064,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Missing / returning ID"
+      ],
+      "snapshots": [
+        {
+          "frame": 6064,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f6064.jpg"
+        },
+        {
+          "frame": 6069,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f6069.jpg"
+        },
+        {
+          "frame": 6074,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f6074.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 6096,
+      "updated_utc": "2026-10-14T19:03:47.569Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row009_2",
+      "csv_row": 9,
+      "run": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "original_video": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1",
+      "issue": "briefly loses black beetle on edge but accurately re-assigns beetle 0",
+      "original_frame": "6069; 6599",
+      "reported_frame": 6599,
+      "reported_end": 6599,
+      "target": 6599,
+      "end": 6599,
+      "initial": 6594,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Missing / returning ID"
+      ],
+      "snapshots": [
+        {
+          "frame": 6594,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f6594.jpg"
+        },
+        {
+          "frame": 6599,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f6599.jpg"
+        },
+        {
+          "frame": 6604,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_C1__f6604.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 6617,
+      "updated_utc": "2026-10-14T19:10:22.597Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row010_1",
+      "csv_row": 10,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "PSC starts ~4 frames prior to contact start and ends ~4 frames after contact ends",
+      "original_frame": "515",
+      "reported_frame": 515,
+      "reported_end": 515,
+      "target": 515,
+      "end": 515,
+      "initial": 510,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 510,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f510.jpg"
+        },
+        {
+          "frame": 515,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f515.jpg"
+        },
+        {
+          "frame": 520,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f520.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 533,
+      "updated_utc": "2026-10-14T19:04:04.336Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row011_1",
+      "csv_row": 11,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "Centroid assignment lagging as beetle 1 walks along left wall ",
+      "original_frame": "871",
+      "reported_frame": 871,
+      "reported_end": 871,
+      "target": 871,
+      "end": 871,
+      "initial": 866,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 866,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f866.jpg"
+        },
+        {
+          "frame": 871,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f871.jpg"
+        },
+        {
+          "frame": 876,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f876.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 866,
+      "updated_utc": "2026-10-14T19:10:33.417Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row012_1",
+      "csv_row": 12,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "Centroid assignment lagging as beetle 0 walks along top wall ",
+      "original_frame": "1000",
+      "reported_frame": 1000,
+      "reported_end": 1000,
+      "target": 1000,
+      "end": 1000,
+      "initial": 995,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 995,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f995.jpg"
+        },
+        {
+          "frame": 1000,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1000.jpg"
+        },
+        {
+          "frame": 1005,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1005.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 1019,
+      "updated_utc": "2026-10-14T19:04:25.952Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row013_1",
+      "csv_row": 13,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "Idtracker loses beetle 0 right before beetle 1 intiates contact. Contact occurs for a while without a PSCP assignment",
+      "original_frame": "1364",
+      "reported_frame": 1364,
+      "reported_end": 1364,
+      "target": 1364,
+      "end": 1364,
+      "initial": 1359,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Missing / returning ID",
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 1359,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1359.jpg"
+        },
+        {
+          "frame": 1364,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1364.jpg"
+        },
+        {
+          "frame": 1369,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1369.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "Looses beetle 0",
+      "category": "",
+      "frame": 1514,
+      "updated_utc": "2026-10-14T19:04:58.125Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row014_1",
+      "csv_row": 14,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "no PSCP assigned during prolonged contact (lost beetle 0)",
+      "original_frame": "1476",
+      "reported_frame": 1476,
+      "reported_end": 1476,
+      "target": 1476,
+      "end": 1476,
+      "initial": 1471,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Missing / returning ID",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 1471,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1471.jpg"
+        },
+        {
+          "frame": 1476,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1476.jpg"
+        },
+        {
+          "frame": 1481,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f1481.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "",
+      "category": "PSC timing or logic",
+      "frame": 1471,
+      "updated_utc": "2026-10-14T19:05:09.502Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row015_1",
+      "csv_row": 15,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "loses beetle 0 right before contact and misses PSCP 3593-3635",
+      "original_frame": "3590",
+      "reported_frame": 3590,
+      "reported_end": 3590,
+      "target": 3590,
+      "end": 3590,
+      "initial": 3585,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Missing / returning ID",
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 3585,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f3585.jpg"
+        },
+        {
+          "frame": 3590,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f3590.jpg"
+        },
+        {
+          "frame": 3595,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f3595.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "",
+      "category": "",
+      "frame": 3632,
+      "updated_utc": "2026-10-14T19:05:28.467Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row016_1",
+      "csv_row": 16,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "assigns PSCP when there is no contact",
+      "original_frame": "3633",
+      "reported_frame": 3633,
+      "reported_end": 3633,
+      "target": 3633,
+      "end": 3633,
+      "initial": 3628,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 3628,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f3628.jpg"
+        },
+        {
+          "frame": 3633,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f3633.jpg"
+        },
+        {
+          "frame": 3638,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f3638.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3701,
+      "updated_utc": "2026-10-14T19:05:42.635Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row017_1",
+      "csv_row": 17,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "beetle 1 centroid jumps forward, intiating PSC prior to actual intial contact ",
+      "original_frame": "4548",
+      "reported_frame": 4548,
+      "reported_end": 4548,
+      "target": 4548,
+      "end": 4548,
+      "initial": 4543,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 4543,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f4543.jpg"
+        },
+        {
+          "frame": 4548,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f4548.jpg"
+        },
+        {
+          "frame": 4553,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f4553.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "",
+      "category": "",
+      "frame": 4609,
+      "updated_utc": "2026-10-14T19:05:53.483Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row018_1",
+      "csv_row": 18,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "beetle 0 \"missing\"; PSCP not assigned but there is social contact",
+      "original_frame": "4694",
+      "reported_frame": 4694,
+      "reported_end": 4694,
+      "target": 4694,
+      "end": 4694,
+      "initial": 4689,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Missing / returning ID",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 4689,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f4689.jpg"
+        },
+        {
+          "frame": 4694,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f4694.jpg"
+        },
+        {
+          "frame": 4699,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f4699.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "",
+      "category": "",
+      "frame": 4718,
+      "updated_utc": "2026-10-14T19:06:00.637Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row019_1",
+      "csv_row": 19,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "PSCP assigned but no social contact ",
+      "original_frame": "5482",
+      "reported_frame": 5482,
+      "reported_end": 5482,
+      "target": 5482,
+      "end": 5482,
+      "initial": 5477,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 5477,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f5477.jpg"
+        },
+        {
+          "frame": 5482,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f5482.jpg"
+        },
+        {
+          "frame": 5487,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f5487.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 5483,
+      "updated_utc": "2026-10-14T19:11:00.330Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row020_1",
+      "csv_row": 20,
+      "run": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "original_video": "Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1",
+      "issue": "centroid lag on beetle 0 as it runs across the arena",
+      "original_frame": "5963",
+      "reported_frame": 5963,
+      "reported_end": 5963,
+      "target": 5963,
+      "end": 5963,
+      "initial": 5958,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 5958,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f5958.jpg"
+        },
+        {
+          "frame": 5963,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f5963.jpg"
+        },
+        {
+          "frame": 5968,
+          "path": "snapshots/Camera_2_40359705_20260701_1650_FIGHT_ACT2_A1__f5968.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 6190,
+      "updated_utc": "2026-10-14T19:16:20.699Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row021_1",
+      "csv_row": 21,
+      "run": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_B2",
+      "original_video": "Camera_1_40169154_20260701_1332_FIGHT_ACT1_B2",
+      "issue": "no PSCP assigned, but prolonged contact. Both beetle still tracked (but beetle 0 centroid location slightly off) so proximity assigned for duration of contact ",
+      "original_frame": "3316",
+      "reported_frame": 3316,
+      "reported_end": 3316,
+      "target": 3316,
+      "end": 3316,
+      "initial": 3311,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 3311,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_B2__f3311.jpg"
+        },
+        {
+          "frame": 3316,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_B2__f3316.jpg"
+        },
+        {
+          "frame": 3321,
+          "path": "snapshots/Camera_1_40169154_20260701_1332_FIGHT_ACT1_B2__f3321.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3311,
+      "updated_utc": "2026-10-14T19:16:28.333Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row022_1",
+      "csv_row": 22,
+      "run": "Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1",
+      "original_video": "Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1",
+      "issue": "beetle 0 does not have a clear paint color",
+      "original_frame": "",
+      "reported_frame": null,
+      "reported_end": null,
+      "target": 66,
+      "end": 66,
+      "initial": 66,
+      "frame_note": "No frame supplied: video overview, not a located error",
+      "reviewer": "SV",
+      "beetle0": "white (?)",
+      "beetle1": "black ",
+      "categories": [
+        "Paint / identity visibility"
+      ],
+      "snapshots": [
+        {
+          "frame": 66,
+          "path": "snapshots/Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1__f66.jpg"
+        },
+        {
+          "frame": 71,
+          "path": "snapshots/Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1__f71.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "",
+      "category": "",
+      "frame": 483,
+      "updated_utc": "2026-10-14T19:17:30.165Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row023_1",
+      "csv_row": 23,
+      "run": "Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1",
+      "original_video": "Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1",
+      "issue": "PSC ends about ~30 frames before contact ends",
+      "original_frame": "4004",
+      "reported_frame": 4004,
+      "reported_end": 4004,
+      "target": 4004,
+      "end": 4004,
+      "initial": 3999,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white (?)",
+      "beetle1": "black ",
+      "categories": [
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 3999,
+          "path": "snapshots/Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1__f3999.jpg"
+        },
+        {
+          "frame": 4004,
+          "path": "snapshots/Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1__f4004.jpg"
+        },
+        {
+          "frame": 4009,
+          "path": "snapshots/Camera_2_40359705_20260630_1634_FIGHT_ACT2_PAPER_DATA_WRONG_C1__f4009.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 4043,
+      "updated_utc": "2026-10-14T19:17:48.582Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row024_1",
+      "csv_row": 24,
+      "run": "Camera_2_40359705_20260701_1336_FIGHT_ACT1_B1",
+      "original_video": "Camera_2_40359705_20260701_1336_FIGHT_ACT1_B1",
+      "issue": "~1000 frame delay before assigning PSCP (called proximity and kept tracking beetles)",
+      "original_frame": "5900",
+      "reported_frame": 5900,
+      "reported_end": 5900,
+      "target": 5900,
+      "end": 5900,
+      "initial": 5895,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "SV",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "PSC timing",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 5895,
+          "path": "snapshots/Camera_2_40359705_20260701_1336_FIGHT_ACT1_B1__f5895.jpg"
+        },
+        {
+          "frame": 5900,
+          "path": "snapshots/Camera_2_40359705_20260701_1336_FIGHT_ACT1_B1__f5900.jpg"
+        },
+        {
+          "frame": 5905,
+          "path": "snapshots/Camera_2_40359705_20260701_1336_FIGHT_ACT1_B1__f5905.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 6049,
+      "updated_utc": "2026-10-14T19:18:18.542Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row025_1",
+      "csv_row": 25,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "video starts after first movement (black beetle in a different location already -- redo toml?)",
+      "original_frame": "0",
+      "reported_frame": 0,
+      "reported_end": 0,
+      "target": 170,
+      "end": 170,
+      "initial": 170,
+      "frame_note": "Reported 0 means start-of-video comment; first available global frame is 170",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Recording start"
+      ],
+      "snapshots": [
+        {
+          "frame": 170,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f170.jpg"
+        },
+        {
+          "frame": 175,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f175.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "",
+      "category": "",
+      "frame": 209,
+      "updated_utc": "2026-10-14T19:18:39.764Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row026_1",
+      "csv_row": 26,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "still in mount position, but not in PSCP, tracking dot leaves beetle and moves by itself into the plaster for ~12 frames while beetle still in mount position; beetle still in contact for about 15 frames but not social contact score, just proximity",
+      "original_frame": "3126",
+      "reported_frame": 3126,
+      "reported_end": 3126,
+      "target": 3126,
+      "end": 3126,
+      "initial": 3121,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition",
+        "Fungus location"
+      ],
+      "snapshots": [
+        {
+          "frame": 3121,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3121.jpg"
+        },
+        {
+          "frame": 3126,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3126.jpg"
+        },
+        {
+          "frame": 3131,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3131.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3121,
+      "updated_utc": "2026-10-14T19:18:46.375Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row027_1",
+      "csv_row": 27,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "beetle contact happening, including a mount at 3729 but no PSCP designation (about 200 frames)",
+      "original_frame": "3724",
+      "reported_frame": 3724,
+      "reported_end": 3724,
+      "target": 3724,
+      "end": 3724,
+      "initial": 3719,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 3719,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3719.jpg"
+        },
+        {
+          "frame": 3724,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3724.jpg"
+        },
+        {
+          "frame": 3729,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3729.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3719,
+      "updated_utc": "2026-10-14T19:24:16.496Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row028_1",
+      "csv_row": 28,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "off fungus in real life, but says on fungus because dots have migrated right through set frames; dots and beetles reconncet at 3958",
+      "original_frame": "3894",
+      "reported_frame": 3894,
+      "reported_end": 3894,
+      "target": 3894,
+      "end": 3894,
+      "initial": 3889,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement",
+        "Fungus location"
+      ],
+      "snapshots": [
+        {
+          "frame": 3889,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3889.jpg"
+        },
+        {
+          "frame": 3894,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3894.jpg"
+        },
+        {
+          "frame": 3899,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3899.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3889,
+      "updated_utc": "2026-10-14T19:24:24.543Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row029_1",
+      "csv_row": 29,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "both beetles on fungus, but says that only one beetle is based on PSCP; should both be assigned the same location and \"on fungus\"?",
+      "original_frame": "4227",
+      "reported_frame": 4227,
+      "reported_end": 4227,
+      "target": 4227,
+      "end": 4227,
+      "initial": 4222,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Contact / PSC definition",
+        "Fungus location"
+      ],
+      "snapshots": [
+        {
+          "frame": 4222,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4222.jpg"
+        },
+        {
+          "frame": 4227,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4227.jpg"
+        },
+        {
+          "frame": 4232,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4232.jpg"
+        }
+      ],
+      "decision": "ignore",
+      "notes": "",
+      "category": "",
+      "frame": 4222,
+      "updated_utc": "2026-10-14T19:24:31.962Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row030_1",
+      "csv_row": 30,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "Now both beetles are clearly on the fungus, and the PSCP anchor appears inside of the fungus outline but both one beetle still not listed on fungus",
+      "original_frame": "4255",
+      "reported_frame": 4255,
+      "reported_end": 4255,
+      "target": 4255,
+      "end": 4255,
+      "initial": 4250,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Contact / PSC definition",
+        "Fungus location"
+      ],
+      "snapshots": [
+        {
+          "frame": 4250,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4250.jpg"
+        },
+        {
+          "frame": 4255,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4255.jpg"
+        },
+        {
+          "frame": 4260,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4260.jpg"
+        }
+      ],
+      "decision": "ignore",
+      "notes": "Not great but ok.",
+      "category": "",
+      "frame": 4250,
+      "updated_utc": "2026-10-14T19:19:23.358Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row031_1",
+      "csv_row": 31,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "idtracker dot clearly not on beetle 0 at all",
+      "original_frame": "4286",
+      "reported_frame": 4286,
+      "reported_end": 4286,
+      "target": 4286,
+      "end": 4286,
+      "initial": 4281,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 4281,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4281.jpg"
+        },
+        {
+          "frame": 4286,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4286.jpg"
+        },
+        {
+          "frame": 4291,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4291.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 4327,
+      "updated_utc": "2026-10-14T19:19:50.710Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row032_1",
+      "csv_row": 32,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "idtracker dots begin to drift away from real life beetles",
+      "original_frame": "3731-3950",
+      "reported_frame": 3731,
+      "reported_end": 3950,
+      "target": 3731,
+      "end": 3950,
+      "initial": 3726,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 3726,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3726.jpg"
+        },
+        {
+          "frame": 3731,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3731.jpg"
+        },
+        {
+          "frame": 3736,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3736.jpg"
+        },
+        {
+          "frame": 3950,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f3950.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3725,
+      "updated_utc": "2026-10-14T19:24:47.107Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row033_1",
+      "csv_row": 33,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "id says it is assigned to beetle 1 but the idtracker dot is not touching a beetle ",
+      "original_frame": "4086",
+      "reported_frame": 4086,
+      "reported_end": 4086,
+      "target": 4086,
+      "end": 4086,
+      "initial": 4081,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 4081,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4081.jpg"
+        },
+        {
+          "frame": 4086,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4086.jpg"
+        },
+        {
+          "frame": 4091,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4091.jpg"
+        }
+      ],
+      "decision": null,
+      "notes": "",
+      "category": "",
+      "frame": null,
+      "complete": false
+    },
+    {
+      "id": "row034_1",
+      "csv_row": 34,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "id says it is assigned to beetle 1 but the idtracker dot is not touching a beetle and closer to beetle 0",
+      "original_frame": "4342",
+      "reported_frame": 4342,
+      "reported_end": 4342,
+      "target": 4342,
+      "end": 4342,
+      "initial": 4337,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 4337,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4337.jpg"
+        },
+        {
+          "frame": 4342,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4342.jpg"
+        },
+        {
+          "frame": 4347,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f4347.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 4355,
+      "updated_utc": "2026-10-14T19:20:11.996Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row035_1",
+      "csv_row": 35,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2",
+      "issue": "idtracker loses beetle 0, there is an assigned PSCP but beetles not touching (actually a beetle 0 \"evade\")",
+      "original_frame": "6284",
+      "reported_frame": 6284,
+      "reported_end": 6284,
+      "target": 6284,
+      "end": 6284,
+      "initial": 6279,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "white",
+      "beetle1": "black ",
+      "categories": [
+        "Missing / returning ID",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 6279,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f6279.jpg"
+        },
+        {
+          "frame": 6284,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f6284.jpg"
+        },
+        {
+          "frame": 6289,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_C2__f6289.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 6290,
+      "updated_utc": "2026-10-14T19:20:33.741Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row036_1",
+      "csv_row": 36,
+      "run": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "original_video": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "issue": "neither centroid is actually on a beetle",
+      "original_frame": "828",
+      "reported_frame": 828,
+      "reported_end": 828,
+      "target": 828,
+      "end": 828,
+      "initial": 823,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 823,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f823.jpg"
+        },
+        {
+          "frame": 828,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f828.jpg"
+        },
+        {
+          "frame": 833,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f833.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 828,
+      "updated_utc": "2026-10-14T19:20:52.223Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row037_1",
+      "csv_row": 37,
+      "run": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "original_video": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "issue": "beetle 1 centroid not on beetle at all",
+      "original_frame": "863",
+      "reported_frame": 863,
+      "reported_end": 863,
+      "target": 863,
+      "end": 863,
+      "initial": 858,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 858,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f858.jpg"
+        },
+        {
+          "frame": 863,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f863.jpg"
+        },
+        {
+          "frame": 868,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f868.jpg"
+        }
+      ],
+      "decision": null,
+      "notes": "",
+      "category": "",
+      "frame": null,
+      "complete": false
+    },
+    {
+      "id": "row038_1",
+      "csv_row": 38,
+      "run": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "original_video": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "issue": "a clear mount, but no PSCP",
+      "original_frame": "856",
+      "reported_frame": 856,
+      "reported_end": 856,
+      "target": 856,
+      "end": 856,
+      "initial": 851,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 851,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f851.jpg"
+        },
+        {
+          "frame": 856,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f856.jpg"
+        },
+        {
+          "frame": 861,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f861.jpg"
+        }
+      ],
+      "decision": null,
+      "notes": "",
+      "category": "",
+      "frame": null,
+      "complete": false
+    },
+    {
+      "id": "row039_1",
+      "csv_row": 39,
+      "run": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "original_video": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "issue": "no PSCP, beetles touching like in the previus frame, but beetle 1 centroid not on beetle, assuming that is why it not marked because centroid is too far away",
+      "original_frame": "1289",
+      "reported_frame": 1289,
+      "reported_end": 1289,
+      "target": 1289,
+      "end": 1289,
+      "initial": 1284,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 1284,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f1284.jpg"
+        },
+        {
+          "frame": 1289,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f1289.jpg"
+        },
+        {
+          "frame": 1294,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f1294.jpg"
+        }
+      ],
+      "decision": "ignore",
+      "notes": "",
+      "category": "",
+      "frame": 1284,
+      "updated_utc": "2026-10-14T19:21:01.952Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row040_1",
+      "csv_row": 40,
+      "run": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "original_video": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "issue": "beetles not touching, beetle 1 centroid still not on beetle; beetle 1 centroid snaps to beetle in 1291",
+      "original_frame": "1290",
+      "reported_frame": 1290,
+      "reported_end": 1290,
+      "target": 1290,
+      "end": 1290,
+      "initial": 1285,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 1285,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f1285.jpg"
+        },
+        {
+          "frame": 1290,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f1290.jpg"
+        },
+        {
+          "frame": 1295,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f1295.jpg"
+        }
+      ],
+      "decision": "ignore",
+      "notes": "",
+      "category": "",
+      "frame": 1285,
+      "updated_utc": "2026-10-14T19:21:05.104Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row041_1",
+      "csv_row": 41,
+      "run": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "original_video": "Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2",
+      "issue": "centroids not touching or moving with beetles for ~50-60 frames; missed social contact and one beetle is on the fungus but centroid has it off fungus; not PSCP during this time, and sometime not even marked in proximity",
+      "original_frame": "2314",
+      "reported_frame": 2314,
+      "reported_end": 2314,
+      "target": 2314,
+      "end": 2314,
+      "initial": 2309,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition",
+        "Fungus location"
+      ],
+      "snapshots": [
+        {
+          "frame": 2309,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f2309.jpg"
+        },
+        {
+          "frame": 2314,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f2314.jpg"
+        },
+        {
+          "frame": 2319,
+          "path": "snapshots/Camera_2_40359705_20260702_1536_FIGHT_ACT2_B2__f2319.jpg"
+        }
+      ],
+      "decision": "ignore",
+      "notes": "",
+      "category": "",
+      "frame": 2380,
+      "updated_utc": "2026-10-14T19:21:21.062Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row042_1",
+      "csv_row": 42,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2",
+      "issue": "beetle ID swap (still)",
+      "original_frame": "3058",
+      "reported_frame": 3058,
+      "reported_end": 3058,
+      "target": 3058,
+      "end": 3058,
+      "initial": 3053,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Identity swap / duplicate"
+      ],
+      "snapshots": [
+        {
+          "frame": 3053,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2__f3053.jpg"
+        },
+        {
+          "frame": 3058,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2__f3058.jpg"
+        },
+        {
+          "frame": 3063,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2__f3063.jpg"
+        }
+      ],
+      "decision": "investigate",
+      "notes": "Swap re run through IDTRacker",
+      "category": "",
+      "frame": 3079,
+      "updated_utc": "2026-10-14T19:21:47.096Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row043_1",
+      "csv_row": 43,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2",
+      "issue": "beetle 1 centroid not on beetle at all",
+      "original_frame": "3627",
+      "reported_frame": 3627,
+      "reported_end": 3627,
+      "target": 3627,
+      "end": 3627,
+      "initial": 3622,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement"
+      ],
+      "snapshots": [
+        {
+          "frame": 3622,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2__f3622.jpg"
+        },
+        {
+          "frame": 3627,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2__f3627.jpg"
+        },
+        {
+          "frame": 3632,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_A2__f3632.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 3637,
+      "updated_utc": "2026-10-14T19:23:02.824Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row044_1",
+      "csv_row": 44,
+      "run": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2",
+      "original_video": "Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2.toml",
+      "issue": "start time is wrong because beetle 0 is already almost bracket at start (redo toml?) but very few interactions ",
+      "original_frame": "46",
+      "reported_frame": 46,
+      "reported_end": 46,
+      "target": 46,
+      "end": 46,
+      "initial": 46,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Recording start"
+      ],
+      "snapshots": [
+        {
+          "frame": 46,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f46.jpg"
+        },
+        {
+          "frame": 51,
+          "path": "snapshots/Camera_1_40169154_20260630_1633_FIGHT_ACT2_PAPER_DATA_WRONG_C2__f51.jpg"
+        }
+      ],
+      "decision": "unsure",
+      "notes": "",
+      "category": "",
+      "frame": 46,
+      "updated_utc": "2026-10-14T19:23:12.084Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row045_1",
+      "csv_row": 45,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "issue": "not listed as PSCP but together for ~50 frames",
+      "original_frame": "556",
+      "reported_frame": 556,
+      "reported_end": 556,
+      "target": 556,
+      "end": 556,
+      "initial": 551,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 551,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f551.jpg"
+        },
+        {
+          "frame": 556,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f556.jpg"
+        },
+        {
+          "frame": 561,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f561.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 551,
+      "updated_utc": "2026-10-14T19:23:18.607Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row046_1",
+      "csv_row": 46,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "issue": "centroid not on beetle, says the beetles are in proximity but they are touching and havent moved from previous frame that was labeled as a PSCP; looks like both 0 and 1 are on beetle 0 when beetle 0 eventually moves away",
+      "original_frame": "642",
+      "reported_frame": 642,
+      "reported_end": 642,
+      "target": 642,
+      "end": 642,
+      "initial": 637,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Identity swap / duplicate",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 637,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f637.jpg"
+        },
+        {
+          "frame": 642,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f642.jpg"
+        },
+        {
+          "frame": 647,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f647.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 637,
+      "updated_utc": "2026-10-14T19:23:38.789Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    },
+    {
+      "id": "row047_1",
+      "csv_row": 47,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "issue": "beetles are on top of each other and not labeled as PSCP; looks like centroids are on top of each other too",
+      "original_frame": "677",
+      "reported_frame": 677,
+      "reported_end": 677,
+      "target": 677,
+      "end": 677,
+      "initial": 672,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Centroid drift / placement",
+        "Contact / PSC definition"
+      ],
+      "snapshots": [
+        {
+          "frame": 672,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f672.jpg"
+        },
+        {
+          "frame": 677,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f677.jpg"
+        },
+        {
+          "frame": 682,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f682.jpg"
+        }
+      ],
+      "decision": null,
+      "notes": "",
+      "category": "",
+      "frame": null,
+      "complete": false
+    },
+    {
+      "id": "row048_1",
+      "csv_row": 48,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "issue": "beetle 0 is labeled as both 0 and 1",
+      "original_frame": "685",
+      "reported_frame": 685,
+      "reported_end": 685,
+      "target": 685,
+      "end": 685,
+      "initial": 680,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Identity swap / duplicate"
+      ],
+      "snapshots": [
+        {
+          "frame": 680,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f680.jpg"
+        },
+        {
+          "frame": 685,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f685.jpg"
+        },
+        {
+          "frame": 690,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f690.jpg"
+        }
+      ],
+      "decision": null,
+      "notes": "",
+      "category": "",
+      "frame": null,
+      "complete": false
+    },
+    {
+      "id": "row049_1",
+      "csv_row": 49,
+      "run": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "original_video": "Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2",
+      "issue": "beetle 0 is labeled as both 0 and 1",
+      "original_frame": "821",
+      "reported_frame": 821,
+      "reported_end": 821,
+      "target": 821,
+      "end": 821,
+      "initial": 816,
+      "frame_note": "Global frame shown in the original review HTML",
+      "reviewer": "HD",
+      "beetle0": "black",
+      "beetle1": "white",
+      "categories": [
+        "Identity swap / duplicate"
+      ],
+      "snapshots": [
+        {
+          "frame": 816,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f816.jpg"
+        },
+        {
+          "frame": 821,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f821.jpg"
+        },
+        {
+          "frame": 826,
+          "path": "snapshots/Camera_1_40169154_20260702_1535_FIGHT_ACT2_A2__f826.jpg"
+        }
+      ],
+      "decision": "okay",
+      "notes": "",
+      "category": "",
+      "frame": 828,
+      "updated_utc": "2026-10-14T19:24:07.405Z",
+      "frame_basis": "global review HTML frames; 0 start comment mapped explicitly",
+      "complete": true
+    }
+  ],
+  "state": {
+    "reviewer": "VAF",
+    "decisions": {
+      "row002_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 1675,
+        "updated_utc": "2026-10-14T18:59:52.487Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row003_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 1683,
+        "updated_utc": "2026-10-14T19:00:37.704Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row004_1": {
+        "decision": "ignore",
+        "notes": "",
+        "category": "",
+        "frame": 4504,
+        "updated_utc": "2026-10-14T19:01:06.694Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row005_1": {
+        "decision": "unsure",
+        "notes": "does this matter.  They are really close.  I think proximity is fine but contact etc is not clear.",
+        "category": "",
+        "frame": 6754,
+        "updated_utc": "2026-10-14T19:01:43.418Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row006_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 82,
+        "updated_utc": "2026-10-14T19:02:04.280Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row007_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 1272,
+        "updated_utc": "2026-10-14T19:02:17.551Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row008_1": {
+        "decision": "investigate",
+        "notes": "Not terrible and probably withn the realm of what we need. ",
+        "category": "",
+        "frame": 665,
+        "updated_utc": "2026-10-14T19:03:34.996Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row009_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 6096,
+        "updated_utc": "2026-10-14T19:03:47.569Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row010_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 533,
+        "updated_utc": "2026-10-14T19:04:04.336Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row011_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 866,
+        "updated_utc": "2026-10-14T19:10:33.417Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row012_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 1019,
+        "updated_utc": "2026-10-14T19:04:25.952Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row013_1": {
+        "decision": "okay",
+        "notes": "Looses beetle 0",
+        "category": "",
+        "frame": 1514,
+        "updated_utc": "2026-10-14T19:04:58.125Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row014_1": {
+        "decision": "investigate",
+        "notes": "",
+        "category": "PSC timing or logic",
+        "frame": 1471,
+        "updated_utc": "2026-10-14T19:05:09.502Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row015_1": {
+        "decision": "investigate",
+        "notes": "",
+        "category": "",
+        "frame": 3632,
+        "updated_utc": "2026-10-14T19:05:28.467Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row016_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3701,
+        "updated_utc": "2026-10-14T19:05:42.635Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row017_1": {
+        "decision": "investigate",
+        "notes": "",
+        "category": "",
+        "frame": 4609,
+        "updated_utc": "2026-10-14T19:05:53.483Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row018_1": {
+        "decision": "investigate",
+        "notes": "",
+        "category": "",
+        "frame": 4718,
+        "updated_utc": "2026-10-14T19:06:00.637Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row009_2": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 6617,
+        "updated_utc": "2026-10-14T19:10:22.597Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row019_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 5483,
+        "updated_utc": "2026-10-14T19:11:00.330Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row020_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 6190,
+        "updated_utc": "2026-10-14T19:16:20.699Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row021_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3311,
+        "updated_utc": "2026-10-14T19:16:28.333Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row022_1": {
+        "decision": "investigate",
+        "notes": "",
+        "category": "",
+        "frame": 483,
+        "updated_utc": "2026-10-14T19:17:30.165Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row023_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 4043,
+        "updated_utc": "2026-10-14T19:17:48.582Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row024_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 6049,
+        "updated_utc": "2026-10-14T19:18:18.542Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row025_1": {
+        "decision": "investigate",
+        "notes": "",
+        "category": "",
+        "frame": 209,
+        "updated_utc": "2026-10-14T19:18:39.764Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row026_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3121,
+        "updated_utc": "2026-10-14T19:18:46.375Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row030_1": {
+        "decision": "ignore",
+        "notes": "Not great but ok.",
+        "category": "",
+        "frame": 4250,
+        "updated_utc": "2026-10-14T19:19:23.358Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row031_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 4327,
+        "updated_utc": "2026-10-14T19:19:50.710Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row034_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 4355,
+        "updated_utc": "2026-10-14T19:20:11.996Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row035_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 6290,
+        "updated_utc": "2026-10-14T19:20:33.741Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row036_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 828,
+        "updated_utc": "2026-10-14T19:20:52.223Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row039_1": {
+        "decision": "ignore",
+        "notes": "",
+        "category": "",
+        "frame": 1284,
+        "updated_utc": "2026-10-14T19:21:01.952Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row040_1": {
+        "decision": "ignore",
+        "notes": "",
+        "category": "",
+        "frame": 1285,
+        "updated_utc": "2026-10-14T19:21:05.104Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row041_1": {
+        "decision": "ignore",
+        "notes": "",
+        "category": "",
+        "frame": 2380,
+        "updated_utc": "2026-10-14T19:21:21.062Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row042_1": {
+        "decision": "investigate",
+        "notes": "Swap re run through IDTRacker",
+        "category": "",
+        "frame": 3079,
+        "updated_utc": "2026-10-14T19:21:47.096Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row043_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3637,
+        "updated_utc": "2026-10-14T19:23:02.824Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row044_1": {
+        "decision": "unsure",
+        "notes": "",
+        "category": "",
+        "frame": 46,
+        "updated_utc": "2026-10-14T19:23:12.084Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row045_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 551,
+        "updated_utc": "2026-10-14T19:23:18.607Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row046_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 637,
+        "updated_utc": "2026-10-14T19:23:38.789Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row049_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 828,
+        "updated_utc": "2026-10-14T19:24:07.405Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row027_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3719,
+        "updated_utc": "2026-10-14T19:24:16.496Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row028_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3889,
+        "updated_utc": "2026-10-14T19:24:24.543Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row029_1": {
+        "decision": "ignore",
+        "notes": "",
+        "category": "",
+        "frame": 4222,
+        "updated_utc": "2026-10-14T19:24:31.962Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      },
+      "row032_1": {
+        "decision": "okay",
+        "notes": "",
+        "category": "",
+        "frame": 3725,
+        "updated_utc": "2026-10-14T19:24:47.107Z",
+        "frame_basis": "global review HTML frames; 0 start comment mapped explicitly"
+      }
+    }
+  }
+}

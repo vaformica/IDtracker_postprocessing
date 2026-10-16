@@ -106,6 +106,7 @@ def run(task: dict, root: Path) -> None:
     video = Path(data['video_paths'][0])
     label = data.get('name') or config.get('name') or Path(task['source_path']).stem
     pipeline = [sys.executable, str(CODE/'run_group_pipeline.py'),
+                '--source-toml', task['source_path'],
                 '--session', str(session), '--source-video', str(video),
                 '--analysis-output', str(folder/'analysis'),
                 '--review-output', str(folder/'review'),

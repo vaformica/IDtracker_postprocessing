@@ -1,8 +1,30 @@
 # IDtracker post-processing data dictionary
 
-**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping. The implementation/release descriptions below retain their historical Git checkpoint; the handoff records current archived output status.
+**Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping.
 
 Version documented: **0.8.1**
+
+## Current development rules — PSC 1.6.0 / group processor 0.8.2-group
+
+Both dyadic and six-beetle entry points use the same engine. Every finite pair
+of input x/y coordinates remains `ASSIGNED` at exactly that position, even with
+one shared blob, a large raw jump, or an immediately returning ID. Proximity
+requires two assigned centroids separated by **at most 60 original-image pixels**.
+`PSCP_BLOB` is permitted only when that ID's raw coordinate is missing and
+fresh proximity plus compatible detection evidence supports group membership.
+`BLOB_CONTINUITY` is a missing singleton's inferred detection position, not PSC.
+Unsupported missing IDs remain `MISSING`; ambiguous candidates are flagged.
+
+New manifests identify `raw_identity_policy=IDTRACKER_AUTHORITATIVE`.
+Split/distant confirmation parameters are retained as inactive legacy arguments.
+The movement cutoff still rejects implausible *steps* from distance summaries;
+it never deletes an available coordinate. Available IDs regain their positions
+immediately, without retrospective relabeling or inferred identity swaps.
+`observed_proximity_partners` now agrees with `raw_proximity_partners` because
+all available input IDs survive. Input arrays may themselves be gap-processed.
+
+The following 1.5.1 description is historical and does not describe 1.6.0.
+The initial code edit alone did not regenerate exports. The subsequent October 5 collection regenerated 25 dyadic and 26 six-beetle reviews under PSC 1.6.0 / processor 0.8.2-group / viewer v4, still UNREVIEWED; see [the regeneration record](reports/PSC_1_6_0_REGENERATION_2026-10-05.md).
 
 ## Shared group processor addendum — PSC model 1.5.1
 
