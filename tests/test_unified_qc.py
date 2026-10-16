@@ -67,5 +67,15 @@ class SharedQC(unittest.TestCase):
             self.assertEqual(receipt['recording_status'],'FAILED')
             self.assertFalse(receipt['assessment_complete'])
             self.assertTrue((r/'output'/'unified_qc.html').is_file())
+            self.assertEqual(receipt['dyadic_turtling_candidates']['candidate_bouts'],0)
+            self.assertTrue((r/'output'/'dyadic_turtling_qc.json').is_file())
+    def test_posture_sidecar_dyadic_only(self):
+        for count in [1,6]:
+            with tempfile.TemporaryDirectory() as tmp:
+                r=Path(tmp);src=r/'trajectories.npy'
+                np.save(src,{'trajectories':np.zeros((10,count,2))})
+                receipt=qc.run_qc(r/'out',src,'unused.mp4',0,9,30,skip_video=True)
+                self.assertIsNone(receipt['dyadic_turtling_candidates'])
+                self.assertFalse((r/'out'/'dyadic_turtling_qc.json').exists())
 
 if __name__=='__main__':unittest.main()

@@ -26,6 +26,9 @@ DEFAULT_SESSION_ROOTS = ";".join((
     "/data/labs/vformic1-swat-lab/idtracker_pipeline_runs",
 ))
 DEPLOY_FILES = (
+    "unified_qc.py",
+    "dyadic_turtling_qc.py",
+    "dyadic_turtling_experiment.py",
     "processor.py",
     "six_beetle_processor.py",
     "dyadic_processor.py",

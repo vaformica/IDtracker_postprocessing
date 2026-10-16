@@ -14,7 +14,7 @@ import tempfile
 
 import numpy as np
 
-VERSION = '0.1.0-development'
+VERSION = '0.2.0-development'
 THRESHOLDS = dict(brightness_delta=8., affected_tiles=6, translation_pixels=2.,
                   phase_peak=.15, raw_jump_pixels=100., stationary_seconds=20.)
 
@@ -195,6 +195,10 @@ def write_report(output, report, raw, scan=None, review_link=None):
     body += '<p>Recording check: <b>'+esc(report['recording_scan']['status'])+'</b>. '+esc(report['recording_scan'].get('reason',''))+'</p>'
     if review_link:
         body += '<p><a href="'+esc(review_link)+'">Open synchronized review video</a></p>'
+    if report.get('dyadic_turtling_candidates'):
+        p = report['dyadic_turtling_candidates']
+        body += '<h2>Possible turtling</h2><p><a href="'+esc(p['html'])+'">Open turtling candidates, raw traces and synchronized video</a> — '+str(p['candidate_bouts'])+' candidate bouts. Human posture confirmation required.</p>'
+        body += '<p>Numbering: this general report uses Animal 1 / 2; the video and turtling review use raw ID 0 / 1 respectively.</p>'
     body += '<h2>Tracking by animal</h2><table><tr><th>Animal</th><th>Eligible frames</th><th>Missing %</th><th>Longest gap</th><th>Jumps &gt;100 px</th></tr>'
     for a in report['per_animal']:
         body += '<tr>'+''.join('<td>'+esc(a[k])+'</td>' for k in ['animal_id','eligible_frames','missing_percent','longest_missing_frames','raw_jump_steps'])+'</tr>'
@@ -257,8 +261,16 @@ def run_qc(output, trajectory, video, start, end, fps, arena=None, ffmpeg='ffmpe
     report['source'] = dict(video=str(video), trajectory=str(trajectory), trajectory_sha256=digest(trajectory))
     report['code_sha256'] = digest(__file__)
     report['existing_review_reports'] = list(existing_reports)
+    posture = None
+    if raw.shape[1] == 2:
+        import dyadic_turtling_qc
+        posture_report = dyadic_turtling_qc.summarize(raw.tolist(), int(start), fps)
+        posture_report['source'] = report['source']
+        posture = dyadic_turtling_qc.write_report(output, posture_report, raw.tolist(), review_link)
+        report['dyadic_turtling_candidates'] = posture
+        report['existing_review_reports'].append(posture['html'])
     write_report(output, report, raw, scan, review_link)
-    return dict(version=VERSION, assessment_complete=report['assessment_complete'],
+    return dict(version=VERSION, dyadic_turtling_candidates=posture, assessment_complete=report['assessment_complete'],
                 recording_status=scan['status'], json='unified_qc.json', html='unified_qc.html',
                 json_sha256=digest(Path(output)/'unified_qc.json'), html_sha256=digest(Path(output)/'unified_qc.html'))
 

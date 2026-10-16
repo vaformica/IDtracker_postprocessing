@@ -1,5 +1,7 @@
 # Dyadic turtling handoff — October 15, 2026
 
+**Later update:** QC integration and the 25-run local dashboard are now implemented. Read [the QC integration record](DYADIC_TURTLING_QC_2026-10-15.md). The following checkpoint describes the state before that integration.
+
 Vince requested saving the current turtling work for use from another chat. The next authorized task is to add possible-turtling QC to the existing 25-run dyadic dashboard, with video links and raw movement traces. That integration has NOT been implemented. No full batch, production behavior change, or six-beetle work was started.
 
 ## Script to call
