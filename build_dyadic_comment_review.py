@@ -27,7 +27,12 @@ def parse_frames(value):
   if b<a:raise ValueError(value)
   result.append((a,b))
  return result
+def source_link():
+ """Optional private link supplied locally; never store access links in source."""
+ return os.environ.get('DYADIC_REVIEW_SOURCE_URL', '').strip()
+
 def main():
+ source_url=source_link()
  OUT.mkdir(exist_ok=True,parents=True)
  for d in ['media','snapshots','sources']: (OUT/d).mkdir(exist_ok=True)
  shutil.copy2(SOURCE,OUT/'sources'/SOURCE.name)
@@ -61,7 +66,7 @@ def main():
   tmp.rmdir();v['snapshot_frames']=frames
   print('Snapshots:',name,len(frames),flush=True)
  with ThreadPoolExecutor(max_workers=2) as pool:list(pool.map(snapshots,videos.items()))
- data=dict(schema='dyadic-comment-review-set-v1',version='1.0.0',source_sha256=sha(SOURCE),source_filename=SOURCE.name,frame_basis='global review HTML frames; 0 start comment mapped explicitly',reported_reviewed_videos=11,csv_distinct_runs=len(videos),source_rows=len(rows),cases=cases,videos=videos,source_url='https://www.dropbox.com/scl/fi/pcxxuuf42itc75f7kt32o/Manual_Review_IDtracker_20261014.xlsx?rlkey=notnljveggluv23xcns53x4lo&st=q6gdzlbv&dl=0',slack_url='https://formica-brodielabs.slack.com/archives/C0BKVPSFL5N/p1791993216662089')
+ data=dict(schema='dyadic-comment-review-set-v1',version='1.0.0',source_sha256=sha(SOURCE),source_filename=SOURCE.name,frame_basis='global review HTML frames; 0 start comment mapped explicitly',reported_reviewed_videos=11,csv_distinct_runs=len(videos),source_rows=len(rows),cases=cases,videos=videos,source_url=source_url,slack_url='https://formica-brodielabs.slack.com/archives/C0BKVPSFL5N/p1791993216662089')
  (OUT/'review_data.json').write_text(json.dumps(data,separators=(',',':')))
  template=(ROOT/'dyadic_comment_review.html').read_text();(OUT/'START_HERE.html').write_text(template.replace('__REVIEW_DATA__',json.dumps(data,separators=(',',':')).replace('</','<\\/')))
  (OUT/'BUILD_RECEIPT.json').write_text(json.dumps(dict(status='READY_FOR_VINCE_REVIEW',source_rows=len(rows),review_cards=len(cases),distinct_videos=len(videos),snapshot_count=sum(len(v['snapshot_frames']) for v in videos.values()),source_sha256=sha(SOURCE),media_hashes_verified=True,encoded_counts_verified=True,scientific_outputs_changed=False),indent=2))
