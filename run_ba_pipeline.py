@@ -26,7 +26,7 @@ import ba_turtling
 from run_six_beetle_pipeline import find_trajectory, session_json, sha256, arena_crop, probe_video, make_review_video
 from review_geometry import plan_review_geometry
 
-VERSION = '0.2.1-ba'
+VERSION = '0.3.0-ba-jump-locations'
 
 
 def source_config(toml_path, session, frame_count=7200):
@@ -70,18 +70,22 @@ def source_config(toml_path, session, frame_count=7200):
 
 def frame_rows(xy, arena, start, jump_threshold=200., wall_buffer=30.):
     """Same accepted adjacent steps and exact wall geometry as prototype."""
+    raw_xy=xy.copy()
+    qc = processor.repair_jump_locations(xy, jump_threshold)
+    xy=qc['cleaned_xy']
     valid = np.isfinite(xy).all(axis=1)
     inside = np.zeros(len(xy), bool)
     wall = np.zeros(len(xy), bool)
     inside[valid] = processor.points_inside_polygon(xy[valid], arena)
     wall[valid] = inside[valid] & (processor.distance_to_polygon_boundary(xy[valid], arena) <= wall_buffer)
-    qc = processor.filter_jump_artifact_coordinates(xy, jump_threshold)
-    turtle = processor.compute_turtling_candidates(xy)['mask']
+    turtle = processor.compute_turtling_candidates(raw_xy)['mask']
     for t, point in enumerate(xy):
         possible = t > 0 and valid[t-1] and valid[t]
         rejected = bool(t > 0 and qc['rejected_step_mask'][t-1])
         accepted = bool(possible and not rejected)
         yield dict(global_frame=start+t, animal_id=0,
+                   raw_x=float(raw_xy[t,0]) if np.isfinite(raw_xy[t,0]) else '', raw_y=float(raw_xy[t,1]) if np.isfinite(raw_xy[t,1]) else '',
+                   location_edit=qc['location_source'][t], jump_policy_version=qc['jump_policy']['version'],
                    x=float(point[0]) if valid[t] else '', y=float(point[1]) if valid[t] else '',
                    location_known=int(valid[t]), in_arena=int(inside[t]),
                    in_wall_buffer=int(wall[t]), in_arena_interior=int(inside[t] and not wall[t]),
@@ -136,6 +140,8 @@ def run(args):
         write_csv(staging/'summary.csv', rows, processor.OUTPUT_COLUMNS)
         frames = list(frame_rows(arr[start:end+1,0], arena, start, args.jump_threshold, args.wall_buffer))
         write_csv(staging/'frame_data.csv', frames)
+        from jump_policy import repair
+        (staging/'jump_corrections.json').write_text(json.dumps(repair(arr[start:end+1,0].tolist(),start),indent=2)+'\n')
         turtle = ba_turtling.summarize([f['turtling_candidate'] for f in frames], [f['location_known'] for f in frames], start, fps)
         experimental = None
         if getattr(args, 'experimental_turtling', False):
@@ -164,11 +170,11 @@ def run(args):
             source_paths={name:str(path) for name,path in sources.items()}, source_sha256=hashes,
             settings=dict(movement_threshold_px=args.threshold,wall_buffer_px=args.wall_buffer,
                           one_frame_jump_threshold_px=args.jump_threshold),
-            coordinate_policy='Original IDtracker coordinates; no imputation or PSC. Rejected steps retain endpoint locations.',
+            coordinate_policy='Jump locations marked interpolated or jump_removed; raw_x/raw_y retained; bounded interpolation <=15 frames with anchors <=100px apart. No social PSC.',
             turtling_policy='Prototype movement-pattern candidate only; does not establish posture.',
             pdf_style='prototype-0.8.1',viewer_version='ba-review-v3',turtling_module_version=ba_turtling.VERSION,video_geometry=geometry)
         manifest['unified_qc'] = unified
-        code_names = ['unified_qc.py','run_ba_pipeline.py','ba_qc.py','ba_turtling.py','ba_review_template.html','processor.py','review_geometry.py','run_six_beetle_pipeline.py']
+        code_names = ['jump_policy.py','unified_qc.py','run_ba_pipeline.py','ba_qc.py','ba_turtling.py','ba_review_template.html','processor.py','review_geometry.py','run_six_beetle_pipeline.py']
         if experimental is not None:
             code_names.append('ba_turtling_candidates.py')
             manifest['experimental_turtling'] = dict(version=experimental['version'],

@@ -21,7 +21,7 @@ from trajectory_reconstruction import reconstruct
 from persistent_groups import persistent_groups,MODEL_VERSION
 from frame_data import write_frame_data
 
-SCRIPT_VERSION = '0.8.2-group'
+SCRIPT_VERSION = '0.8.3-dyadic-jump-locations'
 PDF_TRACK_STYLE_VERSION = 'outlined-psc-v1'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
@@ -307,9 +307,26 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     group = {key: value[start:] for key,value in history.items() if key not in ('masks','unresolved_masks','events')}
     group['masks'] = {pair: mask[start:] for pair,mask in history['masks'].items()}
     group['unresolved_masks'] = {pair: mask[start:] for pair,mask in history['unresolved_masks'].items()}
+    jump_audits=[]
+    if animal_count == 2:
+        from jump_policy import repair
+        group['original_psc_xy']=group['xy'].copy()
+        group['source']=group['source'].astype('<U48')
+        for animal in range(animal_count):
+            audit=repair(group['xy'][:,animal].tolist(),start)
+            jump_audits.append(audit)
+            changed=np.array([label in ('interpolated','jump_removed') for label in audit['labels']])
+            group['xy'][:,animal]=np.array([[np.nan if v is None else v for v in p] for p in audit['xy']])
+            group['source'][changed,animal]=np.array(audit['labels'])[changed]
+            # Interpolation is separate from inferred social contact.
+            group['inferred'][changed,animal]=False
+            for pair in group['masks']:
+                if animal in pair:
+                    group['masks'][pair][changed]=False
+                    group['unresolved_masks'][pair][changed]=False
     visible_masks = {}
     for a,b in masks:
-        assigned=(group['source'][:,a]=='ASSIGNED')&(group['source'][:,b]=='ASSIGNED')
+        assigned=np.isin(group['source'][:,a],['ASSIGNED','interpolated'])&np.isin(group['source'][:,b],['ASSIGNED','interpolated'])
         visible_masks[a,b]=assigned&(np.linalg.norm(group['xy'][:,a]-group['xy'][:,b],axis=1)<=social_distance_threshold_px)
     # Legacy bounded disappearance candidates do not implement Vince's rule.
     legacy_events = events
@@ -318,7 +335,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         for event in legacy._events_from_mask(mask):
             events.append(dict(kind='PROXIMITY',window='full',animal_a=a,animal_b=b,missing_animal='',
                 start_global_frame=start+event['start_offset'],end_global_frame_inclusive=start+event['end_offset'],
-                frames=event['frames'],candidate_partner_count='',attribution='VISIBLE_ASSIGNED_PROXIMITY'))
+                frames=event['frames'],candidate_partner_count='',attribution='ESTIMATED_PROXIMITY_WITH_JUMP_POLICY' if jump_audits else 'VISIBLE_ASSIGNED_PROXIMITY'))
     for (a,b),mask in group['masks'].items():
         for event in legacy._events_from_mask(mask):
             events.append(dict(kind='PRESUMED_GROUP_CONTACT',window='full',animal_a=a,animal_b=b,
@@ -338,7 +355,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         pscp_mask=group['masks'][pair]
         unresolved_mask=group['unresolved_masks'][pair]
         proximity_mask=visible_masks[pair]
-        assigned=(group['source'][:,pair[0]]=='ASSIGNED')&(group['source'][:,pair[1]]=='ASSIGNED')
+        assigned=np.isin(group['source'][:,pair[0]],['ASSIGNED','interpolated'])&np.isin(group['source'][:,pair[1]],['ASSIGNED','interpolated'])
         if row['window'] != 'full':
             pscp_mask=pscp_mask[shared:shared+3601]
             unresolved_mask=unresolved_mask[shared:shared+3601]
@@ -366,8 +383,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     # interaction; co-location with at least one inferred identity is PSCP.
     adjusted_masks={pair: masks[pair] | group['masks'][pair] for pair in masks}
     for animal in range(animal_count):
-        estimated_turtle = legacy.compute_turtling_candidates(group['xy'][:,animal])['mask']
-        estimated_on_fungus = regions(group['xy'][:,animal],rois,wall_buffer_px,fungus_buffer_px)['any_fungus']
+        estimated_turtle = legacy.compute_turtling_candidates(group.get('original_psc_xy',group['xy'])[:,animal])['mask']
+        estimated_on_fungus = regions(group.get('original_psc_xy',group['xy'])[:,animal],rois,wall_buffer_px,fungus_buffer_px)['any_fungus']
         estimated_turtling_masks.append(estimated_turtle & ~estimated_on_fungus)
     timeline['coordinate_present']=np.isfinite(group['xy']).all(axis=2)
     timeline['proximity_partner_count'][:]=0
@@ -404,6 +421,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         persistent_model_version=MODEL_VERSION,blob_evidence_sha256=sha256(blob_path),blob_evidence_file=str(blob_path.resolve()),
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
+    if animal_count == 2: metadata['frame_state_definition'] += ' For dyads, the separate jump-as-missing layer removes or interpolates >100px excursions; source labels identify estimated positions and raw arrays remain unchanged.'
+    if animal_count == 2: metadata['jump_policy'] = dict(version='1.0.0-jump-as-missing',applied=animal_count==2,threshold_px=100,max_interpolation_frames=15,original_arrays_preserved=True,posture_inference_uses_pre_correction_coordinates=True)
     reconstruction = reconstruct(data[:start+window+1], reconstruction_speed_px)
     reconstruction = {k:(v[start:] if isinstance(v,np.ndarray) else v) for k,v in reconstruction.items()}
     metadata['reconstruction'] = dict(max_speed_px_per_frame=reconstruction_speed_px,
@@ -412,7 +431,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         reconnection='Separate straight-line bridge estimate; never observed movement',
         metrics='Raw tables remain explicit controls; estimated tables and canonical exports use persistent detection-supported positions. Legacy hold/bridge arrays are not used in scientific outputs.')
     return dict(animals=animals, windows=windows, regions=region_rows, pairs=pairs, events=events,
-                metadata=metadata, xy=xy, turtling_masks=turtling_masks, masks=masks,
+                metadata=metadata, jump_audits=jump_audits, xy=xy, turtling_masks=turtling_masks, masks=masks,
                 frame_timeline=timeline, group=group, estimated_turtling_masks=estimated_turtling_masks,
                 estimated_windows=estimated_windows,
                 estimated_regions=estimated_regions, legacy_events=legacy_events, reconstruction=reconstruction)
@@ -754,7 +773,8 @@ def write_bundle(result, output, video, cell, pdf_name=None):
         pdf_name = pdf_name or f'{Path(video).stem}_{cell}.pdf'
         if Path(pdf_name).name != pdf_name or not pdf_name.endswith('.pdf'): raise ValueError('PDF name must be a plain .pdf filename')
         meta['pdf_filename'] = pdf_name
-        np.savez_compressed(staging/'canonical_states.npz',raw=result['xy'],xy=result['group']['xy'],inferred=result['group']['inferred'],group_ids=result['group']['group_ids'],source=result['group']['source'],ambiguous=result['group']['ambiguous'],identity_conflict=result['group']['identity_conflict'])
+        if result.get('jump_audits'): (staging/'jump_corrections.json').write_text(json.dumps(result.get('jump_audits',[]),indent=2)+'\n')
+        np.savez_compressed(staging/'canonical_states.npz',**({'original_psc_xy':result['group']['original_psc_xy']} if result.get('jump_audits') else {}),raw=result['xy'],xy=result['group']['xy'],inferred=result['group']['inferred'],group_ids=result['group']['group_ids'],source=result['group']['source'],ambiguous=result['group']['ambiguous'],identity_conflict=result['group']['identity_conflict'])
         with (staging/'canonical_positions.csv').open('w',newline='') as stream:
             writer=csv.writer(stream);writer.writerow(['global_frame','animal_id','x','y','state','group_id'])
             for t in range(len(result['xy'])):
@@ -822,7 +842,7 @@ def main():
     if any(sha256(p)!=value for p,value in before.items()): raise RuntimeError('Input changed during analysis')
     result['metadata']['frames_per_second']=fps
     result['metadata']['input_sha256']=before
-    result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__),Path(__file__).with_name('persistent_groups.py'),Path(__file__).with_name('frame_data.py')]}
+    result['metadata']['code_sha256']={p.name:sha256(p) for p in [Path(__file__),Path(legacy.__file__),Path(__file__).with_name('persistent_groups.py'),Path(__file__).with_name('frame_data.py'),Path(__file__).with_name('jump_policy.py')]}
     write_bundle(result,output,video,cell,pdf_name)
     print(f'Wrote UNREVIEWED multi-beetle output: {output}')
 
