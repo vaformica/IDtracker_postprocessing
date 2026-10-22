@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Auditable, analysis-window-only IDtracker.ai post-processing.
 
-Coordinates are never interpolated. All time-like outputs use global frames.
+Raw coordinates remain immutable. BA reviewed calculations apply the separately
+versioned jump-as-missing rule. All time-like outputs use global frames.
 """
 from __future__ import annotations
 
@@ -18,7 +19,7 @@ from pathlib import Path
 import numpy as np
 
 
-SCRIPT_VERSION = "0.8.1"
+SCRIPT_VERSION = "0.8.2-ba-jump-locations"
 POST_WAKE_FIXED_INTERVALS = 3600
 
 IDTRACKER_TRAJECTORY_SOURCES = {
@@ -543,6 +544,30 @@ def filter_jump_artifact_coordinates(
         "persistent_events": 0,
         "status": status,
     }
+
+
+def repair_jump_locations(
+    xy: np.ndarray,
+    threshold_px: float = 200.0,
+    return_horizon_frames: int = 120,
+) -> dict:
+    """Treat >100px jump locations as missing; retain raw inputs and audit labels."""
+    from jump_policy import repair
+    xy = np.asarray(xy, dtype=float)
+    if xy.ndim != 2 or xy.shape[1] != 2:
+        raise ValueError("Jump QC expects a frames-by-2 coordinate array")
+    if not np.isfinite(threshold_px) or threshold_px <= 0 or return_horizon_frames < 1:
+        raise ValueError('Jump threshold and return horizon must be positive')
+    # The selected location rule is 100px independently of legacy step filters.
+    result = repair(xy.tolist())
+    cleaned = np.array([[np.nan if v is None else v for v in p] for p in result['xy']], dtype=float).reshape((-1,2))
+    steps = np.linalg.norm(np.diff(cleaned, axis=0), axis=1)
+    valid = np.isfinite(cleaned).all(axis=1)
+    return dict(cleaned_xy=cleaned, excluded_mask=np.array([v=='jump_removed' for v in result['labels']]),
+                rejected_step_mask=valid[:-1]&valid[1:]&(steps>threshold_px), step_distance_px=steps,
+                events=result['events'], persistent_events=0,
+                status='JUMP_LOCATIONS_REPAIRED_OR_REMOVED' if result['events'] else 'PASS_NO_JUMPS_OVER_THRESHOLD',
+                location_source=result['labels'], jump_policy=result)
 
 
 def _events_from_mask(mask: np.ndarray) -> list[dict]:
@@ -1559,7 +1584,7 @@ def analyze(
     window_arr = arr[start : end_inclusive + 1]
     raw_missing_mask = ~np.isfinite(window_arr).all(axis=2)
     original_jump_qc = [
-        filter_jump_artifact_coordinates(
+        (repair_jump_locations if window_arr.shape[1] == 1 else filter_jump_artifact_coordinates)(
             window_arr[:, animal, :],
             threshold_px=one_frame_jump_threshold_px,
         )
@@ -1621,7 +1646,7 @@ def analyze(
     turtling_by_animal = [
         exclude_turtling_candidates_on_fungus(
             compute_turtling_candidates(
-                jump_filtered_arr[:, animal, :],
+                window_arr[:, animal, :],
                 window_frames=turtling_window_frames,
                 min_path_px=turtling_min_path_px,
                 max_radius90_px=turtling_max_radius90_px,
@@ -2268,7 +2293,7 @@ def write_plot_pdf(
         )
     )
     plot_jump_qc = [
-        filter_jump_artifact_coordinates(
+        (repair_jump_locations if analysis_type.strip().lower() == 'ba' else filter_jump_artifact_coordinates)(
             raw_window_arr[:, animal, :],
             threshold_px=one_frame_jump_threshold_px,
         )

@@ -1,0 +1,320 @@
+EEEEEEEEE....E.........F.........................E......E...........................................................................................................................................E......................E............E.......E...E.........F..E.........Unified QC: checking source recording at every frame (or reusing a content-matched cache)
+....
+======================================================================
+ERROR: test_ba_combined_layers (unittest.loader._FailedTest.test_ba_combined_layers)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ba_combined_layers
+Traceback (most recent call last):
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_combined_layers.py", line 5, in <module>
+    from ba_combined_layers import layers
+  File "/private/tmp/idtracker_science_publish_20261022/ba_combined_layers.py", line 7, in <module>
+    from ba_frozen_batch import digest,write
+  File "/private/tmp/idtracker_science_publish_20261022/ba_frozen_batch.py", line 4, in <module>
+    import cv2,numpy as np
+ModuleNotFoundError: No module named 'cv2'
+
+
+======================================================================
+ERROR: test_ba_combined_recovery (unittest.loader._FailedTest.test_ba_combined_recovery)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ba_combined_recovery
+Traceback (most recent call last):
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_combined_recovery.py", line 4, in <module>
+    from ba_combined_recovery import recovery_policy,recover
+  File "/private/tmp/idtracker_science_publish_20261022/ba_combined_recovery.py", line 4, in <module>
+    import numpy as np,cv2
+ModuleNotFoundError: No module named 'cv2'
+
+
+======================================================================
+ERROR: test_directional_candidate_needs_appearance (test_ba_excursion_recovery.ExcursionTests.test_directional_candidate_needs_appearance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 16, in test_directional_candidate_needs_appearance
+    p,m,a=self.run_case(raw,[[np.nan,np.nan]]*3,bw=[[50,50]]*3);np.testing.assert_equal(p,raw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 7, in run_case
+    return propose(np.array(raw,float),np.array(agreed,float),blank if fw is None else np.array(fw,float),blank if bw is None else np.array(bw,float),['proposed_blob']*n,images or [np.zeros((300,300),np.uint8)]*n,[0,0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_excursion_recovery.py", line 7, in propose
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+======================================================================
+ERROR: test_directional_image_supported_patch (test_ba_excursion_recovery.ExcursionTests.test_directional_image_supported_patch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 20, in test_directional_image_supported_patch
+    p,m,a=self.run_case(raw,[[np.nan,np.nan]]*3,bw=[[50,50]]*3,images=[im]*3);np.testing.assert_equal(p,[[50,50]]*3)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 7, in run_case
+    return propose(np.array(raw,float),np.array(agreed,float),blank if fw is None else np.array(fw,float),blank if bw is None else np.array(bw,float),['proposed_blob']*n,images or [np.zeros((300,300),np.uint8)]*n,[0,0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_excursion_recovery.py", line 7, in propose
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+======================================================================
+ERROR: test_failed_return_keeps_original (test_ba_excursion_recovery.ExcursionTests.test_failed_return_keeps_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 26, in test_failed_return_keeps_original
+    p,m,a=self.run_case(raw,c);np.testing.assert_equal(p,raw)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 7, in run_case
+    return propose(np.array(raw,float),np.array(agreed,float),blank if fw is None else np.array(fw,float),blank if bw is None else np.array(bw,float),['proposed_blob']*n,images or [np.zeros((300,300),np.uint8)]*n,[0,0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_excursion_recovery.py", line 7, in propose
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+======================================================================
+ERROR: test_includes_short_leadin_only_with_major_excursion (test_ba_excursion_recovery.ExcursionTests.test_includes_short_leadin_only_with_major_excursion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 10, in test_includes_short_leadin_only_with_major_excursion
+    p,m,a=self.run_case(raw,c);np.testing.assert_equal(p,c)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 7, in run_case
+    return propose(np.array(raw,float),np.array(agreed,float),blank if fw is None else np.array(fw,float),blank if bw is None else np.array(bw,float),['proposed_blob']*n,images or [np.zeros((300,300),np.uint8)]*n,[0,0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_excursion_recovery.py", line 7, in propose
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+======================================================================
+ERROR: test_missing_and_existing_repair_preserved (test_ba_excursion_recovery.ExcursionTests.test_missing_and_existing_repair_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 23, in test_missing_and_existing_repair_preserved
+    p,m,a=self.run_case(raw,c);self.assertEqual(p[1,0],51);self.assertTrue(np.isnan(p[3]).all())
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 7, in run_case
+    return propose(np.array(raw,float),np.array(agreed,float),blank if fw is None else np.array(fw,float),blank if bw is None else np.array(bw,float),['proposed_blob']*n,images or [np.zeros((300,300),np.uint8)]*n,[0,0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_excursion_recovery.py", line 7, in propose
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+======================================================================
+ERROR: test_no_major_jump_no_change (test_ba_excursion_recovery.ExcursionTests.test_no_major_jump_no_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 13, in test_no_major_jump_no_change
+    p,m,a=self.run_case(raw,[[50,50]]*4);np.testing.assert_equal(p,raw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_excursion_recovery.py", line 7, in run_case
+    return propose(np.array(raw,float),np.array(agreed,float),blank if fw is None else np.array(fw,float),blank if bw is None else np.array(bw,float),['proposed_blob']*n,images or [np.zeros((300,300),np.uint8)]*n,[0,0])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_excursion_recovery.py", line 7, in propose
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+======================================================================
+ERROR: test_ba_gap_recovery_experiment (unittest.loader._FailedTest.test_ba_gap_recovery_experiment)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ba_gap_recovery_experiment
+Traceback (most recent call last):
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_gap_recovery_experiment.py", line 3, in <module>
+    from ba_gap_recovery_experiment import propose
+  File "/private/tmp/idtracker_science_publish_20261022/ba_gap_recovery_experiment.py", line 8, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+
+======================================================================
+ERROR: test_ba_interpolation (unittest.loader._FailedTest.test_ba_interpolation)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ba_interpolation
+Traceback (most recent call last):
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_interpolation.py", line 3, in <module>
+    from ba_interpolation import frozen_interpolate,VERSION
+  File "/private/tmp/idtracker_science_publish_20261022/ba_interpolation.py", line 7, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+
+======================================================================
+ERROR: test_ba_stationary_reacquisition (unittest.loader._FailedTest.test_ba_stationary_reacquisition)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ba_stationary_reacquisition
+Traceback (most recent call last):
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_stationary_reacquisition.py", line 3, in <module>
+    from ba_stationary_reacquisition import propose
+  File "/private/tmp/idtracker_science_publish_20261022/ba_stationary_reacquisition.py", line 3, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+
+======================================================================
+ERROR: test_prepare_preserves_window_and_original (test_ba_tracking_exclusions.ExclusionTests.test_prepare_preserves_window_and_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_tracking_exclusions.py", line 19, in test_prepare_preserves_window_and_original
+    review=dict(schema='ba-visual-pattern-review-v2',set_hash=h,decisions=[d]);p=r/'scores.json';p.write_text(json.dumps(review));out=prepare(src,p,cases,r/'new');self.assertEqual(src.read_text(),original);self.assertEqual(out['retained_intervals'],[[100,105],[107,200],[210,9000]]);self.assertEqual(out['original_analysis_window_inclusive'],[100,7299]);self.assertEqual(out['eligible_window_frames'],7188)
+                                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/ba_tracking_exclusions.py", line 64, in prepare
+    import toml  # Serialization dependency, used only when writing a plan.
+    ^^^^^^^^^^^
+ModuleNotFoundError: No module named 'toml'
+
+======================================================================
+ERROR: test_processor (unittest.loader._FailedTest.test_processor)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_processor
+Traceback (most recent call last):
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_processor.py", line 44, in <module>
+    from firebird_gui import (
+  File "/private/tmp/idtracker_science_publish_20261022/firebird_gui.py", line 49, in <module>
+    SCRIPT_VERSION = (BASE / "VERSION").read_text(encoding="utf-8").strip()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/idtracker_science_publish_20261022/VERSION'
+
+
+======================================================================
+ERROR: test_review_replays_without_touching_raw_and_builds_portable_viewer (test_review_decisions.ReviewDecisionTests.test_review_replays_without_touching_raw_and_builds_portable_viewer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_review_decisions.py", line 30, in test_review_replays_without_touching_raw_and_builds_portable_viewer
+    source_review=root/'review';build(bundle,video,source_review,(0,0,100,100),30,
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/build_canonical_review.py", line 200, in build
+    template = Path(__file__).with_name("interaction_review_template.html").read_text()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/idtracker_science_publish_20261022/interaction_review_template.html'
+
+======================================================================
+ERROR: test_review_uses_canonical_piles_and_copies_video (test_six_beetle_pipeline.PortableReviewTests.test_review_uses_canonical_piles_and_copies_video)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_six_beetle_pipeline.py", line 96, in test_review_uses_canonical_piles_and_copies_video
+    html = build(bundle, video, output, (0, 0, 800, 600), 30, label="Trial A", source_toml="/inputs/Camera_test_A2.toml")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/idtracker_science_publish_20261022/build_canonical_review.py", line 200, in build
+    template = Path(__file__).with_name("interaction_review_template.html").read_text()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/idtracker_science_publish_20261022/interaction_review_template.html'
+
+======================================================================
+ERROR: test_dyadic_analysis_with_one_fungus (test_six_beetle_processor.SixBeetleTests.test_dyadic_analysis_with_one_fungus)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_six_beetle_processor.py", line 153, in test_dyadic_analysis_with_one_fungus
+    six.write_bundle(result, output, 'synthetic.mp4', 'D1')
+  File "/private/tmp/idtracker_science_publish_20261022/six_beetle_processor.py", line 800, in write_bundle
+    write_pdf(result,staging/pdf_name,video,cell)
+  File "/private/tmp/idtracker_science_publish_20261022/six_beetle_processor.py", line 501, in write_pdf
+    import matplotlib
+ModuleNotFoundError: No module named 'matplotlib'
+
+======================================================================
+ERROR: test_methods_page_tracks_versions_and_current_rules (test_six_beetle_processor.SixBeetleTests.test_methods_page_tracks_versions_and_current_rules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_six_beetle_processor.py", line 16, in test_methods_page_tracks_versions_and_current_rules
+    methods = Path(six.__file__).with_name('SIX_BEETLE_METHODS.html').read_text()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/idtracker_science_publish_20261022/SIX_BEETLE_METHODS.html'
+
+======================================================================
+ERROR: test_seven_animals_four_fungi (test_six_beetle_processor.SixBeetleTests.test_seven_animals_four_fungi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_six_beetle_processor.py", line 181, in test_seven_animals_four_fungi
+    six.write_bundle(result, output, 'synthetic.mp4', 'G1')
+  File "/private/tmp/idtracker_science_publish_20261022/six_beetle_processor.py", line 800, in write_bundle
+    write_pdf(result,staging/pdf_name,video,cell)
+  File "/private/tmp/idtracker_science_publish_20261022/six_beetle_processor.py", line 501, in write_pdf
+    import matplotlib
+ModuleNotFoundError: No module named 'matplotlib'
+
+======================================================================
+FAIL: test_missing_and_jump_break_distance_but_keep_locations (test_ba_pipeline.BATests.test_missing_and_jump_break_distance_but_keep_locations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_ba_pipeline.py", line 28, in test_missing_and_jump_break_distance_but_keep_locations
+    self.assertEqual(sum(r['step_distance_px'] for r in rows if r['step_distance_px']!=''),10)
+AssertionError: 20.0 != 10
+
+======================================================================
+FAIL: test_raw_authority_reaches_timeline_and_proximity_exports (test_six_beetle_processor.SixBeetleTests.test_raw_authority_reaches_timeline_and_proximity_exports) (animals=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/idtracker_science_publish_20261022/tests/test_six_beetle_processor.py", line 74, in test_raw_authority_reaches_timeline_and_proximity_exports
+    np.testing.assert_array_equal(result['group']['xy'][known], raw[known])
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 1054, in assert_array_equal
+    assert_array_compare(operator.__eq__, actual, desired, err_msg=err_msg,
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 811, in assert_array_compare
+    flagged = func_assert_same_pos(x, y, func=isnan, hasval='nan')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/New/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 780, in func_assert_same_pos
+    raise AssertionError(msg)
+AssertionError: 
+Arrays are not equal
+
+nan location mismatch:
+ ACTUAL: array([[30.,  0.],
+       [30.,  0.],
+       [nan, nan],...
+ DESIRED: array([[ 30.,   0.],
+       [ 30.,   0.],
+       [ 45.,   0.],...
+
+----------------------------------------------------------------------
+Ran 271 tests in 13.434s
+
+FAILED (failures=2, errors=18)

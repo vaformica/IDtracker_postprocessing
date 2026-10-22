@@ -1,0 +1,29 @@
+{
+  "checkpoint": "2026-10-22-current-source",
+  "created_utc": "2026-10-22T13:43:17.938658+00:00",
+  "scope": "Publish existing authoritative processor/detector source; no scientific methods modified in this synchronization, no existing analyses rerun.",
+  "source_sha256": {
+    "processor.py": "08ffe5e28fa39b05004da7c71774a7b345c4636b3c9521137f50fe59ff5e884b",
+    "six_beetle_processor.py": "79d54e4368640c305bac620b1fa98879d34bdc121e72399036d8203a3ef98fff",
+    "run_ba_pipeline.py": "19183d02d262444e2f7f35c534ef67d2a1de213de9063a6b8752d62c83a2a20b",
+    "persistent_groups.py": "5a8854c1ce0ea56af392980852bd41544a854a79d99e147013f589a04cf1fe43",
+    "jump_policy.py": "c4fec5ace291781d674bf2812bb83402f45cc4f21f876b38feeea92da180d74e",
+    "ba_turtling.py": "610508153ede170f23b90f41e4697183dd1e1826f6236d19bfacbb663857c31b",
+    "ba_turtling_candidates.py": "1a1af37b31e5150ec5cef42efccdc7162644d486986b4881dac3c1d04e0733ae",
+    "ba_turtling_episode_experiment.py": "f79881cdddf0e9a138ce607384a43efef9803d868a12f919673d024df445b4e3",
+    "ba_turtling_recovery_gate.py": "febab98292df25a9515cd705276fcb7fd245afe0f67dea3be923ebfe6524682b",
+    "ba_turtling_continuity_experiment.py": "4579f5d7304d36ccb5910b002b86bc4ec9385d39bc7ee05e9eb696cff795bcc7",
+    "ba_turtling_boundary_experiment.py": "30cdf051ec68708b385f5e8a115f1d9d6b35de1d1216dcd6ab9519393fe292b8",
+    "dyadic_turtling_long_bouts.py": "333c3ad3aefa2ea3e9fe37db66f91adce2a6d58544a1d794a4196010882a7c8d"
+  },
+  "source_recovery": "processor.py recovered from retained snapshot with exact local Git-index blob match; other three changed files resident. Detectors and PSC match GitHub/local indexed source already.",
+  "validation": {
+    "tests": 271,
+    "passed": 251,
+    "failed_assertions": 2,
+    "errors": 18,
+    "status": "NOT_FULLY_VALIDATED",
+    "details": "Two prior-test expectations conflict with currently selected jump cleanup; remaining errors require cv2/matplotlib and omitted portable fixture assets. Retain test log. No scientific policy changed to make tests pass."
+  },
+  "latest_code_policy": "Use latest applicable source with hashes/settings recorded; historical outputs remain pinned; newest source is not proof of behavioral detector accuracy."
+}
