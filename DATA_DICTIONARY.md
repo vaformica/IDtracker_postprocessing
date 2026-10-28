@@ -46,10 +46,9 @@ The group processor writes three preferred paired summary files:
 | `fungus_comparison.csv` | beetle | Raw and PSC-model frames and movement distance for every fungus ROI. |
 
 Columns beginning `raw_` use the selected IDtracker trajectory coordinates
-before PSC processing and the
-configured raw jump cutoff (200 px by default). Columns beginning `pscp_`
-use the detection-supported canonical path and the group-continuity speed
-limit (100 px per frame by default). A detected moving pile credits each member
+before PSC processing, evaluated with the shared 100 px per-frame jump cutoff.
+Columns beginning `pscp_` use the detection-supported canonical path and the
+same 100 px per-frame jump cutoff. A detected moving pile credits each member
 with its own estimated distance and fungus occupancy. No compatible detection
 leaves the position missing and credits neither path distance nor fungus
 occupancy. A three-frame pending split can remain locationless rather than
@@ -288,10 +287,10 @@ missing-coordinate gap or a step over the jump threshold.
 
 | Column | Type / units | Applies | Definition and interpretation | Example |
 |---|---|---|---|---|
-| `one_frame_jump_threshold_px` | numeric px per adjacent step | all rows | Researcher-selected maximum accepted adjacent movement step. A step exactly equal to the threshold is accepted; only a step strictly greater is rejected. Current default: 200 px. | `200` |
+| `one_frame_jump_threshold_px` | numeric px per adjacent step | all rows | Shared maximum accepted adjacent movement step. A step exactly equal to 100 px is accepted; only a strictly larger step is treated as impossible. Current default: 100 px. | `100` |
 | `one_frame_jumps_excluded` | integer steps | all rows | Number of effective adjacent steps rejected for being strictly greater than the threshold. Endpoints remain available for frame-location counts. | `3` |
-| `jump_threshold_px` | numeric px | all rows | Compatibility alias of `one_frame_jump_threshold_px`. New analysis code should prefer the more explicit column. | `200` |
-| `jump_artifact_coordinate_frames_excluded` | integer frames | all rows; deprecated | Compatibility field retained from an older design. It is zero because current QC rejects steps rather than deleting endpoint coordinates. | `0` |
+| `jump_threshold_px` | numeric px | all rows | Compatibility alias of `one_frame_jump_threshold_px`. New analysis code should prefer the more explicit column. | `100` |
+| `jump_artifact_coordinate_frames_excluded` | integer frames | all rows | Number of positions marked `jump_removed` in the corrected calculation layer. The original positions remain separately preserved. Interpolated frames are reported separately by source labels and jump-audit records. | `2` |
 | `jump_qc_status` | categorical text | all rows | Summary such as `PASS_NO_JUMPS_OVER_THRESHOLD` or `ONE_FRAME_JUMP_STEPS_EXCLUDED`. Use it as QC, not as a behavioral measurement. | `ONE_FRAME_JUMP_STEPS_EXCLUDED` |
 
 ## Variable-length wake-through-end calculations
@@ -519,7 +518,7 @@ are real biological time during which the animal is not counted as turtling.
 | `turtling_max_radius90_px` | numeric px | all rows | Maximum allowed 90th-percentile radius from the window's median centroid. Smaller values require tighter circling. | `35` |
 | `turtling_min_turn_rotations` | numeric complete rotations | all rows | Minimum cumulative absolute wrapped turning, divided by `2π`, required in a candidate window. | `3` |
 | `turtling_max_straightness` | proportion | all rows | Maximum net displacement divided by path length. Lower values require the animal to finish near where the looping path began. | `0.25` |
-| `turtling_max_step_px` | numeric px | all rows | Maximum adjacent step permitted inside a candidate turtling window. This is separate from the broad 200-pixel artifact threshold. | `20` |
+| `turtling_max_step_px` | numeric px | all rows | Maximum adjacent step permitted inside a candidate turtling window. This is separate from the shared 100-pixel one-frame jump cleanup cutoff. | `20` |
 
 ## Baseline, coordinate completeness, result interpretation, and source provenance
 

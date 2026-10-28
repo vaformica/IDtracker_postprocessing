@@ -1,5 +1,22 @@
 # Current handoff for future Codex tasks
 
+## 100-pixel location-cleanup policy (2026-10-28)
+
+Vince selected a shared cutoff for BA and aggression/fight post-processing:
+adjacent-frame steps **strictly greater than 100 original-image pixels** are
+treated as impossible one-frame jumps; exactly 100 pixels is retained. The
+analysis layer applies `jump_policy.py` location cleanup after detecting such
+events. Preserve original and pre-cleanup positions; interpolate only bounded
+short excursions (at most 15 frames with anchors at most 100 pixels apart),
+otherwise leave affected positions unknown and retain audit labels. The same
+implementation is wired into six-beetle processing for consistency, but that
+work remains ON HOLD. Do not start or regenerate runs from this policy change.
+
+No tests were run after the 2026-10-28 code change. Preserve the prior
+2026-10-22 test log (271 attempted, 251 passed, 2 failed, 18 errors) as historical
+evidence, not as validation of this policy. See
+`reports/UNIFIED_100PX_JUMP_POLICY_2026-10-28.md`.
+
 **Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping.
 
 Read [README.md](README.md) and [reports/PROJECT_HANDOFF_2026-09-28.md](reports/PROJECT_HANDOFF_2026-09-28.md) before changing the pipeline. This file records the 2026-09-28 checkpoint; verify live Firebird state for later work.

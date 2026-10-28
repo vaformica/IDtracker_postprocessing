@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-10-28 — Shared 100-pixel jump cleanup
+
+- Consolidated BA, dyadic, and six-beetle post-processing on a 100-pixel
+  adjacent-frame cutoff. Exactly 100 pixels is accepted; strictly larger steps
+  are treated as impossible one-frame jumps.
+- Apply bounded location cleanup across one- and multi-animal analyses. Only
+  short excursions (at most 15 frames) bracketed by locations no more than 100
+  pixels apart are interpolated; otherwise affected analytical positions remain
+  unknown. Preserve original tracking/pre-cleanup positions and per-frame audit
+  labels.
+- Keep turtling candidate step limits and group reconstruction continuity limits
+  as separate settings, even when their numeric values happen to match.
+- Version updates: `jump_policy.py` 1.1.0-unified-100px, standalone processor
+  0.8.3-unified-100px-jump, BA pipeline 0.4.0-unified-100px-jump, and shared
+  six-beetle processor 0.8.4-unified-100px-jump.
+- No scientific runs or tests were performed for this change. The October 22
+  checkpoint test log is preserved as historical evidence and is not validation
+  of this updated policy. See the dated policy report.
+
 ## Current shared PSC pipeline checkpoint — 2026-09-28
 
 - The current release pair uses PSC model **1.5.1**, shared group processor

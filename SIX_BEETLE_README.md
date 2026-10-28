@@ -152,8 +152,12 @@ records the explicitly selected source. The program does not discover or
 approve IDtracker runs.
 
 Defaults retained: 30-pixel wake threshold, 30-pixel wall and inward fungus
-buffers, 60-pixel social proximity, and rejection of steps strictly above
-200 pixels. Frames are global and the end is inclusive (`start + window`).
+buffers, and 60-pixel social proximity. Current shared location cleanup treats
+adjacent steps strictly above 100 pixels as impossible one-frame jumps; exactly
+100 pixels is accepted. See
+[`reports/UNIFIED_100PX_JUMP_POLICY_2026-10-28.md`](reports/UNIFIED_100PX_JUMP_POLICY_2026-10-28.md).
+Frames are global and the end is inclusive (`start + window`). Six-beetle work
+remains on hold; this change does not authorize runs.
 
 ## Output and interpretation
 

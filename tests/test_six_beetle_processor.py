@@ -56,7 +56,7 @@ class SixBeetleTests(unittest.TestCase):
                          {f'fungus_{i}{suffix}' for i in range(1,4) for suffix in ['', '_edge','_interior']})
 
     def test_raw_authority_reaches_timeline_and_proximity_exports(self):
-        # Same-blob assignments and a post-gap jump must survive in both modes.
+        # Raw ID coordinates remain archived; impossible jumps are cleaned in the analysis layer.
         for count in (2, 6):
             with self.subTest(animals=count):
                 raw = np.full((10, count, 2), np.nan)
@@ -71,7 +71,10 @@ class SixBeetleTests(unittest.TestCase):
                 result = six.analyze_six(self.source, self.root, 1, 3)
                 raw = raw[1:5]
                 known = np.isfinite(raw).all(axis=2)
-                np.testing.assert_array_equal(result['group']['xy'][known], raw[known])
+                np.testing.assert_array_equal(result['group']['original_psc_xy'][known], raw[known])
+                self.assertEqual(result['group']['source'][2, 0], 'jump_removed')
+                self.assertEqual(result['group']['source'][3, 0], 'jump_removed')
+                self.assertFalse(np.isfinite(result['group']['xy'][2:4, 0]).any())
                 self.assertTrue((result['frame_timeline']['states'][known] == 0).all())
                 self.assertFalse(result['frame_timeline']['disappearance_candidate'][known].any())
                 self.assertTrue(result['masks'][0, 1][2])

@@ -869,12 +869,12 @@ class ProcessorTests(unittest.TestCase):
                 [[0, 1, 2], [3, 4, 5]],
             )
 
-    def test_default_jump_threshold_retains_steps_equal_to_200_pixels(self):
+    def test_default_jump_threshold_is_100_pixels(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             trajectory = root / "without_gaps.npy"
             arr = np.zeros((30, 1, 2), dtype=float)
-            arr[10:13, 0, 0] = [0, 200, 400]
+            arr[10:13, 0, 0] = [0, 100, 200]
             np.save(trajectory, arr)
             row = analyze(
                 trajectory,
@@ -883,14 +883,14 @@ class ProcessorTests(unittest.TestCase):
                 window=2,
                 threshold=30,
             )[0]
-            self.assertEqual(row["jump_threshold_px"], 200)
-            self.assertEqual(row["one_frame_jump_threshold_px"], 200)
+            self.assertEqual(row["jump_threshold_px"], 100)
+            self.assertEqual(row["one_frame_jump_threshold_px"], 100)
             self.assertEqual(row["one_frame_jumps_excluded"], 0)
             self.assertEqual(
                 row["jump_artifact_coordinate_frames_excluded"], 0
             )
             self.assertEqual(
-                row["total_distance_px_in_analysis_window"], 400.0
+                row["total_distance_px_in_analysis_window"], 200.0
             )
 
     def test_one_frame_step_equal_to_50_is_retained(self):

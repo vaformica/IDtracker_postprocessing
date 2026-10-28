@@ -80,7 +80,7 @@ validated decisions and applies this same matching procedure immediately after
 the scan. Each applied record preserves its earlier provenance and appends the
 settings filename and restoration time.</p>
 <p>Loading a prior file also restores its recorded jump threshold, which may
-differ from the current 200-pixel default. The completion dialog states the
+differ from the current 100-pixel default. The completion dialog states the
 loaded threshold so the researcher can review it before processing.</p>
 
 <h2>Recursive discovery, independent post-processing QC, and repeats</h2>
@@ -181,26 +181,28 @@ explicit <code>UNASSIGNED_...</code> value. Non-fight rows contain
 
 <h2>One-frame movement-step QC and total distance</h2>
 <p>For adjacent finite coordinates, the audit calculates the Euclidean step
-length. A movement step is rejected when that length is strictly greater than the GUI
-threshold <em>J</em>. The provisional GUI default is the researcher-selected
-value of 200 pixels. A value exactly equal to 200 pixels is retained at the
-default. This threshold is adjustable and has not been established as a
-biologically validated maximum beetle speed.</p>
-<p>The rejected object is the adjacent-frame <strong>step</strong>, not either
-endpoint coordinate. The step contributes to no latency chain, total distance,
-wall/fungus movement distance, social movement distance, post-wake movement
-metric, or PDF path connection. Both endpoint coordinates remain available for
-frame-based wall/fungus counts. A later accepted step resumes as a new path
-segment. Missing coordinates and rejected steps are never bridged.</p>
+length. The shared cutoff is 100 pixels per frame: a step strictly greater than
+100 pixels is treated as an impossible one-frame jump. A step exactly 100 pixels
+is accepted. This is a conservative cleanup rule, not a measured maximum beetle
+speed.</p>
+<p>When the cutoff detects a jump, the analysis layer applies location cleanup
+and marks affected observations as interpolated or unknown under the bounded
+repair rule below. Original tracking and pre-cleanup coordinates are preserved
+separately. Corrected positions are used consistently by location counts,
+movement calculations, and plots; removed positions do not silently become
+observed locations. A later accepted movement starts a new path segment. Raw
+source files are never edited.</p>
 <p>The per-animal count is therefore named
 <code>one_frame_jumps_excluded</code>, and
 <code>one_frame_jump_threshold_px</code> records the applied threshold.
 The older <code>jump_artifact_coordinate_frames_excluded</code> column remains
-only for backward schema compatibility and is zero under this step-only rule.
-Raw IDtracker files are never overwritten and coordinates are never
-interpolated. The separate read-only Jump Audit may still examine whether
-large displacements return or persist when proposing a video-wide start change;
-that diagnostic does not delete coordinates from the processor.</p>
+for compatibility; the jump audit and per-frame source labels identify positions
+removed or repaired. Raw IDtracker files are never overwritten. A paired,
+short out-and-back excursion is interpolated only when the gap is at most 15
+frames and the bounding positions are no more than 100 pixels apart; other
+affected positions remain unknown in the corrected calculation layer. The
+separate read-only Jump Audit may also examine synchronized changes across
+recordings; that recommendation does not itself change a start frame.</p>
 <h3>Video-wide disturbance recommendation</h3>
 <p>Jump destination frames are clustered when consecutive destinations are no
 more than four frames apart, equivalent to a ±2-frame synchrony tolerance.
@@ -259,7 +261,7 @@ A<sub>i,f</sub>s<sub>i,f</sub>.
 <code>post_wake_distance_px_per_valid_step</code> =
 <em>D</em><sup>wake</sup>/<em>N</em><sup>step</sup>. Its units are pixels per
 valid adjacent movement opportunity, not pixels per elapsed frame. Missing
-coordinates and rejected &gt;200-pixel steps do not enter the denominator and
+coordinates and rejected &gt;100-pixel steps do not enter the denominator and
 are not bridged. <code>post_wake_missing_coordinate_frames</code> counts
 original IDtracker missing frames from <em>C</em> through <em>E</em>.
 <code>post_wake_jump_excluded_steps</code> counts rejected adjacent steps whose
@@ -315,7 +317,7 @@ numeric results are blank rather than zero and
 <p>Within that fixed range, total, wall/open, fight-only fungus on/off and
 fungus edge-buffer/interior, and direct open-and-off-fungus results use exactly
 the same equations, accepted
-adjacent steps, segment midpoints, missing-gap rules, 200-pixel jump rule, and
+adjacent steps, segment midpoints, missing-gap rules, shared 100-pixel jump cleanup rule, and
 additivity assertions documented for the variable wake-through-end block.
 Thus, for an available fixed window <em>H</em>,</p>
 <p class="formula">
@@ -562,12 +564,11 @@ it does not filter, substitute, or alter a coordinate. Its color is green below
 1%, amber from 1% through less than 10%, and red at 10% or more. The full video
 filename and cell remain above the banner on page 1 and on every later page.</p>
 <p>The third axis is global frame, not seconds. Lines break at original missing
-coordinates and at every rejected &gt;200-pixel adjacent movement step;
-the prototype does not interpolate across either. Primary and fungus ROI
+coordinates and at every rejected &gt;100-pixel adjacent movement step;
+detected excursions are cleaned in the analysis layer using bounded repair; original coordinates remain available in the audit record. Primary and fungus ROI
 outlines, exact analysis starts, and threshold-crossing positions are displayed
 where available. Subtle gray x marks on the primary 2-D pages identify the
-destination endpoint after a rejected step; the endpoint coordinate itself
-remains in frame-based classifications.</p>
+affected jump observations.</p>
 
 <h2>Missing data and failure behavior</h2>
 <ul>
@@ -607,10 +608,10 @@ successfully renamed. A failed run cannot replace it with partial data.</p>
 <tr><td>threshold_crossing_global_frame</td><td>First global frame whose displacement reaches or exceeds the threshold.</td></tr>
 <tr><td>latency_to_threshold_frames</td><td>Crossing frame minus the analysis start frame.</td></tr>
 <tr><td>total_distance_px_in_analysis_window</td><td>Sum of valid consecutive-frame Euclidean steps within S through E only.</td></tr>
-<tr><td>one_frame_jump_threshold_px</td><td>Selected adjacent-frame movement threshold; researcher-selected GUI default 200 pixels. A step strictly greater is rejected.</td></tr>
+<tr><td>one_frame_jump_threshold_px</td><td>Shared adjacent-frame cleanup cutoff: 100 pixels. A step strictly greater is treated as impossible; exactly 100 pixels is accepted. Corrected analysis positions are labeled, and original coordinates are retained.</td></tr>
 <tr><td>one_frame_jumps_excluded</td><td>Animal-specific number of adjacent movement steps rejected from calculations.</td></tr>
 <tr><td>jump_threshold_px</td><td>Compatibility alias of one_frame_jump_threshold_px.</td></tr>
-<tr><td>jump_artifact_coordinate_frames_excluded</td><td>Deprecated compatibility field; zero because step QC retains endpoint coordinates.</td></tr>
+<tr><td>jump_artifact_coordinate_frames_excluded</td><td>Compatibility count for observations removed or repaired by jump cleanup; consult source labels and retained raw coordinates for the complete audit.</td></tr>
 <tr><td>jump_qc_status</td><td>PASS_NO_JUMPS_OVER_THRESHOLD or ONE_FRAME_JUMP_STEPS_EXCLUDED.</td></tr>
 <tr><td>post_wake_analysis_status</td><td>Whether post-wake core metrics were calculated; explicitly distinguishes invalid baseline, threshold not reached, and no valid movement steps.</td></tr>
 <tr><td>post_wake_wall_analysis_status, post_wake_fungus_analysis_status, post_wake_open_off_fungus_analysis_status</td><td>Explicit availability and partition status for each ROI family.</td></tr>
@@ -770,7 +771,7 @@ L<sub>i</sub> = C<sub>i</sub> − <em>S</em>
 </p>
 <p>Here, <em>C</em> is the first threshold-crossing global frame and
 <em>L</em> is latency in frames and <em>J</em> is the editable one-frame
-anti-jump threshold, provisional default 200 pixels. The minimum is undefined when no
+anti-jump threshold, shared default 100 pixels. The minimum is undefined when no
 continuously reachable point reaches the threshold; that case is reported as
 <code>THRESHOLD_NOT_REACHED</code>.</p>
 
@@ -783,11 +784,11 @@ q<sub>i,f</sub> =
 (y<sub>i,f+1</sub>−y<sub>i,f</sub>)²] &gt; <em>J</em>.
 </p>
 <p>The count of true values of this predicate is
-<code>one_frame_jumps_excluded</code>. Only the edge
-(<em>f</em>, <em>f+1</em>) is rejected. Coordinates at both <em>f</em> and
-<em>f+1</em> remain available for frame-based classifications; the PDF does not
-draw the rejected edge. This is why the QC count is a number of steps, not a
-number of affected coordinate frames.</p>
+<code>one_frame_jumps_excluded</code>. A short excursion may be interpolated
+only when the gap is at most 15 frames and its bounding locations are no more
+than 100 pixels apart. Otherwise affected positions remain unknown in the
+corrected analysis layer. Original coordinates remain preserved and attributable;
+they are not silently overwritten.</p>
 
 <h3>Consecutive-frame step distance and total distance</h3>
 <p style="text-align:center;font-size:1.2em">
@@ -808,8 +809,9 @@ differences are integers. For example:</p>
 </p>
 <p>Therefore, total distance is correctly stored as a decimal number. The
 unrounded accepted step distances are summed; no per-step rounding is
-performed. At the provisional default <em>J</em>=200 pixels, a 200-pixel step
-is retained and a step greater than 200 pixels is rejected.</p>
+performed. At the shared default <em>J</em>=100 pixels, a 100-pixel step is
+retained and a step greater than 100 pixels is treated as an impossible jump and
+cleaned from the analysis locations.</p>
 
 <h3>Wall-buffer distance partition</h3>
 <p>The midpoint used to classify a valid movement segment is</p>

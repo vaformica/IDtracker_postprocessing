@@ -61,7 +61,7 @@
 <section id="movement"><h2>6. Movement mathematics</h2>
 <p>For adjacent finite coordinates, Euclidean step length is:</p>
 <div class="equation">d(f) = √[(x(f+1) − x(f))² + (y(f+1) − y(f))²]</div>
-<p>A step is accepted only when both endpoints exist and its length is at or below the applicable cutoff. Original-coordinate controls use 200 pixels; canonical estimates use the 100-pixel group-continuity limit.</p>
+<p>A step is accepted for movement calculations only when both endpoints exist and the adjacent-frame distance is at or below 100 original-image pixels. Larger steps are treated as impossible one-frame jumps. The original coordinates remain preserved; the corrected analysis layer marks affected locations missing or interpolated under the shared jump-cleanup policy. The separate group-continuity speed limit governs whether missing-ID positions may be inferred across gaps and remains a distinct setting, even when it also equals 100 pixels per frame.</p>
 <div class="equation">D = Σ d(f), over accepted adjacent steps<br>distance per valid step = D / accepted steps<br>distance per available step = D / all adjacent intervals</div>
 <p>Missing gaps are never bridged. A rejected jump removes the movement edge, not its endpoint coordinates from frame-location counts. A stationary zero-length step is valid. If no accepted step exists, distance is blank. Individual social distance sums accepted steps whose two endpoints each have at least one qualifying partner; the partner may change.</p></section>
 

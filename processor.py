@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Auditable, analysis-window-only IDtracker.ai post-processing.
 
-Raw coordinates remain immutable. BA reviewed calculations apply the separately
-versioned jump-as-missing rule. All time-like outputs use global frames.
+Raw coordinates remain immutable. All assays use the shared 100-pixel
+frame-to-frame jump cutoff. BA and group calculations retain a separate,
+auditable corrected-location layer. All time-like outputs use global frames.
 """
 from __future__ import annotations
 
@@ -19,7 +20,8 @@ from pathlib import Path
 import numpy as np
 
 
-SCRIPT_VERSION = "0.8.2-ba-jump-locations"
+SCRIPT_VERSION = "0.8.3-unified-100px-jump"
+ONE_FRAME_JUMP_THRESHOLD_PX = 100.0
 POST_WAKE_FIXED_INTERVALS = 3600
 
 IDTRACKER_TRAJECTORY_SOURCES = {
@@ -494,7 +496,7 @@ def compute_social_candidates(
 
 def filter_jump_artifact_coordinates(
     xy: np.ndarray,
-    threshold_px: float = 200.0,
+    threshold_px: float = ONE_FRAME_JUMP_THRESHOLD_PX,
     return_horizon_frames: int = 120,
 ) -> dict:
     """Identify rejected adjacent movement steps without deleting coordinates.
@@ -548,18 +550,17 @@ def filter_jump_artifact_coordinates(
 
 def repair_jump_locations(
     xy: np.ndarray,
-    threshold_px: float = 200.0,
+    threshold_px: float = ONE_FRAME_JUMP_THRESHOLD_PX,
     return_horizon_frames: int = 120,
 ) -> dict:
-    """Treat >100px jump locations as missing; retain raw inputs and audit labels."""
+    """Clean locations after >threshold_px adjacent-frame jumps; retain raw inputs."""
     from jump_policy import repair
     xy = np.asarray(xy, dtype=float)
     if xy.ndim != 2 or xy.shape[1] != 2:
         raise ValueError("Jump QC expects a frames-by-2 coordinate array")
     if not np.isfinite(threshold_px) or threshold_px <= 0 or return_horizon_frames < 1:
         raise ValueError('Jump threshold and return horizon must be positive')
-    # The selected location rule is 100px independently of legacy step filters.
-    result = repair(xy.tolist())
+    result = repair(xy.tolist(), threshold=threshold_px)
     cleaned = np.array([[np.nan if v is None else v for v in p] for p in result['xy']], dtype=float).reshape((-1,2))
     steps = np.linalg.norm(np.diff(cleaned, axis=0), axis=1)
     valid = np.isfinite(cleaned).all(axis=1)
@@ -1523,7 +1524,7 @@ def analyze(
     analysis_type: str = "",
     social_distance_threshold_px: float = 60.0,
     use_social_disappearance_in_calculations: bool = False,
-    one_frame_jump_threshold_px: float = 200.0,
+    one_frame_jump_threshold_px: float = ONE_FRAME_JUMP_THRESHOLD_PX,
     turtling_window_frames: int = 120,
     turtling_min_path_px: float = 120.0,
     turtling_max_radius90_px: float = 35.0,
@@ -1584,7 +1585,7 @@ def analyze(
     window_arr = arr[start : end_inclusive + 1]
     raw_missing_mask = ~np.isfinite(window_arr).all(axis=2)
     original_jump_qc = [
-        (repair_jump_locations if window_arr.shape[1] == 1 else filter_jump_artifact_coordinates)(
+        repair_jump_locations(
             window_arr[:, animal, :],
             threshold_px=one_frame_jump_threshold_px,
         )
@@ -2293,7 +2294,7 @@ def write_plot_pdf(
         )
     )
     plot_jump_qc = [
-        (repair_jump_locations if analysis_type.strip().lower() == 'ba' else filter_jump_artifact_coordinates)(
+        repair_jump_locations(
             raw_window_arr[:, animal, :],
             threshold_px=one_frame_jump_threshold_px,
         )
@@ -3091,7 +3092,9 @@ def main() -> int:
         "--social-distance-threshold-px", default=60.0, type=float
     )
     parser.add_argument(
-        "--one-frame-jump-threshold-px", default=200.0, type=float
+        "--one-frame-jump-threshold-px",
+        default=ONE_FRAME_JUMP_THRESHOLD_PX,
+        type=float,
     )
     parser.add_argument(
         "--use-social-disappearance-in-calculations",

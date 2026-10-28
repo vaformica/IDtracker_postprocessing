@@ -21,7 +21,7 @@ from trajectory_reconstruction import reconstruct
 from persistent_groups import persistent_groups,MODEL_VERSION
 from frame_data import write_frame_data
 
-SCRIPT_VERSION = '0.8.3-dyadic-jump-locations'
+SCRIPT_VERSION = '0.8.4-unified-100px-jump'
 PDF_TRACK_STYLE_VERSION = 'outlined-psc-v1'
 
 FRAME_STATE_NAMES = ('OBSERVED_ID_ASSIGNED', 'MISSING', 'PRESUMED_SOCIAL_DISAPPEARANCE')
@@ -231,7 +231,7 @@ def summarize_window(xy, animal, lo, hi, label, start, rois, settings, turtling,
 
 def analyze_six(trajectory, session, start, window=7200, threshold=30.,
                 wall_buffer_px=30., fungus_buffer_px=30., social_distance_threshold_px=60.,
-                jump_threshold_px=200., reconstruction_speed_px=100., blob_evidence=None,
+                jump_threshold_px=100., reconstruction_speed_px=100., blob_evidence=None,
                 split_confirmation_frames=3, gap_speed_px=20., gap_radius_cap_px=300.,
                 max_reacquire_gap_frames=30, distant_confirmation_frames=10):
     numeric = [threshold, social_distance_threshold_px, jump_threshold_px, reconstruction_speed_px,
@@ -308,22 +308,21 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     group['masks'] = {pair: mask[start:] for pair,mask in history['masks'].items()}
     group['unresolved_masks'] = {pair: mask[start:] for pair,mask in history['unresolved_masks'].items()}
     jump_audits=[]
-    if animal_count == 2:
-        from jump_policy import repair
-        group['original_psc_xy']=group['xy'].copy()
-        group['source']=group['source'].astype('<U48')
-        for animal in range(animal_count):
-            audit=repair(group['xy'][:,animal].tolist(),start)
-            jump_audits.append(audit)
-            changed=np.array([label in ('interpolated','jump_removed') for label in audit['labels']])
-            group['xy'][:,animal]=np.array([[np.nan if v is None else v for v in p] for p in audit['xy']])
-            group['source'][changed,animal]=np.array(audit['labels'])[changed]
-            # Interpolation is separate from inferred social contact.
-            group['inferred'][changed,animal]=False
-            for pair in group['masks']:
-                if animal in pair:
-                    group['masks'][pair][changed]=False
-                    group['unresolved_masks'][pair][changed]=False
+    from jump_policy import repair
+    group['original_psc_xy']=group['xy'].copy()
+    group['source']=group['source'].astype('<U48')
+    for animal in range(animal_count):
+        audit=repair(group['xy'][:,animal].tolist(),start,threshold=jump_threshold_px)
+        jump_audits.append(audit)
+        changed=np.array([label in ('interpolated','jump_removed') for label in audit['labels']])
+        group['xy'][:,animal]=np.array([[np.nan if v is None else v for v in p] for p in audit['xy']])
+        group['source'][changed,animal]=np.array(audit['labels'])[changed]
+        # Interpolation is separate from inferred social contact.
+        group['inferred'][changed,animal]=False
+        for pair in group['masks']:
+            if animal in pair:
+                group['masks'][pair][changed]=False
+                group['unresolved_masks'][pair][changed]=False
     visible_masks = {}
     for a,b in masks:
         assigned=np.isin(group['source'][:,a],['ASSIGNED','interpolated'])&np.isin(group['source'][:,b],['ASSIGNED','interpolated'])
@@ -396,7 +395,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
             estimated_windows.append(row.copy());continue
         animal=row['animal_id']
         wr,rr=summarize_window(group['xy'],animal,row['start_global_frame']-start,
-            row['end_global_frame_inclusive']-start,row['window'],start,rois,dict(settings,jump_threshold_px=reconstruction_speed_px),
+            row['end_global_frame_inclusive']-start,row['window'],start,rois,dict(settings,jump_threshold_px=jump_threshold_px),
             estimated_turtling_masks[animal],adjusted_masks)
         estimated_windows.append(wr);estimated_regions.extend(rr)
 
@@ -421,8 +420,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         persistent_model_version=MODEL_VERSION,blob_evidence_sha256=sha256(blob_path),blob_evidence_file=str(blob_path.resolve()),
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
-    if animal_count == 2: metadata['frame_state_definition'] += ' For dyads, the separate jump-as-missing layer removes or interpolates >100px excursions; source labels identify estimated positions and raw arrays remain unchanged.'
-    if animal_count == 2: metadata['jump_policy'] = dict(version='1.0.0-jump-as-missing',applied=animal_count==2,threshold_px=100,max_interpolation_frames=15,original_arrays_preserved=True,posture_inference_uses_pre_correction_coordinates=True)
+    metadata['frame_state_definition'] += ' The shared jump-as-missing layer removes or interpolates >100px adjacent-frame excursions; source labels identify corrected positions and original arrays remain unchanged.'
+    metadata['jump_policy'] = dict(version='1.1.0-unified-100px',applied=True,threshold_px=jump_threshold_px,max_interpolation_frames=15,original_arrays_preserved=True,posture_inference_uses_pre_correction_coordinates=True)
     reconstruction = reconstruct(data[:start+window+1], reconstruction_speed_px)
     reconstruction = {k:(v[start:] if isinstance(v,np.ndarray) else v) for k,v in reconstruction.items()}
     metadata['reconstruction'] = dict(max_speed_px_per_frame=reconstruction_speed_px,
@@ -820,7 +819,7 @@ def main():
     parser.add_argument('--gap-radius-cap-px',type=float,default=300.)
     parser.add_argument('--max-reacquire-gap-frames',type=int,default=30)
     parser.add_argument('--distant-confirmation-frames',type=int,default=10)
-    for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',200.)]:
+    for name,value in [('threshold',30.),('wall-buffer-px',30.),('fungus-buffer-px',30.),('social-distance-threshold-px',60.),('jump-threshold-px',100.)]:
         parser.add_argument('--'+name,type=float,default=value)
     args=vars(parser.parse_args())
     fps=args.pop('fps'); pdf_name=args.pop('pdf_name')

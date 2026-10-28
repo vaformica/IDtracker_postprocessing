@@ -366,7 +366,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--wall-buffer-px", type=float, default=30.0)
     result.add_argument("--fungus-buffer-px", type=float, default=30.0)
     result.add_argument("--proximity-px", type=float, default=60.0)
-    result.add_argument("--jump-threshold-px", type=float, default=200.0)
+    result.add_argument("--jump-threshold-px", type=float, default=100.0)
     result.add_argument("--reconstruction-speed-px", type=float, default=100.0)
     result.add_argument("--split-confirmation-frames", type=int, default=3)
     result.add_argument("--gap-speed-px", type=float, default=20.0)

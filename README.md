@@ -1,5 +1,15 @@
 # Beetle tracking post-processing
 
+**28 October 2026 shared jump cleanup:** BA, dyadic-fight, and six-beetle
+post-processing now use a common 100-pixel-per-frame cutoff. Steps strictly
+greater than 100 pixels are treated as impossible one-frame jumps; exactly 100
+pixels is retained. Detected locations are cleaned in the analytical layer using
+bounded interpolation only when the anchors are within 100 pixels and the gap is
+at most 15 frames; otherwise affected locations remain unknown. Original
+tracking/pre-cleanup coordinates and audit labels are preserved. This does not
+start runs or revise old outputs. Six-beetle remains on hold. See the
+[policy and validation record](reports/UNIFIED_100PX_JUMP_POLICY_2026-10-28.md).
+
 **15 October 2026 dyadic handoff:** Vince, Hannah and Savannah judged the reviewed dyadic results acceptable to advance to broader fight processing and QC in the operations chat. The proposed variables, provenance fields, data dictionary and remaining definition decisions are in [the handoff README](reports/dyadic_handoff_20261015/README.md) and [PDF report](output/pdf/Dyadic_processing_handoff_and_data_dictionary_20261015.pdf). This is a proposed export schema, not a completed batch or a restart of six-beetle work.
 
 **Current six-beetle status — 15 October 2026: ON HOLD.** Vince put six-beetle development on hold on October 14–15 because tracking is unreliable and correcting obscured piles takes too much time. Revisit when Charlotte needs network or time-on-fungus data; there is **no automatic October 19 or two-week restart**. Dyadic and BA work continue separately. Contact versus touching/mounting definitions remain deferred. See [Charlotte’s current handoff](SIX_BEETLE_README.md) for review limitations, sources, and the unresolved 26/28/30 count mapping.

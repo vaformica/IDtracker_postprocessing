@@ -1,4 +1,4 @@
-"""User-selected jump-as-missing rule. Original input remains immutable.
+"""Shared >100-pixel adjacent-frame jump cleanup. Original input is immutable.
 
 Paired excursions use the unchanged pre-entry/post-return anchors. All other
 jump endpoints become unknown. Only gaps of <=15 frames with anchors <=100px
@@ -6,7 +6,7 @@ apart are interpolated; long/unbounded gaps remain jump_removed. Human-protected
 frames are never replaced, and conflicts are reported rather than hidden.
 """
 import math
-VERSION = '1.0.0-jump-as-missing'
+VERSION = '1.1.0-unified-100px'
 THRESHOLD_PX = 100.0
 MAX_INTERPOLATION_FRAMES = 15
 

@@ -26,7 +26,7 @@ import ba_turtling
 from run_six_beetle_pipeline import find_trajectory, session_json, sha256, arena_crop, probe_video, make_review_video
 from review_geometry import plan_review_geometry
 
-VERSION = '0.3.0-ba-jump-locations'
+VERSION = '0.4.0-unified-100px-jump'
 
 
 def source_config(toml_path, session, frame_count=7200):
@@ -68,7 +68,7 @@ def source_config(toml_path, session, frame_count=7200):
     return config, start, start+frame_count-1, polygon
 
 
-def frame_rows(xy, arena, start, jump_threshold=200., wall_buffer=30.):
+def frame_rows(xy, arena, start, jump_threshold=100., wall_buffer=30.):
     """Same accepted adjacent steps and exact wall geometry as prototype."""
     raw_xy=xy.copy()
     qc = processor.repair_jump_locations(xy, jump_threshold)
@@ -212,7 +212,7 @@ def main():
     parser.add_argument('--frames',type=int,default=7200,help='Inclusive observation count, not end minus start')
     parser.add_argument('--threshold',type=float,default=30.)
     parser.add_argument('--wall-buffer',type=float,default=30.)
-    parser.add_argument('--jump-threshold',type=float,default=200.)
+    parser.add_argument('--jump-threshold',type=float,default=100.)
     parser.add_argument('--ffmpeg',default='ffmpeg')
     parser.add_argument('--ffprobe',default='ffprobe')
     unified_qc.add_arguments(parser)

@@ -15,8 +15,10 @@ that remain ambiguous. Items in the second section are **not implemented**.
 - Missing-coordinate counts and explicit non-result statuses.
 - Original missing frames, social-disappearance substitutions, and remaining
   unusable coordinate frames are reported separately.
-- Adjacent movement steps strictly greater than the GUI jump threshold
-  (researcher-selected default 200 pixels) are rejected from latency chains,
+- Adjacent movement steps strictly greater than the shared 100-pixel jump
+  cutoff are treated as impossible one-frame jumps. The raw coordinates remain
+  preserved; corrected calculation tracks apply the documented location cleanup.
+  These steps are rejected from latency chains,
   distance totals, ROI movement distances, social movement distance, and PDF
   path connections. Endpoint coordinates remain available for frame-based
   location counts. Raw IDtracker files remain untouched.
@@ -97,7 +99,7 @@ The implemented auditable definition is:
 through the inclusive analysis end`.
 
 A missing coordinate breaks the adjacent steps touching it, and a step strictly
-greater than 200 pixels is rejected. The script does not bridge either case and
+greater than 100 pixels is rejected. The script does not bridge either case and
 reports missing-frame and rejected-step counts separately. The adjusted value
 is pixels per valid adjacent-frame movement opportunity after waking—not pixels
 per elapsed frame.
