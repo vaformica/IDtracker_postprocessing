@@ -1,0 +1,41 @@
+{
+  "checkpoint": "2026-10-28-unified-100px-jump-cleanup",
+  "created_utc": "2026-10-28T18:00:00Z",
+  "scope": "Unify the adjacent-frame location-cleanup cutoff across BA, dyadic, and six-beetle post-processing. No tracking or scientific post-processing runs were started.",
+  "policy": {
+    "one_frame_jump_threshold_px": 100,
+    "comparison": "strictly greater than 100 px is treated as an impossible adjacent-frame jump; exactly 100 px is retained",
+    "max_interpolation_gap_frames": 15,
+    "max_anchor_distance_px": 100,
+    "otherwise": "affected analytical positions remain unknown",
+    "source_coordinates_preserved": true,
+    "audit_labels_preserved": true,
+    "turtling_and_group_reconstruction_limits_are_separate": true
+  },
+  "source_versions": {
+    "processor.py": "0.8.3-unified-100px-jump",
+    "run_ba_pipeline.py": "0.4.0-unified-100px-jump",
+    "six_beetle_processor.py": "0.8.4-unified-100px-jump",
+    "jump_policy.py": "1.1.0-unified-100px"
+  },
+  "source_sha256": {
+    "processor.py": "43d1736adb43fa2cfa4648cc6aeb57ce6b3aab7d8ad9ad3a28b1f3f091b8352c",
+    "six_beetle_processor.py": "71a2bdb4908b0eef1f9df32b40466f6ac9a3f0a66fdc67a26031564225c393ed",
+    "run_ba_pipeline.py": "fa97f38d339df4e0f1012ea1e14fb125c5fdb7da9bcdfc8d9dcf0cdf57e014ab",
+    "run_six_beetle_pipeline.py": "9864d9181a426ae09cc467d976917348f675d86d445894b7b6d19e37e31bf730",
+    "jump_policy.py": "c8fb0804de952c7f2a447f6a03c866a2cc25c0d4d89b47d382b4beee82321495",
+    "jump_audit.py": "c10c5a9d6993f95d552e83ee7530927186f7078d616dc231b8af75e678de6355"
+  },
+  "validation": {
+    "status": "NOT_RUN_AFTER_POLICY_CHANGE",
+    "tests_run_for_this_change": false,
+    "scientific_runs_started": false,
+    "historical_checkpoint": "SOURCE_CHECKPOINT_20261022.json",
+    "historical_test_log": "SOURCE_CHECKPOINT_TESTS_20261022.log",
+    "historical_tests": 271,
+    "historical_passed": 251,
+    "historical_failed_assertions": 2,
+    "historical_errors": 18
+  },
+  "history_note": "Previous checkpoint and full test log are retained unchanged as historical evidence. They do not validate this updated policy. Existing scientific outputs remain tied to the source versions and settings recorded in their own manifests."
+}
