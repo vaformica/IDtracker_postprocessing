@@ -1647,7 +1647,7 @@ def analyze(
     turtling_by_animal = [
         exclude_turtling_candidates_on_fungus(
             compute_turtling_candidates(
-                window_arr[:, animal, :],
+                jump_filtered_arr[:, animal, :],
                 window_frames=turtling_window_frames,
                 min_path_px=turtling_min_path_px,
                 max_radius90_px=turtling_max_radius90_px,

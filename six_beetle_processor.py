@@ -382,8 +382,8 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
     # interaction; co-location with at least one inferred identity is PSCP.
     adjusted_masks={pair: masks[pair] | group['masks'][pair] for pair in masks}
     for animal in range(animal_count):
-        estimated_turtle = legacy.compute_turtling_candidates(group.get('original_psc_xy',group['xy'])[:,animal])['mask']
-        estimated_on_fungus = regions(group.get('original_psc_xy',group['xy'])[:,animal],rois,wall_buffer_px,fungus_buffer_px)['any_fungus']
+        estimated_turtle = legacy.compute_turtling_candidates(group['xy'][:,animal])['mask']
+        estimated_on_fungus = regions(group['xy'][:,animal],rois,wall_buffer_px,fungus_buffer_px)['any_fungus']
         estimated_turtling_masks.append(estimated_turtle & ~estimated_on_fungus)
     timeline['coordinate_present']=np.isfinite(group['xy']).all(axis=2)
     timeline['proximity_partner_count'][:]=0
@@ -421,7 +421,7 @@ def analyze_six(trajectory, session, start, window=7200, threshold=30.,
         interpretation='Proximity/disappearance candidates do not establish attack or posture.',
         turtling_settings=dict(window_frames=120,min_path_px=120.,max_radius90_px=35.,min_turn_rotations=3.,max_straightness=.25,max_step_px=20.))
     metadata['frame_state_definition'] += ' The shared jump-as-missing layer removes or interpolates >100px adjacent-frame excursions; source labels identify corrected positions and original arrays remain unchanged.'
-    metadata['jump_policy'] = dict(version='1.1.0-unified-100px',applied=True,threshold_px=jump_threshold_px,max_interpolation_frames=15,original_arrays_preserved=True,posture_inference_uses_pre_correction_coordinates=True)
+metadata['jump_policy'] = dict(version='1.1.0-unified-100px',applied=True,threshold_px=jump_threshold_px,max_interpolation_frames=15,original_arrays_preserved=True,posture_inference_uses_pre_correction_coordinates=False)
     reconstruction = reconstruct(data[:start+window+1], reconstruction_speed_px)
     reconstruction = {k:(v[start:] if isinstance(v,np.ndarray) else v) for k,v in reconstruction.items()}
     metadata['reconstruction'] = dict(max_speed_px_per_frame=reconstruction_speed_px,

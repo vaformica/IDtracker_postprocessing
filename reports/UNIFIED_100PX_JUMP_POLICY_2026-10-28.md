@@ -22,8 +22,10 @@ start any scientific runs.
 4. If those conditions are not met, leave affected analysis positions unknown
    rather than invent a path.
 5. Label corrected/interpolated/removed positions and retain event details in
-   the audit outputs. Use cleaned positions for downstream location and movement
-   calculations; keep original data available for review.
+   the audit outputs. Use cleaned positions for downstream location, movement,
+   and provisional turtling-candidate calculations; keep original data available
+   for review. A candidate remains a screening result, not a human-confirmed
+   posture label.
 
 The turtling detector's own allowed step size and the social group's gap
 reconstruction speed are distinct controls. Their numeric values must not be
