@@ -1,6 +1,6 @@
 {
   "checkpoint": "2026-10-28-unified-100px-jump-cleanup",
-  "created_utc": "2026-10-28T18:00:00Z",
+  "created_utc": "2026-10-28T18:17:25Z",
   "scope": "Unify the adjacent-frame location-cleanup cutoff across BA, dyadic, and six-beetle post-processing. No tracking or scientific post-processing runs were started.",
   "policy": {
     "one_frame_jump_threshold_px": 100,
